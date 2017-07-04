@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyBaseApplication</string>
+    <string name="title">MyTitle</string>
+    <string name="make_sure">确定</string>
 </resources>
