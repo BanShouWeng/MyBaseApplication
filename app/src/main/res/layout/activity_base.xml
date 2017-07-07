@@ -15,7 +15,7 @@
         <RelativeLayout
             android:id="@+id/base_title_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/title_height"
             android:background="@color/colorPrimary">
 
             <ImageView
@@ -51,7 +51,6 @@
                 android:id="@+id/base_right_icon1"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentRight="true"
                 android:contentDescription="@string/first_function_key"
                 android:padding="@dimen/size_13"
                 android:src="@mipmap/more"
@@ -67,7 +66,7 @@
                 android:text="@string/make_sure"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/size_17"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout
@@ -76,7 +75,6 @@
             android:layout_height="0dip"
             android:layout_weight="1"
             android:orientation="vertical">
-
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
