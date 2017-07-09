@@ -13,6 +13,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBaseContentView(R.layout.activity_main);
+        
         //设置title文本
         setTitle("新Title");
         //设置返回拦截
