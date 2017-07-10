@@ -52,6 +52,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:contentDescription="@string/first_function_key"
+                android:layout_alignParentRight="true"
                 android:padding="@dimen/size_13"
                 android:src="@mipmap/more"
                 android:tint="@android:color/white"

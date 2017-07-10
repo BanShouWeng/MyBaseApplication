@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mybaseapplication">
 
+    <!--允许联网-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--允许获取网络状态-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--允许获取WIFI状态-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".base.BaseActivity" />
-        <activity android:name=".base.NetWorkActivity"></activity>
+        <activity android:name=".base.NetWorkActivity" />
+        <activity android:name=".ui.activity.TestActivity"></activity>
     </application>
 
 </manifest>

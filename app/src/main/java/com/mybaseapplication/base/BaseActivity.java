@@ -2,6 +2,7 @@ package com.mybaseapplication.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,24 +15,52 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mybaseapplication.R;
+import com.mybaseapplication.event.NetBroadcastReceiver;
+import com.mybaseapplication.ui.activity.MainActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 
-public class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public class BaseActivity extends AppCompatActivity implements View.OnClickListener, NetBroadcastReceiver.NetEvevt {
 
+    /**
+     * 网络状态监听接受者
+     */
+    public static NetBroadcastReceiver.NetEvevt evevt;
+    /**
+     * 用于传递的上下文信息
+     */
     public Activity context;
+    /**
+     * 是否输出日志信息
+     */
+    private boolean isDebug = true;
+    /**
+     * title所需控件
+     */
     private ImageView baseBack, baseRightIcon2, baseRightIcon1;
     private TextView baseTitle, baseRightText;
+    /**
+     * 点击回调方法
+     */
     private OnClickRightIcon1CallBack onClickRightIcon1;
     private OnClickRightIcon2CallBack onClickRightIcon2;
     private OnClickRightTextCallBack onClickRightText;
+
+    private static List<Activity> activities = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+        if (!(this instanceof MainActivity)) {
+            activities.add(this);
+        }
         ButterKnife.inject(this);
         context = this;
         initView();
@@ -175,6 +204,124 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+    /**
+     * 跳转页面
+     *
+     * @param clz 所跳转的目的Activity类
+     */
+    public void startActivity(Class<?> clz) {
+        startActivity(new Intent(this, clz));
+    }
+
+    /**
+     * 跳转页面
+     *
+     * @param clz    所跳转的目的Activity类
+     * @param bundle 跳转所携带的信息
+     */
+    public void startActivity(Class<?> clz, Bundle bundle) {
+        Intent intent = new Intent(this, clz);
+        if (bundle != null) {
+            intent.putExtra("bundle", bundle);
+        }
+        startActivity(intent);
+    }
+
+    /**
+     * 跳转页面
+     *
+     * @param clz         所跳转的Activity类
+     * @param requestCode 请求码
+     */
+    public void startActivityForResult(Class<?> clz, int requestCode) {
+        startActivityForResult(new Intent(this, clz), requestCode);
+    }
+
+    /**
+     * 跳转页面
+     *
+     * @param clz         所跳转的Activity类
+     * @param bundle      跳转所携带的信息
+     * @param requestCode 请求码
+     */
+    public void startActivityForResult(Class<?> clz, int requestCode, Bundle bundle) {
+        startActivityForResult(new Intent(this, clz), requestCode);
+    }
+
+    /**
+     * 消息提示框
+     *
+     * @param message 提示消息文本
+     */
+    public void showToast(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 消息提示框
+     *
+     * @param messageId 提示消息文本ID
+     */
+    public void showToast(int messageId) {
+        Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 输出日志
+     *
+     * @param msg 日志信息
+     */
+    public void log(String msg) {
+        if (isDebug) {
+            Log.d("debug", msg);
+        }
+    }
+
+    /**
+     * 关闭所有Activity（除MainActivity以外）
+     */
+    public void finishActivity() {
+        for (Activity activity : activities) {
+            activity.finish();
+        }
+    }
+
+    /**
+     * 跳转到指定的Activity
+     *
+     * @param activity 指定的Activity
+     */
+    public void goTo(Activity activity) {
+        if (activity instanceof MainActivity) {
+            finishActivity();
+        } else {
+            for (int i = activities.size() - 1; i >= 0; i--) {
+                if (activity.getClass().equals(activities.get(i).getClass())) {
+                    break;
+                } else {
+                    activity.finish();
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        activities.remove(this);
+    }
+
+    /**
+     * 网络变化回调方法
+     *
+     * @param mobileNetState 当前的网络状态
+     */
+    @Override
+    public void onNetChanged(int mobileNetState) {
+
+    }
+
 
     /**
      * 图片一点击回调接口
