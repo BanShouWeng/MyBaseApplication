@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.mybaseapplication.R;
 import com.mybaseapplication.base.BaseActivity;
+import com.mybaseapplication.base.NetWorkActivity;
 
 public class TestActivity extends BaseActivity {
 
@@ -15,7 +16,7 @@ public class TestActivity extends BaseActivity {
         setBaseRightIcon1(R.mipmap.more, "more", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {
-                finishActivity();
+                goTo(NetWorkActivity.class);
             }
         });
     }

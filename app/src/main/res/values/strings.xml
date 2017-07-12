@@ -4,4 +4,8 @@
     <string name="make_sure">确定</string>
     <string name="first_function_key">第一功能键</string>
     <string name="second_function_key">第二功能键</string>
+    <string name="onload">玩命加载中</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

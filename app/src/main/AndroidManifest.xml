@@ -26,6 +26,12 @@
         <activity android:name=".base.BaseActivity" />
         <activity android:name=".base.NetWorkActivity" />
         <activity android:name=".ui.activity.TestActivity"></activity>
+
+        <receiver android:name=".event.NetBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

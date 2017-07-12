@@ -3,16 +3,13 @@ package com.mybaseapplication.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +17,7 @@ import android.widget.Toast;
 import com.mybaseapplication.R;
 import com.mybaseapplication.event.NetBroadcastReceiver;
 import com.mybaseapplication.ui.activity.MainActivity;
+import com.mybaseapplication.widget.CustomProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,8 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 用于传递的上下文信息
      */
-    public Activity context;
+    public Context context;
+    public Activity activity;
     /**
      * 是否输出日志信息
      */
@@ -52,7 +51,15 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     private OnClickRightIcon2CallBack onClickRightIcon2;
     private OnClickRightTextCallBack onClickRightText;
 
+    /**
+     * 当前打开Activity存储List
+     */
     private static List<Activity> activities = new ArrayList<>();
+
+    /**
+     * 加载提示框
+     */
+    private CustomProgressDialog customProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +69,9 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
             activities.add(this);
         }
         ButterKnife.inject(this);
-        context = this;
+        context = getApplicationContext();
+        activity = this;
+        customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
         initView();
     }
 
@@ -170,9 +179,9 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * 隐藏键盘
      */
     public void hideKeyBoard() {
-        View view = ((Activity) context).getWindow().peekDecorView();
+        View view = activity.getWindow().peekDecorView();
         if (view != null) {
-            InputMethodManager inputmanger = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputmanger = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -246,7 +255,11 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * @param requestCode 请求码
      */
     public void startActivityForResult(Class<?> clz, int requestCode, Bundle bundle) {
-        startActivityForResult(new Intent(this, clz), requestCode);
+        Intent intent = new Intent(this, clz);
+        if (bundle != null) {
+            intent.putExtra("bundle", bundle);
+        }
+        startActivityForResult(intent, requestCode);
     }
 
     /**
@@ -290,17 +303,17 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 跳转到指定的Activity
      *
-     * @param activity 指定的Activity
+     * @param clz 指定的Activity对应的class
      */
-    public void goTo(Activity activity) {
-        if (activity instanceof MainActivity) {
+    public void goTo(Class<?> clz) {
+        if (clz.equals(MainActivity.class)) {
             finishActivity();
         } else {
             for (int i = activities.size() - 1; i >= 0; i--) {
-                if (activity.getClass().equals(activities.get(i).getClass())) {
+                if (clz.equals(activities.get(i).getClass())) {
                     break;
                 } else {
-                    activity.finish();
+                    activities.get(i).finish();
                 }
             }
         }
@@ -322,6 +335,31 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * 显示加载提示框
+     */
+    public void showLoadDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                customProgressDialog.show();
+            }
+        });
+    }
+
+    /**
+     * 隐藏加载提示框
+     */
+    public void hideLoadDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (customProgressDialog != null && customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+            }
+        });
+    }
 
     /**
      * 图片一点击回调接口

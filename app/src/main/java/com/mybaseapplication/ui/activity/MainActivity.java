@@ -1,6 +1,7 @@
 package com.mybaseapplication.ui.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
@@ -21,7 +22,6 @@ public class MainActivity extends BaseActivity {
         getBaseBack().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("log", "退不出去了吧");
                 startActivity(NetWorkActivity.class);
             }
         });
@@ -29,7 +29,13 @@ public class MainActivity extends BaseActivity {
         setBaseRightIcon1(R.mipmap.more, "更多", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {
-                Log.i("Exception", "这都找到我了");
+                showLoadDialog();
+            }
+        });
+        setBaseRightIcon2(R.mipmap.add, "更多", new OnClickRightIcon2CallBack() {
+            @Override
+            public void clickRightIcon2() {
+                hideLoadDialog();
             }
         });
     }
