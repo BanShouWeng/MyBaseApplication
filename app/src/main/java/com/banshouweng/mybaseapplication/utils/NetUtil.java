@@ -1,11 +1,16 @@
-package com.mybaseapplication.utils;
+package com.banshouweng.mybaseapplication.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
- * Created by dell on 2017/7/10.
+ * 《一个Android工程的从零开始》
+ *
+ * @author 半寿翁
+ * 博客：
+ * CSDN http://blog.csdn.net/u010513377/article/details/74455960
+ * 简书  http://www.jianshu.com/p/1410051701fe
  */
 public class NetUtil {
     /**

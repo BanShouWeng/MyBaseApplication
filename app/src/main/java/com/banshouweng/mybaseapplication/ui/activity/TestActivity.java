@@ -1,12 +1,19 @@
-package com.mybaseapplication.ui.activity;
+package com.banshouweng.mybaseapplication.ui.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.mybaseapplication.R;
-import com.mybaseapplication.base.BaseActivity;
-import com.mybaseapplication.base.NetWorkActivity;
+import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.base.BaseActivity;
+import com.banshouweng.mybaseapplication.base.NetWorkActivity;
 
+/**
+ * 《一个Android工程的从零开始》
+ *
+ * @author 半寿翁
+ * 博客：
+ * CSDN http://blog.csdn.net/u010513377/article/details/74455960
+ * 简书  http://www.jianshu.com/p/1410051701fe
+ */
 public class TestActivity extends BaseActivity {
 
     @Override

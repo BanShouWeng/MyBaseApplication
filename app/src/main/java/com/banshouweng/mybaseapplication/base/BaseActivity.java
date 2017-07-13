@@ -1,30 +1,41 @@
-package com.mybaseapplication.base;
+package com.banshouweng.mybaseapplication.base;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mybaseapplication.R;
-import com.mybaseapplication.event.NetBroadcastReceiver;
-import com.mybaseapplication.ui.activity.MainActivity;
-import com.mybaseapplication.widget.CustomProgressDialog;
+import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.event.NetBroadcastReceiver;
+import com.banshouweng.mybaseapplication.ui.activity.MainActivity;
+import com.banshouweng.mybaseapplication.widget.CustomProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class BaseActivity extends AppCompatActivity implements View.OnClickListener, NetBroadcastReceiver.NetEvevt {
+
+/**
+ * 《一个Android工程的从零开始》
+ *
+ * @author 半寿翁
+ *         博客：
+ *         CSDN http://blog.csdn.net/u010513377/article/details/74455960
+ *         简书  http://www.jianshu.com/p/1410051701fe
+ */
+public class BaseActivity extends AppCompatActivity implements NetBroadcastReceiver.NetEvevt {
 
     /**
      * 网络状态监听接受者
@@ -35,21 +46,33 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      */
     public Context context;
     public Activity activity;
+    @BindView(R.id.base_back)
+    private ImageView baseBack;
+    @BindView(R.id.base_title)
+    private TextView baseTitle;
+    @BindView(R.id.base_right_icon2)
+    private ImageView baseRightIcon2;
+    @BindView(R.id.base_right_icon1)
+    private ImageView baseRightIcon1;
+    @BindView(R.id.base_right_text)
+    private TextView baseRightText;
+    @BindView(R.id.base_title_layout)
+    private RelativeLayout baseTitleLayout;
+    @BindView(R.id.base_main_layout)
+    private LinearLayout baseMainLayout;
+    @BindView(R.id.base_scroll_view)
+    private ScrollView baseScrollView;
     /**
-     * 是否输出日志信息
+     * 是否重置返回按钮点击事件
      */
-    private boolean isDebug = true;
-    /**
-     * title所需控件
-     */
-    private ImageView baseBack, baseRightIcon2, baseRightIcon1;
-    private TextView baseTitle, baseRightText;
+    private boolean isResetBack = false;
     /**
      * 点击回调方法
      */
     private OnClickRightIcon1CallBack onClickRightIcon1;
     private OnClickRightIcon2CallBack onClickRightIcon2;
     private OnClickRightTextCallBack onClickRightText;
+    private OnClickBackCallBack onClickBack;
 
     /**
      * 当前打开Activity存储List
@@ -68,11 +91,11 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         if (!(this instanceof MainActivity)) {
             activities.add(this);
         }
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         context = getApplicationContext();
         activity = this;
+        evevt = this;
         customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
-        initView();
     }
 
     /**
@@ -83,31 +106,17 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 获取返回键
-     */
-    public ImageView getBaseBack() {
-        return baseBack;
-    }
-
-    /**
-     * 初始化控件
-     */
-    private void initView() {
-        baseRightIcon1 = (ImageView) findViewById(R.id.base_right_icon1);
-        baseRightIcon2 = (ImageView) findViewById(R.id.base_right_icon2);
-        baseBack = (ImageView) findViewById(R.id.base_back);
-        baseTitle = (TextView) findViewById(R.id.base_title);
-        baseRightText = (TextView) findViewById(R.id.base_right_text);
-        baseBack.setOnClickListener(this);
-    }
-
-    /**
      * 设置标题
      *
      * @param title 标题的文本
      */
     public void setTitle(String title) {
         baseTitle.setText(title);
+    }
+
+    public void setBaseBack(OnClickBackCallBack onClickBack) {
+        this.onClickBack = onClickBack;
+        isResetBack = true;
     }
 
     /**
@@ -121,7 +130,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         this.onClickRightIcon1 = onClickRightIcon1;
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
-        baseRightIcon1.setOnClickListener(this);
         //语音辅助提示的时候读取的信息
         baseRightIcon1.setContentDescription(alertText);
     }
@@ -136,7 +144,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         this.onClickRightIcon2 = onClickRightIcon2;
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
-        baseRightIcon2.setOnClickListener(this);
         //语音辅助提示的时候读取的信息
         baseRightIcon2.setContentDescription(alertText);
     }
@@ -150,7 +157,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         this.onClickRightText = onClickRightText;
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
-        baseRightText.setOnClickListener(this);
     }
 
     /**
@@ -183,34 +189,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         if (view != null) {
             InputMethodManager inputmanger = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            //返回按键
-            case R.id.base_back:
-                finish();
-                break;
-
-            //图片1
-            case R.id.base_right_icon1:
-                onClickRightIcon1.clickRightIcon1();
-                break;
-
-            //图片2
-            case R.id.base_right_icon2:
-                onClickRightIcon2.clickRightIcon2();
-                break;
-
-            //右侧文本
-            case R.id.base_right_text:
-                onClickRightText.clickRightText();
-                break;
-
-            default:
-                break;
         }
     }
 
@@ -281,17 +259,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 输出日志
-     *
-     * @param msg 日志信息
-     */
-    public void log(String msg) {
-        if (isDebug) {
-            Log.d("debug", msg);
-        }
-    }
-
-    /**
      * 关闭所有Activity（除MainActivity以外）
      */
     public void finishActivity() {
@@ -323,6 +290,11 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         activities.remove(this);
+        evevt = null;
+        onClickRightIcon1 = null;
+        onClickRightIcon2 = null;
+        onClickRightText = null;
+        onClickBack = null;
     }
 
     /**
@@ -361,6 +333,28 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    @OnClick({R.id.base_back, R.id.base_right_icon2, R.id.base_right_icon1, R.id.base_right_text})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.base_back:
+                if (isResetBack) {
+                    onClickBack.clickBack();
+                } else {
+                    finish();
+                }
+                break;
+            case R.id.base_right_icon2:
+                onClickRightIcon2.clickRightIcon2();
+                break;
+            case R.id.base_right_icon1:
+                onClickRightIcon1.clickRightIcon1();
+                break;
+            case R.id.base_right_text:
+                onClickRightText.clickRightText();
+                break;
+        }
+    }
+
     /**
      * 图片一点击回调接口
      */
@@ -380,5 +374,12 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      */
     public interface OnClickRightTextCallBack {
         void clickRightText();
+    }
+
+    /**
+     * 返回键点击回调接口
+     */
+    public interface OnClickBackCallBack {
+        void clickBack();
     }
 }

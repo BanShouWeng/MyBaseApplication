@@ -1,4 +1,4 @@
-package com.mybaseapplication;
+package com.banshouweng.mybaseapplication;
 
 import org.junit.Test;
 
