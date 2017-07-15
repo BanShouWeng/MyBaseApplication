@@ -19,7 +19,7 @@ public class NetWorkActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBaseContentView(R.layout.activity_net_work);
-
+        setTitle("NetWorkActivity");
         setBaseRightIcon1(R.mipmap.add, "add", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {

@@ -91,6 +91,13 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
         return fragment;
     }
 
+    /**
+     * 隐藏头布局
+     */
+    public void hideTitle() {
+        baseTitleLayout.setVisibility(View.GONE);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,8 +214,7 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
      */
     public void setBaseContentView(int layoutId) {
         //当子布局高度值不足ScrollView时，用这个方法可以充满ScrollView，防止布局无法显示
-        ((ScrollView) activity.findViewById(R.id.base_scroll_view)).setFillViewport(true);
-        LinearLayout layout = (LinearLayout) activity.findViewById(R.id.base_main_layout);
+        LinearLayout layout = ButterKnife.findById(currentLayout, R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
         final View view = activity.getLayoutInflater().inflate(layoutId, null);

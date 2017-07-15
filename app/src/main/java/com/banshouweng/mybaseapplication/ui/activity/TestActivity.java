@@ -20,6 +20,7 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBaseContentView(R.layout.activity_test);
+        setTitle("TestActivity");
         setBaseRightIcon1(R.mipmap.more, "more", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {

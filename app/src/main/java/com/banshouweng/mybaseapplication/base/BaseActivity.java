@@ -185,7 +185,7 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
     public void setBaseContentView(int layoutId) {
         //当子布局高度值不足ScrollView时，用这个方法可以充满ScrollView，防止布局无法显示
         baseScrollView.setFillViewport(true);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.base_main_layout);
+        LinearLayout layout = ButterKnife.findById(activity, R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
         final View view = getLayoutInflater().inflate(layoutId, null);
@@ -362,6 +362,9 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             for (int i = 0; i < fragments.length; i++) {
                 transaction.add(containerViewId, fragments[i]);
+                if (i != fragments.length - 1){
+                    transaction.hide(fragments[i]);
+                }
             }
             transaction.commitAllowingStateLoss();
         }
@@ -381,20 +384,16 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
     /**
      * 隐藏Fragment
      *
-     * @param fragments 所要隐藏的Fragment，可以添加多个
+     * @param fragment 所要隐藏的Fragment，可以添加多个
      */
-    public void hideFragment(Fragment... fragments) {
-        if (fragments != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            for (int i = 0; i < fragments.length; i++) {
-                transaction.hide(fragments[i]);
-            }
-            transaction.commitAllowingStateLoss();
+    public void hideFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().hide(fragment).commitAllowingStateLoss();
         }
     }
 
     /**
-     * 替代Fragment
+     * 替换Fragment
      *
      * @param containerViewId 对应布局的id
      * @param fragment        用于替代原有Fragment的心Fragment

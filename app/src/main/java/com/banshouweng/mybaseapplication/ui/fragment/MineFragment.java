@@ -1,6 +1,5 @@
 package com.banshouweng.mybaseapplication.ui.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -23,7 +22,7 @@ public class MineFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         setBaseContentView(R.layout.fragment_mine);
         //设置title文本
-        setTitle("新Title");
+        setTitle("MineFragment");
         //设置返回拦截
         setBaseBack(new OnClickBackCallBack() {
             @Override
@@ -44,5 +43,16 @@ public class MineFragment extends BaseFragment {
                 hideLoadDialog();
             }
         });
+//        hideTitle();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            showToast("隐藏了");
+        } else {
+            showToast("显示了");
+        }
     }
 }

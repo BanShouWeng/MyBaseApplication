@@ -19,13 +19,15 @@ import com.banshouweng.mybaseapplication.ui.fragment.MineFragment;
  */
 public class MainActivity extends BaseActivity {
 
+    private MineFragment mineFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBaseContentView(R.layout.activity_main);
 
         //设置title文本
-        setTitle("新Title");
+        setTitle("MainActivity");
         //设置返回拦截
         setBaseBack(new OnClickBackCallBack() {
             @Override
@@ -33,21 +35,22 @@ public class MainActivity extends BaseActivity {
                 startActivity(NetWorkActivity.class);
             }
         });
+        mineFragment = new MineFragment();
         //设置功能键，以及点击方法回调监听
         setBaseRightIcon1(R.mipmap.more, "更多", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {
-                showLoadDialog();
+                showFragment(mineFragment);
             }
         });
         setBaseRightIcon2(R.mipmap.add, "更多", new OnClickRightIcon2CallBack() {
             @Override
             public void clickRightIcon2() {
-                hideLoadDialog();
+                hideFragment(mineFragment);
             }
         });
 
-        addFragment(R.id.fragment_layout, new MineFragment());
-        hideTitle();
+        addFragment(R.id.fragment_layout, mineFragment);
+//        hideTitle();
     }
 }
