@@ -1,13 +1,13 @@
-package com.banshouweng.mybaseapplication.ui.activity;
+package com.banshouweng.mybaseapplication.ui.fragment;
 
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.banshouweng.mybaseapplication.R;
-import com.banshouweng.mybaseapplication.base.BaseActivity;
 import com.banshouweng.mybaseapplication.base.BaseFragment;
-import com.banshouweng.mybaseapplication.base.NetWorkActivity;
-import com.banshouweng.mybaseapplication.ui.fragment.MineFragment;
+import com.banshouweng.mybaseapplication.ui.activity.TestActivity;
 
 /**
  * 《一个Android工程的从零开始》
@@ -17,37 +17,32 @@ import com.banshouweng.mybaseapplication.ui.fragment.MineFragment;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MainActivity extends BaseActivity {
-
+public class MineFragment extends BaseFragment {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setBaseContentView(R.layout.activity_main);
-
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setBaseContentView(R.layout.fragment_mine);
         //设置title文本
         setTitle("新Title");
         //设置返回拦截
         setBaseBack(new OnClickBackCallBack() {
             @Override
             public void clickBack() {
-                startActivity(NetWorkActivity.class);
+                startActivity(TestActivity.class);
             }
         });
         //设置功能键，以及点击方法回调监听
-        setBaseRightIcon1(R.mipmap.more, "更多", new OnClickRightIcon1CallBack() {
+        setBaseRightIcon1(R.mipmap.add, "更多", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {
                 showLoadDialog();
             }
         });
-        setBaseRightIcon2(R.mipmap.add, "更多", new OnClickRightIcon2CallBack() {
+        setBaseRightIcon2(R.mipmap.more, "更多", new OnClickRightIcon2CallBack() {
             @Override
             public void clickRightIcon2() {
                 hideLoadDialog();
             }
         });
-
-        addFragment(R.id.fragment_layout, new MineFragment());
-        hideTitle();
     }
 }

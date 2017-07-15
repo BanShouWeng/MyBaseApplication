@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,15 +27,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 
 /**
  * 《一个Android工程的从零开始》
  *
  * @author 半寿翁
- *         博客：
- *         CSDN http://blog.csdn.net/u010513377/article/details/74455960
- *         简书  http://www.jianshu.com/p/1410051701fe
+ * @博客：
+ * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
+ * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public class BaseActivity extends AppCompatActivity implements NetBroadcastReceiver.NetEvevt {
 
@@ -46,21 +49,14 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
      */
     public Context context;
     public Activity activity;
-    @BindView(R.id.base_back)
+
     private ImageView baseBack;
-    @BindView(R.id.base_title)
     private TextView baseTitle;
-    @BindView(R.id.base_right_icon2)
     private ImageView baseRightIcon2;
-    @BindView(R.id.base_right_icon1)
     private ImageView baseRightIcon1;
-    @BindView(R.id.base_right_text)
     private TextView baseRightText;
-    @BindView(R.id.base_title_layout)
     private RelativeLayout baseTitleLayout;
-    @BindView(R.id.base_main_layout)
     private LinearLayout baseMainLayout;
-    @BindView(R.id.base_scroll_view)
     private ScrollView baseScrollView;
     /**
      * 是否重置返回按钮点击事件
@@ -96,6 +92,28 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
         activity = this;
         evevt = this;
         customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
+        initView();
+    }
+
+    /**
+     * 控件初始化
+     */
+    public void initView() {
+        baseBack = ButterKnife.findById(activity, R.id.base_back);
+        baseRightIcon1 = ButterKnife.findById(activity, R.id.base_right_icon1);
+        baseRightIcon2 = ButterKnife.findById(activity, R.id.base_right_icon2);
+        baseTitle = ButterKnife.findById(activity, R.id.base_title);
+        baseRightText = ButterKnife.findById(activity, R.id.base_right_text);
+        baseTitleLayout = ButterKnife.findById(activity, R.id.base_title_layout);
+        baseMainLayout = ButterKnife.findById(activity, R.id.base_main_layout);
+        baseScrollView = ButterKnife.findById(activity, R.id.base_scroll_view);
+    }
+
+    /**
+     * 隐藏头布局
+     */
+    public void hideTitle() {
+        baseTitleLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -166,7 +184,7 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
      */
     public void setBaseContentView(int layoutId) {
         //当子布局高度值不足ScrollView时，用这个方法可以充满ScrollView，防止布局无法显示
-        ((ScrollView) findViewById(R.id.base_scroll_view)).setFillViewport(true);
+        baseScrollView.setFillViewport(true);
         LinearLayout layout = (LinearLayout) findViewById(R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
@@ -333,9 +351,69 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
         });
     }
 
+    /**
+     * 添加Fragment
+     *
+     * @param containerViewId 对应布局的id
+     * @param fragments       所要添加的Fragment，可以添加多个
+     */
+    public void addFragment(int containerViewId, Fragment... fragments) {
+        if (fragments != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            for (int i = 0; i < fragments.length; i++) {
+                transaction.add(containerViewId, fragments[i]);
+            }
+            transaction.commitAllowingStateLoss();
+        }
+    }
+
+    /**
+     * 显示Fragment
+     *
+     * @param fragment 所要显示的Fragment
+     */
+    public void showFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
+        }
+    }
+
+    /**
+     * 隐藏Fragment
+     *
+     * @param fragments 所要隐藏的Fragment，可以添加多个
+     */
+    public void hideFragment(Fragment... fragments) {
+        if (fragments != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            for (int i = 0; i < fragments.length; i++) {
+                transaction.hide(fragments[i]);
+            }
+            transaction.commitAllowingStateLoss();
+        }
+    }
+
+    /**
+     * 替代Fragment
+     *
+     * @param containerViewId 对应布局的id
+     * @param fragment        用于替代原有Fragment的心Fragment
+     */
+    public void replaceFragment(int containerViewId, Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().replace(containerViewId, fragment).commitAllowingStateLoss();
+        }
+    }
+
+    /**
+     * 点击事件
+     *
+     * @param view 被点击的View
+     */
     @OnClick({R.id.base_back, R.id.base_right_icon2, R.id.base_right_icon1, R.id.base_right_text})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            //返回键
             case R.id.base_back:
                 if (isResetBack) {
                     onClickBack.clickBack();
@@ -343,12 +421,18 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
                     finish();
                 }
                 break;
+
+            //右数第二个图片功能键
             case R.id.base_right_icon2:
                 onClickRightIcon2.clickRightIcon2();
                 break;
+
+            //右数第一个图片功能键
             case R.id.base_right_icon1:
                 onClickRightIcon1.clickRightIcon1();
                 break;
+
+            //右侧文本功能键
             case R.id.base_right_text:
                 onClickRightText.clickRightText();
                 break;
