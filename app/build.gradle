@@ -29,4 +29,16 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.7.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+    //retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    //rxjava
+    compile 'io.reactivex.rxjava2:rxjava:2.1.1'
+    //rxandroid
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    //配合Rxjava 使用
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    //转换器 将结果通过gson将json串转换为model
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    //GSON库
+    compile 'com.google.code.gson:gson:2.8.1'
 }

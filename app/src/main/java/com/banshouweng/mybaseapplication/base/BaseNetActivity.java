@@ -13,13 +13,13 @@ import com.banshouweng.mybaseapplication.ui.activity.TestActivity;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class NetWorkActivity extends BaseActivity {
+public class BaseNetActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBaseContentView(R.layout.activity_net_work);
-        setTitle("NetWorkActivity");
+        setTitle("BaseNetActivity");
         setBaseRightIcon1(R.mipmap.add, "add", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {

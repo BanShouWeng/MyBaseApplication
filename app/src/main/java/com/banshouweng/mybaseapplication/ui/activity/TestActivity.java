@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseActivity;
-import com.banshouweng.mybaseapplication.base.NetWorkActivity;
+import com.banshouweng.mybaseapplication.base.BaseNetActivity;
 
 /**
  * 《一个Android工程的从零开始》
@@ -24,7 +24,7 @@ public class TestActivity extends BaseActivity {
         setBaseRightIcon1(R.mipmap.more, "more", new OnClickRightIcon1CallBack() {
             @Override
             public void clickRightIcon1() {
-                goTo(NetWorkActivity.class);
+                goTo(BaseNetActivity.class);
             }
         });
     }

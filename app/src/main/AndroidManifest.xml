@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".base.BaseActivity" />
-        <activity android:name=".base.NetWorkActivity" />
+        <activity android:name=".base.BaseNetActivity" />
         <activity android:name=".ui.activity.TestActivity"></activity>
 
         <receiver android:name=".event.NetBroadcastReceiver" >
