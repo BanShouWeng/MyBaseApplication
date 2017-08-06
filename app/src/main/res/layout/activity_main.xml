@@ -7,14 +7,9 @@
     android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/address_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00ff00"
-        android:text="Hello World!" />
-
-    <FrameLayout
-        android:id="@+id/fragment_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="0dip"
+        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
 </RelativeLayout>

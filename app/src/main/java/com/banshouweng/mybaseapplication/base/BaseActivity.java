@@ -23,11 +23,7 @@ import com.banshouweng.mybaseapplication.widget.CustomProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+import java.util.Map;
 
 
 /**
@@ -52,23 +48,7 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
 
     private ImageView baseBack;
     private TextView baseTitle;
-    private ImageView baseRightIcon2;
-    private ImageView baseRightIcon1;
-    private TextView baseRightText;
     private RelativeLayout baseTitleLayout;
-    private LinearLayout baseMainLayout;
-    private ScrollView baseScrollView;
-    /**
-     * 是否重置返回按钮点击事件
-     */
-    private boolean isResetBack = false;
-    /**
-     * 点击回调方法
-     */
-    private OnClickRightIcon1CallBack onClickRightIcon1;
-    private OnClickRightIcon2CallBack onClickRightIcon2;
-    private OnClickRightTextCallBack onClickRightText;
-    private OnClickBackCallBack onClickBack;
 
     /**
      * 当前打开Activity存储List
@@ -80,6 +60,8 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
      */
     private CustomProgressDialog customProgressDialog;
 
+    public Map<String, String> params;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,26 +69,22 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
         if (!(this instanceof MainActivity)) {
             activities.add(this);
         }
-        ButterKnife.bind(this);
         context = getApplicationContext();
         activity = this;
         evevt = this;
         customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
-        initView();
+        initBaseView();
     }
 
     /**
      * 控件初始化
      */
-    public void initView() {
-        baseBack = ButterKnife.findById(activity, R.id.base_back);
-        baseRightIcon1 = ButterKnife.findById(activity, R.id.base_right_icon1);
-        baseRightIcon2 = ButterKnife.findById(activity, R.id.base_right_icon2);
-        baseTitle = ButterKnife.findById(activity, R.id.base_title);
-        baseRightText = ButterKnife.findById(activity, R.id.base_right_text);
-        baseTitleLayout = ButterKnife.findById(activity, R.id.base_title_layout);
-        baseMainLayout = ButterKnife.findById(activity, R.id.base_main_layout);
-        baseScrollView = ButterKnife.findById(activity, R.id.base_scroll_view);
+    public void initBaseView() {
+        baseBack = (ImageView) findViewById(R.id.base_back);
+
+        baseTitleLayout = (RelativeLayout) findViewById(R.id.base_title_layout);
+
+        setBaseBack(null);
     }
 
     /**
@@ -129,52 +107,90 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
      * @param title 标题的文本
      */
     public void setTitle(String title) {
+        if (baseTitle == null) {
+            baseTitle = (TextView) findViewById(R.id.base_title);
+        }
         baseTitle.setText(title);
     }
 
-    public void setBaseBack(OnClickBackCallBack onClickBack) {
-        this.onClickBack = onClickBack;
-        isResetBack = true;
+
+    public void setBaseBack(View.OnClickListener clickListener) {
+        if (clickListener == null) {
+            baseBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        } else {
+            baseBack.setOnClickListener(clickListener);
+        }
     }
 
     /**
-     * 设置右侧图片1（最右侧）
+     * 最右侧图片功能键设置方法
      *
-     * @param resId             图片的资源id
-     * @param alertText         提示文本
-     * @param onClickRightIcon1 点击处理接口
+     * @param resId         图片id
+     * @param alertText     语音辅助提示读取信息
+     * @param clickListener 点击事件
+     * @return 将当前ImageView返回方便进一步处理
      */
-    public void setBaseRightIcon1(int resId, String alertText, OnClickRightIcon1CallBack onClickRightIcon1) {
-        this.onClickRightIcon1 = onClickRightIcon1;
+    public ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
+        ImageView baseRightIcon1 = (ImageView) findViewById(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon1.setContentDescription(alertText);
+        baseRightIcon1.setOnClickListener(clickListener);
+        return baseRightIcon1;
     }
 
     /**
-     * 设置右侧图片2（右数第二个图片）
+     * 右数第二个图片功能键设置方法
      *
-     * @param resId     图片的资源id
-     * @param alertText 提示文本
+     * @param resId         图片id
+     * @param alertText     语音辅助提示读取信息
+     * @param clickListener 点击事件
+     * @return 将当前ImageView返回方便进一步处理
      */
-    public void setBaseRightIcon2(int resId, String alertText, OnClickRightIcon2CallBack onClickRightIcon2) {
-        this.onClickRightIcon2 = onClickRightIcon2;
+    public ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
+        ImageView baseRightIcon2 = (ImageView) findViewById(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon2.setContentDescription(alertText);
+        baseRightIcon2.setOnClickListener(clickListener);
+        return baseRightIcon2;
     }
 
     /**
-     * 设置右侧文本信息
+     * 最右侧文本功能键设置方法
      *
-     * @param text 所需要设置的文本
+     * @param text          文本信息
+     * @param clickListener 点击事件
+     * @return 将当前TextView返回方便进一步处理
      */
-    public void setBaseRightText(String text, OnClickRightTextCallBack onClickRightText) {
-        this.onClickRightText = onClickRightText;
+    public TextView setBaseRightText(String text, View.OnClickListener clickListener) {
+        TextView baseRightText = (TextView) findViewById(R.id.base_right_text);
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
+        baseRightText.setOnClickListener(clickListener);
+        return baseRightText;
+    }
+
+    /**
+     * 最右侧文本功能键设置方法
+     *
+     * @param textId        文本信息id
+     * @param clickListener 点击事件
+     * @return 将当前TextView返回方便进一步处理
+     */
+    public TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
+        TextView baseRightText = (TextView) findViewById(R.id.base_right_text);
+        baseRightText.setText(textId);
+        baseRightText.setVisibility(View.VISIBLE);
+        baseRightText.setOnClickListener(clickListener);
+        return baseRightText;
     }
 
     /**
@@ -183,9 +199,7 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
      * @param layoutId 布局id
      */
     public void setBaseContentView(int layoutId) {
-        //当子布局高度值不足ScrollView时，用这个方法可以充满ScrollView，防止布局无法显示
-        baseScrollView.setFillViewport(true);
-        LinearLayout layout = ButterKnife.findById(activity, R.id.base_main_layout);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
         final View view = getLayoutInflater().inflate(layoutId, null);
@@ -197,6 +211,31 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         layout.addView(view, params);
+        layout.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 引用头部布局且当前页面基于ScrollView
+     *
+     * @param layoutId 布局id
+     */
+    public void setBaseScrollContentView(int layoutId) {
+        ScrollView layout = (ScrollView) findViewById(R.id.base_scroll_view);
+
+        //当子布局高度值不足ScrollView时，用这个方法可以充满ScrollView，防止布局无法显示
+        layout.setFillViewport(true);
+
+        //获取布局，并在BaseActivity基础上显示
+        final View view = getLayoutInflater().inflate(layoutId, null);
+        //关闭键盘
+        hideKeyBoard();
+        //给EditText的父控件设置焦点，防止键盘自动弹出
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        layout.addView(view, params);
+        layout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -309,10 +348,6 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
         super.onDestroy();
         activities.remove(this);
         evevt = null;
-        onClickRightIcon1 = null;
-        onClickRightIcon2 = null;
-        onClickRightText = null;
-        onClickBack = null;
     }
 
     /**
@@ -362,7 +397,7 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             for (int i = 0; i < fragments.length; i++) {
                 transaction.add(containerViewId, fragments[i]);
-                if (i != fragments.length - 1){
+                if (i != fragments.length - 1) {
                     transaction.hide(fragments[i]);
                 }
             }
@@ -404,65 +439,12 @@ public class BaseActivity extends AppCompatActivity implements NetBroadcastRecei
         }
     }
 
-    /**
-     * 点击事件
-     *
-     * @param view 被点击的View
-     */
-    @OnClick({R.id.base_back, R.id.base_right_icon2, R.id.base_right_icon1, R.id.base_right_text})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            //返回键
-            case R.id.base_back:
-                if (isResetBack) {
-                    onClickBack.clickBack();
-                } else {
-                    finish();
-                }
-                break;
-
-            //右数第二个图片功能键
-            case R.id.base_right_icon2:
-                onClickRightIcon2.clickRightIcon2();
-                break;
-
-            //右数第一个图片功能键
-            case R.id.base_right_icon1:
-                onClickRightIcon1.clickRightIcon1();
-                break;
-
-            //右侧文本功能键
-            case R.id.base_right_text:
-                onClickRightText.clickRightText();
-                break;
-        }
-    }
-
-    /**
-     * 图片一点击回调接口
-     */
-    public interface OnClickRightIcon1CallBack {
-        void clickRightIcon1();
-    }
-
-    /**
-     * 图片二点击回调接口
-     */
-    public interface OnClickRightIcon2CallBack {
-        void clickRightIcon2();
-    }
-
-    /**
-     * 右侧文字点击回调接口
-     */
-    public interface OnClickRightTextCallBack {
-        void clickRightText();
-    }
-
-    /**
-     * 返回键点击回调接口
-     */
-    public interface OnClickBackCallBack {
-        void clickBack();
-    }
+//    private <T extends View> T findViewById(int viewId) {
+//        View view = mViews.get(viewId);
+//        if (view == null) {
+//            view = itemView.findViewById(viewId);
+//            mViews.put(viewId, view);
+//        }
+//        return (T) view;
+//    }
 }

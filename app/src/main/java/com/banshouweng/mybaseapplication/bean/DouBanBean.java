@@ -70,7 +70,7 @@ public class DouBanBean extends BaseBean {
         this.subjects = subjects;
     }
 
-    public static class SubjectsBean {
+    public class SubjectsBean {
         /**
          * rating : {"max":10,"average":9.6,"stars":"50","min":0}
          * genres : ["犯罪","剧情"]
@@ -195,7 +195,7 @@ public class DouBanBean extends BaseBean {
             this.directors = directors;
         }
 
-        public static class RatingBean {
+        public class RatingBean {
             /**
              * max : 10
              * average : 9.6
@@ -241,7 +241,7 @@ public class DouBanBean extends BaseBean {
             }
         }
 
-        public static class ImagesBean {
+        public class ImagesBean {
             /**
              * small : https://img3.doubanio.com/view/movie_poster_cover/ipst/public/p480747492.webp
              * large : https://img3.doubanio.com/view/movie_poster_cover/lpst/public/p480747492.webp
@@ -277,7 +277,7 @@ public class DouBanBean extends BaseBean {
             }
         }
 
-        public static class CastsBean {
+        public class CastsBean {
             /**
              * alt : https://movie.douban.com/celebrity/1054521/
              * avatars : {"small":"https://img3.doubanio.com/img/celebrity/small/17525.jpg","large":"https://img3.doubanio.com/img/celebrity/large/17525.jpg","medium":"https://img3.doubanio.com/img/celebrity/medium/17525.jpg"}
@@ -322,7 +322,7 @@ public class DouBanBean extends BaseBean {
                 this.id = id;
             }
 
-            public static class AvatarsBean {
+            public class AvatarsBean {
                 /**
                  * small : https://img3.doubanio.com/img/celebrity/small/17525.jpg
                  * large : https://img3.doubanio.com/img/celebrity/large/17525.jpg
@@ -359,7 +359,7 @@ public class DouBanBean extends BaseBean {
             }
         }
 
-        public static class DirectorsBean {
+        public class DirectorsBean {
             /**
              * alt : https://movie.douban.com/celebrity/1047973/
              * avatars : {"small":"https://img3.doubanio.com/img/celebrity/small/230.jpg","large":"https://img3.doubanio.com/img/celebrity/large/230.jpg","medium":"https://img3.doubanio.com/img/celebrity/medium/230.jpg"}
@@ -404,7 +404,7 @@ public class DouBanBean extends BaseBean {
                 this.id = id;
             }
 
-            public static class AvatarsBeanX {
+            public class AvatarsBeanX {
                 /**
                  * small : https://img3.doubanio.com/img/celebrity/small/230.jpg
                  * large : https://img3.doubanio.com/img/celebrity/large/230.jpg

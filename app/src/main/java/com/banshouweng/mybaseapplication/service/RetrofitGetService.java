@@ -4,7 +4,10 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
@@ -17,7 +20,7 @@ import retrofit2.http.QueryMap;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 
-public interface Movie2Service {
+public interface RetrofitGetService {
     @GET("{action}")
-    Observable<ResponseBody> getTopMovie(@Path("action") String action, @QueryMap Map<String, String> params);
+    Observable<ResponseBody> getResult(@Path("action") String action, @QueryMap Map<String, String> params);
 }

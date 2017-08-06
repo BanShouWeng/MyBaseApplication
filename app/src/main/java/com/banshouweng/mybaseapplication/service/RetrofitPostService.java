@@ -1,13 +1,13 @@
 package com.banshouweng.mybaseapplication.service;
 
+import java.util.Map;
+
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
+import retrofit2.http.Path;
 
 /**
  * 《一个Android工程的从零开始》
@@ -18,9 +18,9 @@ import retrofit2.http.Query;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 
-public interface IpService {
+public interface RetrofitPostService {
+
     @FormUrlEncoded
-    @POST("getIpInfo.php")
-//    1.4.通过@Field来指定key，后面跟上value
-    Observable<ResponseBody> postIP(@Field("ip") String ip);
+    @POST("{action}")
+    Observable<ResponseBody> postResult(@Path("action") String action, @FieldMap Map<String, String> params);
 }

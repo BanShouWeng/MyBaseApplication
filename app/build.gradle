@@ -11,13 +11,44 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("./bsw.jks")
+            storePassword "bswbsw"
+            keyAlias "wsbsw"
+            keyPassword "wsbswhhh"
+        }
+
+        release {
+            storeFile file("./bsw.jks")
+            storePassword "bswbsw"
+            keyAlias "wsbsw"
+            keyPassword "wsbswhhh"
+        }
+    }
+
     buildTypes {
         release {
+            debug {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                buildConfigField "String", "BASE_URL_NAME", "\"baseUrl地址\""
+                buildConfigField "int", "INT", "0"
+                buildConfigField "boolean", "BOOLEAN", "true"
+                signingConfig signingConfigs.debug
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL_NAME", "\"baseUrl地址\""
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
 }
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -41,4 +72,6 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     //GSON库
     compile 'com.google.code.gson:gson:2.8.1'
+    //recyclerview
+    compile 'com.android.support:recyclerview-v7:25.3.1'
 }
