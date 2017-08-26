@@ -38,7 +38,7 @@ public class LogUtil {
                 i(tag, printLog);
             }
         } else {
-            e(tag, logContent);
+            i(tag, logContent);
         }
     }
 

@@ -7,6 +7,7 @@ import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
@@ -22,5 +23,5 @@ import retrofit2.http.QueryMap;
 
 public interface RetrofitGetService {
     @GET("{action}")
-    Observable<ResponseBody> getResult(@Path("action") String action, @QueryMap Map<String, String> params);
+    Observable<ResponseBody> getResult(@Path("action") String action, @HeaderMap Map<String, String> headerParams, @QueryMap Map<String, String> params);
 }

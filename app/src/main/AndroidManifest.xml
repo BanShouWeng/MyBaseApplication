@@ -9,6 +9,11 @@
     <!--允许获取WIFI状态-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +30,7 @@
         </activity>
         <activity android:name=".base.BaseActivity" />
         <activity android:name=".base.BaseNetActivity" />
+        <activity android:name=".zxing.activity.CaptureActivity" />
         <activity android:name=".ui.activity.TestActivity"></activity>
 
         <receiver android:name=".event.NetBroadcastReceiver">
