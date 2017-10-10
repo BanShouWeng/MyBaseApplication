@@ -1,7 +1,6 @@
 package com.banshouweng.mybaseapplication.base;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 《一个Android工程的从零开始》

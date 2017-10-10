@@ -114,7 +114,7 @@ final class CameraConfigurationManager {
 		if (currentSetting != newSetting) {
 			SharedPreferences.Editor editor = prefs.edit();
 			editor.putBoolean(KEY_FRONT_LIGHT, newSetting);// PreferencesActivity.
-			editor.commit();
+			editor.apply();
 		}
 	}
 

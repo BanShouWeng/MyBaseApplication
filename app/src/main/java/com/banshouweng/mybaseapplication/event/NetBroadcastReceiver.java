@@ -26,10 +26,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             int mobileNetState = NetUtil.getNetWorkState(context);
             // 接口回调传过去状态的类型
-            try {
-                evevt.onNetChanged(mobileNetState);
-            } catch (Exception e) {
-            }
+            evevt.onNetChanged(mobileNetState);
         }
     }
 

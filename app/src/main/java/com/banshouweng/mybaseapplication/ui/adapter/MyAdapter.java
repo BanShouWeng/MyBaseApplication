@@ -3,14 +3,7 @@ package com.banshouweng.mybaseapplication.ui.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.banshouweng.mybaseapplication.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by dell on 2017/8/5.

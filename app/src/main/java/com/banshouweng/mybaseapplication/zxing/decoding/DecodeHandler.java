@@ -76,7 +76,9 @@ final class DecodeHandler extends Handler {
 		long start = System.currentTimeMillis();
 		Result rawResult = null;
 
-		/** 竖屏显示开始 **/
+		/**
+		 * 竖屏显示开始
+		 */
 		byte[] rotatedData = new byte[data.length];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++)

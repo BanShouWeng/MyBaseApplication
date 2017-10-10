@@ -9,25 +9,12 @@
 
     <include
         android:id="@+id/base_title_layout"
-        layout="@layout/title_layout"></include>
+        layout="@layout/title_layout" />
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/base_main_layout"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/base_main_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone"></LinearLayout>
-
-        <ScrollView
-            android:id="@+id/base_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"></ScrollView>
-    </FrameLayout>
+        android:orientation="vertical" />
 </LinearLayout>

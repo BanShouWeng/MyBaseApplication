@@ -1,7 +1,5 @@
 package com.banshouweng.mybaseapplication.zxing.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -16,12 +14,8 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseActivity;
@@ -35,7 +29,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Vector;
 
 ///**
@@ -63,8 +56,6 @@ public class CaptureActivity extends BaseActivity implements Callback {
     // private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate;
     CameraManager cameraManager;
-    private String fromWebView;
-
 
     /**
      * Called when the activity is first created.
@@ -74,18 +65,12 @@ public class CaptureActivity extends BaseActivity implements Callback {
         super.onCreate(savedInstanceState);
 
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setBaseContentView(R.layout.activity_capture);
         setTitle("扫一扫");
         surfaceView = (SurfaceView) findViewById(R.id.preview_view);
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            fromWebView = intent.getStringExtra("from");
-        }
 
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -135,6 +120,31 @@ public class CaptureActivity extends BaseActivity implements Callback {
     protected void onDestroy() {
         inactivityTimer.shutdown();
         super.onDestroy();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_capture;
+    }
+
+    @Override
+    protected void findViews() {
+
+    }
+
+    @Override
+    protected void formatViews() {
+
+    }
+
+    @Override
+    protected void formatData() {
+
+    }
+
+    @Override
+    protected void getBundle() {
+
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
@@ -195,7 +205,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     @NonNull
     private void handlerScanResult(Result rawResult) {
         String resultString = rawResult.getText();
-        LogUtil.info("toast", "resultString = " + resultString);
+        LogUtil.i("toast", "resultString = " + resultString);
         restartPreviewAfterDelay(0L);
     }
 

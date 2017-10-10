@@ -3,11 +3,9 @@ package com.banshouweng.mybaseapplication.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +13,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.event.NetBroadcastReceiver;
 import com.banshouweng.mybaseapplication.widget.CustomProgressDialog;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * 《一个Android工程的从零开始》
@@ -36,60 +28,27 @@ import butterknife.Unbinder;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEvevt {
+public abstract class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEvevt {
 
     /**
      * 网络状态监听接受者
      */
     public static NetBroadcastReceiver.NetEvevt evevt;
+
     /**
      * 用于传递的上下文信息
      */
     public Context context;
     public Activity activity;
     private ImageView baseBack;
-    private TextView baseTitle;
-    private ImageView baseRightIcon2;
-    private ImageView baseRightIcon1;
-    private TextView baseRightText;
-    private LinearLayout baseMainLayout;
     private RelativeLayout baseTitleLayout;
-
-    /**
-     * 是否重置返回按钮点击事件
-     */
-    private boolean isResetBack = false;
 
     /**
      * 加载提示框
      */
     private CustomProgressDialog customProgressDialog;
 
-    /**
-     * 点击回调方法
-     */
-    private OnClickRightIcon1CallBack onClickRightIcon1;
-    private OnClickRightIcon2CallBack onClickRightIcon2;
-    private OnClickRightTextCallBack onClickRightText;
-    private OnClickBackCallBack onClickBack;
-    private Unbinder unbinder;
     private View currentLayout;
-
-    public BaseFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment BaseFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BaseFragment newInstance() {
-        BaseFragment fragment = new BaseFragment();
-        return fragment;
-    }
 
     /**
      * 隐藏头布局
@@ -110,7 +69,6 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
                              Bundle savedInstanceState) {
         // Inflate the title_layout for this fragment
         currentLayout = inflater.inflate(R.layout.fragment_base, container, false);
-        unbinder = ButterKnife.bind(this, currentLayout);
         return currentLayout;
     }
 
@@ -119,20 +77,21 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
         super.onViewCreated(view, savedInstanceState);
         evevt = this;
         customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
-        initView();
+        initBaseView();
+        setBaseContentView(getLayoutId());
+        getBundle();
+        initBaseView();
+        findViews();
+        formatData();
+        formatViews();
     }
 
     /**
      * 控件初始化
      */
-    private void initView() {
-        baseBack = ButterKnife.findById(currentLayout, R.id.base_back);
-        baseRightIcon1 = ButterKnife.findById(currentLayout, R.id.base_right_icon1);
-        baseRightIcon2 = ButterKnife.findById(currentLayout, R.id.base_right_icon2);
-        baseTitle = ButterKnife.findById(currentLayout, R.id.base_title);
-        baseRightText = ButterKnife.findById(currentLayout, R.id.base_right_text);
-        baseTitleLayout = ButterKnife.findById(currentLayout, R.id.base_title_layout);
-        baseMainLayout = ButterKnife.findById(currentLayout, R.id.base_main_layout);
+    private void initBaseView() {
+        baseBack = getView(R.id.base_back);
+        baseTitleLayout = getView(R.id.base_title_layout);
     }
 
     @Override
@@ -155,56 +114,91 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
      * @param title 标题的文本
      */
     public void setTitle(String title) {
-        if (baseTitle == null) {
-            Log.e("error", "baseTitle == null");
-        } else {
-            baseTitle.setText(title);
-        }
-    }
-
-    public void setBaseBack(OnClickBackCallBack onClickBack) {
-        this.onClickBack = onClickBack;
-        isResetBack = true;
+        ((TextView) getView(R.id.base_title)).setText(title);
     }
 
     /**
-     * 设置右侧图片1（最右侧）
+     * 设置返回点击事件
      *
-     * @param resId             图片的资源id
-     * @param alertText         提示文本
-     * @param onClickRightIcon1 点击处理接口
+     * @param clickListener 点击事件监听者
      */
-    public void setBaseRightIcon1(int resId, String alertText, OnClickRightIcon1CallBack onClickRightIcon1) {
-        this.onClickRightIcon1 = onClickRightIcon1;
+    public void setBaseBack(View.OnClickListener clickListener) {
+        if (clickListener == null) {
+            baseBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.finish();
+                }
+            });
+        } else {
+            baseBack.setOnClickListener(clickListener);
+        }
+    }
+
+    /**
+     * 最右侧图片功能键设置方法
+     *
+     * @param resId         图片id
+     * @param alertText     语音辅助提示读取信息
+     * @param clickListener 点击事件
+     * @return 将当前ImageView返回方便进一步处理
+     */
+    public ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
+        ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon1.setContentDescription(alertText);
+        baseRightIcon1.setOnClickListener(clickListener);
+        return baseRightIcon1;
     }
 
     /**
-     * 设置右侧图片2（右数第二个图片）
+     * 右数第二个图片功能键设置方法
      *
-     * @param resId     图片的资源id
-     * @param alertText 提示文本
+     * @param resId         图片id
+     * @param alertText     语音辅助提示读取信息
+     * @param clickListener 点击事件
+     * @return 将当前ImageView返回方便进一步处理
      */
-    public void setBaseRightIcon2(int resId, String alertText, OnClickRightIcon2CallBack onClickRightIcon2) {
-        this.onClickRightIcon2 = onClickRightIcon2;
+    public ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
+        ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon2.setContentDescription(alertText);
+        baseRightIcon2.setOnClickListener(clickListener);
+        return baseRightIcon2;
     }
 
     /**
-     * 设置右侧文本信息
+     * 最右侧文本功能键设置方法
      *
-     * @param text 所需要设置的文本
+     * @param text          文本信息
+     * @param clickListener 点击事件
+     * @return 将当前TextView返回方便进一步处理
      */
-    public void setBaseRightText(String text, OnClickRightTextCallBack onClickRightText) {
-        this.onClickRightText = onClickRightText;
+    public TextView setBaseRightText(String text, View.OnClickListener clickListener) {
+        TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
+        baseRightText.setOnClickListener(clickListener);
+        return baseRightText;
+    }
+
+    /**
+     * 最右侧文本功能键设置方法
+     *
+     * @param textId        文本信息id
+     * @param clickListener 点击事件
+     * @return 将当前TextView返回方便进一步处理
+     */
+    public TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
+        TextView baseRightText = getView(R.id.base_right_text);
+        baseRightText.setText(textId);
+        baseRightText.setVisibility(View.VISIBLE);
+        baseRightText.setOnClickListener(clickListener);
+        return baseRightText;
     }
 
     /**
@@ -212,9 +206,8 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
      *
      * @param layoutId 布局id
      */
-    public void setBaseContentView(int layoutId) {
-        //当子布局高度值不足ScrollView时，用这个方法可以充满ScrollView，防止布局无法显示
-        LinearLayout layout = ButterKnife.findById(currentLayout, R.id.base_main_layout);
+    private void setBaseContentView(int layoutId) {
+        LinearLayout layout = getView(R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
         final View view = activity.getLayoutInflater().inflate(layoutId, null);
@@ -244,7 +237,7 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
      *
      * @param clz 所跳转的目的Activity类
      */
-    public void startActivity(Class<?> clz) {
+    public void jumpTo(Class<?> clz) {
         startActivity(new Intent(context, clz));
     }
 
@@ -254,7 +247,7 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
      * @param clz    所跳转的目的Activity类
      * @param bundle 跳转所携带的信息
      */
-    public void startActivity(Class<?> clz, Bundle bundle) {
+    public void jumpTo(Class<?> clz, Bundle bundle) {
         Intent intent = new Intent(context, clz);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
@@ -268,7 +261,7 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
      * @param clz         所跳转的Activity类
      * @param requestCode 请求码
      */
-    public void startActivityForResult(Class<?> clz, int requestCode) {
+    public void jumpTo(Class<?> clz, int requestCode) {
         startActivityForResult(new Intent(context, clz), requestCode);
     }
 
@@ -279,7 +272,7 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
      * @param bundle      跳转所携带的信息
      * @param requestCode 请求码
      */
-    public void startActivityForResult(Class<?> clz, int requestCode, Bundle bundle) {
+    public void jumpTo(Class<?> clz, int requestCode, Bundle bundle) {
         Intent intent = new Intent(context, clz);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
@@ -309,10 +302,6 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
     public void onDetach() {
         super.onDetach();
         evevt = null;
-        onClickRightIcon1 = null;
-        onClickRightIcon2 = null;
-        onClickRightText = null;
-        onClickBack = null;
     }
 
     @Override
@@ -320,44 +309,16 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     /**
-     * 点击事件
+     * 简化获取View
      *
-     * @param view 被点击的View
+     * @param viewId View的ID
+     * @param <T>    将View转化为对应泛型，简化强转的步骤
+     * @return ID对应的View
      */
-    @OnClick({R.id.base_back, R.id.base_right_icon2, R.id.base_right_icon1, R.id.base_right_text})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            //返回键
-            case R.id.base_back:
-                if (isResetBack) {
-                    onClickBack.clickBack();
-                } else {
-                    activity.finish();
-                }
-                break;
-
-            //右数第二个图片功能键
-            case R.id.base_right_icon2:
-                onClickRightIcon2.clickRightIcon2();
-                break;
-
-            //右数第一个图片功能键
-            case R.id.base_right_icon1:
-                onClickRightIcon1.clickRightIcon1();
-                break;
-
-            //右侧文本功能键
-            case R.id.base_right_text:
-                onClickRightText.clickRightText();
-                break;
-        }
+    @SuppressWarnings("unchecked")
+    public <T extends View> T getView(int viewId) {
+        return (T) currentLayout.findViewById(viewId);
     }
 
     /**
@@ -387,30 +348,29 @@ public class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEv
     }
 
     /**
-     * 图片一点击回调接口
+     * 获取布局ID
+     *
+     * @return 获取的布局ID
      */
-    public interface OnClickRightIcon1CallBack {
-        void clickRightIcon1();
-    }
+    protected abstract int getLayoutId();
 
     /**
-     * 图片二点击回调接口
+     * 获取所有View信息
      */
-    public interface OnClickRightIcon2CallBack {
-        void clickRightIcon2();
-    }
+    protected abstract void findViews();
 
     /**
-     * 右侧文字点击回调接口
+     * 初始化布局信息
      */
-    public interface OnClickRightTextCallBack {
-        void clickRightText();
-    }
+    protected abstract void formatViews();
 
     /**
-     * 返回键点击回调接口
+     * 初始化数据信息
      */
-    public interface OnClickBackCallBack {
-        void clickBack();
-    }
+    protected abstract void formatData();
+
+    /**
+     * 初始化Bundle
+     */
+    protected abstract void getBundle();
 }

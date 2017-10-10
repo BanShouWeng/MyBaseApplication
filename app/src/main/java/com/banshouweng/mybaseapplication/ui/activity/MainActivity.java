@@ -1,28 +1,19 @@
 package com.banshouweng.mybaseapplication.ui.activity;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
-import com.banshouweng.mybaseapplication.base.BaseNetActivity;
-import com.banshouweng.mybaseapplication.bean.PostStudentBean;
-import com.banshouweng.mybaseapplication.reciever.ResultCallBack;
+import com.banshouweng.mybaseapplication.base.BaseFragmentActivity;
 import com.banshouweng.mybaseapplication.ui.fragment.MineFragment;
-import com.banshouweng.mybaseapplication.utils.LogUtil;
-import com.banshouweng.mybaseapplication.zxing.activity.CaptureActivity;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 《一个Android工程的从零开始》
@@ -32,20 +23,15 @@ import butterknife.ButterKnife;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MainActivity extends BaseNetActivity {
+public class MainActivity extends BaseFragmentActivity {
 
-    @BindView(R.id.address_list)
-    RecyclerView addressList;
-    private MineFragment mineFragment;
+    private ListView addressList;
+    private TextView addressName;
+    private String[] a = {"张三", "李四", "王二", "麻子"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBaseContentView(R.layout.activity_main);
-
-        ButterKnife.bind(this);
-
-//        PostStudentBean studentBean = new PostStudentBean();
         List<BaseBean> beanList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             BaseBean baseBean = new BaseBean();
@@ -54,8 +40,7 @@ public class MainActivity extends BaseNetActivity {
             baseBean.setGrade("grade" + i);
             beanList.add(baseBean);
         }
-        Log.i("adada", new Gson().toJson(beanList).toString());
-//        studentBean.setBaseBeen(beanList);
+        Log.i("adada", new Gson().toJson(beanList));
 
         //设置title文本
         setTitle("MainActivity");
@@ -63,60 +48,65 @@ public class MainActivity extends BaseNetActivity {
         setBaseBack(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(CaptureActivity.class);
+                jumpTo(CropActivity.class);
             }
         });
-        mineFragment = new MineFragment();
         //设置功能键，以及点击方法回调监听
         setBaseRightIcon1(R.mipmap.more, "更多", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                get(null, BaseBean.class, false, new ResultCallBack() {
-                    @Override
-                    public void success(String action, BaseBean baseBean) {
-
-                    }
-
-                    @Override
-                    public void error(String action, Throwable e) {
-
-                    }
-                });
+                get("top250", BaseBean.class, false);
             }
         });
         setBaseRightIcon2(R.mipmap.add, "更多", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                post(null, BaseBean.class, false, new ResultCallBack() {
-                    @Override
-                    public void success(String action, BaseBean baseBean) {
-
-                    }
-
-                    @Override
-                    public void error(String action, Throwable e) {
-
-                    }
-                });
+                post("top250", BaseBean.class, false);
             }
         });
 
-        post("top250", BaseBean.class, false, new ResultCallBack() {
-            @Override
-            public void success(String action, BaseBean baseBean) {
 
-            }
-
-            @Override
-            public void error(String action, Throwable e) {
-
-            }
-        });
+        MineFragment mineFragment = MineFragment.getInstance();
+        replaceFragment(R.id.FrameLayout, mineFragment);
+//        post("top250", BaseBean.class, false);
     }
 
     @Override
     public void success(String action, BaseBean baseBean) {
-        super.success(action, baseBean);
+        String b = action;
+        String a = baseBean.getGrade();
+    }
+
+    @Override
+    public void error(String action, Throwable e) {
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void findViews() {
+//        addressList = getView(R.id.address_list);
+        addressName = getView(R.id.address_name);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void formatViews() {
+        addressName.setText("dawdadw");
+//        addressList.setAdapter(new ArrayAdapter(activity, android.R.layout.simple_list_item_1, a));
+    }
+
+    @Override
+    protected void formatData() {
+
+    }
+
+    @Override
+    protected void getBundle() {
 
     }
 }

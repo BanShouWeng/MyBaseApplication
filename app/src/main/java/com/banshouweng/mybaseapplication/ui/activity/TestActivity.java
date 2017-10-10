@@ -18,8 +18,32 @@ public class TestActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBaseContentView(R.layout.activity_test);
         setTitle("TestActivity");
         setBaseRightIcon1(R.mipmap.more, "more", null);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_test;
+    }
+
+    @Override
+    protected void findViews() {
+
+    }
+
+    @Override
+    protected void formatViews() {
+
+    }
+
+    @Override
+    protected void formatData() {
+
+    }
+
+    @Override
+    protected void getBundle() {
+
     }
 }
