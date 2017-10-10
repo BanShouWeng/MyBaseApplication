@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/title_height"
-    android:background="@color/colorPrimary">
+    android:background="@color/blue">
 
     <ImageView
         android:id="@+id/base_back"
@@ -21,6 +21,7 @@
         android:text="@string/title"
         android:textColor="@android:color/white"
         android:textSize="@dimen/size_20" />
+
 
     <ImageView
         android:id="@+id/base_right_icon2"
