@@ -1,8 +1,8 @@
 package com.banshouweng.mybaseapplication;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 
 /**
  * 《一个Android工程的从零开始》
@@ -13,34 +13,34 @@ import android.os.Environment;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public class App extends Application {
-    /**
-     * Application对象
-     */
     private static App app;
-    /**
-     * 全局SharedPreferences对象
-     */
-    private SharedPreferences sharedPreferences;
-    /**
-     * 外部存储地址
-     */
-    public String storageUrl;
-
-    public static App getInstance() {
-        return app;
-    }
+    private static SharedPreferences preferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
         app = this;
-        storageUrl = Environment.getExternalStorageDirectory().getPath();
     }
 
-    public SharedPreferences getSharedPreferencesInstance() {
-        if (sharedPreferences == null) {
-            sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
-        }
-        return sharedPreferences;
+    public static App getInstence() {
+        return app;
     }
+
+    public static SharedPreferences getPreferences() {
+        if (preferences == null) {
+            preferences = app.getSharedPreferences("SharedPreferences", MODE_PRIVATE);
+        }
+        SharedPreferences.Editor edit = preferences.edit();
+
+
+        edit.putString("putString", "string").apply();
+
+        edit.remove("putString").apply();
+
+        edit.clear().apply();
+
+        return preferences;
+
+    }
+
 }
