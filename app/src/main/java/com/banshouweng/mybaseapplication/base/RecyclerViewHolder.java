@@ -1,15 +1,11 @@
 package com.banshouweng.mybaseapplication.base;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckedTextView;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 /**
@@ -30,62 +26,43 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         mViews = new SparseArray<View>();
     }
 
-    private <T extends View> T findViewById(int viewId) {
+    @SuppressWarnings("unchecked")
+    public <T extends View> T getView(int viewId) {
         View view = mViews.get(viewId);
         if (view == null) {
             view = itemView.findViewById(viewId);
             mViews.put(viewId, view);
         }
-        return (T) view;
+        return (T)view;
     }
 
-    public View getView(int viewId) {
-        return findViewById(viewId);
-    }
-
-    public TextView getTextView(int viewId) {
-        return (TextView) getView(viewId);
-    }
-
-    public Button getButton(int viewId) {
-        return (Button) getView(viewId);
-    }
-
-    public ImageView getImageView(int viewId) {
-        return (ImageView) getView(viewId);
-    }
-
-    public ImageButton getImageButton(int viewId) {
-        return (ImageButton) getView(viewId);
-    }
-
-    public EditText getEditText(int viewId) {
-        return (EditText) getView(viewId);
-    }
-
-    public RadioButton getRadioButton(int viewId) {
-        return (RadioButton) getView(viewId);
-    }
-
-    public CheckedTextView getCheckedTextview(int viewId) {
-        return (CheckedTextView) getView(viewId);
+    public ImageView getImageView(int viewId){
+        return getView(viewId);
     }
 
     public RecyclerViewHolder setText(int viewId, String value) {
-        TextView view = findViewById(viewId);
+        TextView view = getView(viewId);
         view.setText(value);
         return this;
     }
 
+    public RecyclerViewHolder setImageRes(int viewId, int resId) {
+        ((ImageView) getView(viewId)).setImageResource(resId);
+        return this;
+    }
+
+    public RecyclerViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
+        ((ImageView) getView(viewId)).setImageBitmap(bitmap);
+        return this;
+    }
+
     public RecyclerViewHolder setBackground(int viewId, int resId) {
-        View view = findViewById(viewId);
-        view.setBackgroundResource(resId);
+        getView(viewId).setBackgroundResource(resId);
         return this;
     }
 
     public RecyclerViewHolder setClickListener(int viewId, View.OnClickListener listener) {
-        View view = findViewById(viewId);
-        view.setOnClickListener(listener);
+        getView(viewId).setOnClickListener(listener);
         return this;
     }
 }

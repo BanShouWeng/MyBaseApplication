@@ -20,5 +20,5 @@ import retrofit2.http.QueryMap;
 
 public interface RetrofitGetService {
     @GET("{action}")
-    Observable<ResponseBody> getResult(@Path("action") String action, @QueryMap Map<String, String> params);
+    Observable<ResponseBody> getResult(@Path("action") String action, @HeaderMap Map<String, String> headerParams, @QueryMap Map<String, String> params);
 }

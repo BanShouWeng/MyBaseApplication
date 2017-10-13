@@ -1,24 +1,24 @@
-package com.banshouweng.mybaseapplication.base;
+package com.banshouweng.mybaseapplication.base.fragment;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.event.NetBroadcastReceiver;
-import com.banshouweng.mybaseapplication.ui.activity.MainActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.banshouweng.mybaseapplication.widget.CustomProgressDialog;
 
 /**
  * 《一个Android工程的从零开始》
@@ -28,34 +28,56 @@ import java.util.List;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseActivity extends AppCompatActivity implements NetBroadcastReceiver.NetEvevt {
+public abstract class BaseFragment extends Fragment implements NetBroadcastReceiver.NetEvevt {
 
     /**
      * 网络状态监听接受者
      */
     public static NetBroadcastReceiver.NetEvevt evevt;
+
     /**
      * 用于传递的上下文信息
      */
     public Context context;
     public Activity activity;
-
     private ImageView baseBack;
+    private RelativeLayout baseTitleLayout;
 
     /**
-     * 当前打开Activity存储List
+     * 加载提示框
      */
-    private static List<Activity> activities = new ArrayList<>();
+    private CustomProgressDialog customProgressDialog;
+
+    private View currentLayout;
+
+    /**
+     * 隐藏头布局
+     */
+    public void hideTitle() {
+        baseTitleLayout.setVisibility(View.GONE);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
-        activities.add(this);
-        context = getApplicationContext();
-        activity = this;
-        evevt = this;
+        if (getArguments() != null) {
+        }
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the title_layout for this fragment
+        currentLayout = inflater.inflate(R.layout.fragment_base, container, false);
+        return currentLayout;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        evevt = this;
+        customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
+        initBaseView();
         setBaseContentView(getLayoutId());
         getBundle();
         initBaseView();
@@ -67,16 +89,16 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * 控件初始化
      */
-    public void initBaseView() {
-        baseBack = (ImageView) findViewById(R.id.base_back);
-        setBaseBack(null);
+    private void initBaseView() {
+        baseBack = getView(R.id.base_back);
+        baseTitleLayout = getView(R.id.base_title_layout);
     }
 
-    /**
-     * 隐藏头布局
-     */
-    public void hideTitle() {
-        getView(R.id.base_title_layout).setVisibility(View.GONE);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context.getApplicationContext();
+        activity = (Activity) context;
     }
 
     /**
@@ -105,7 +127,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
+                    activity.finish();
                 }
             });
         } else {
@@ -188,7 +210,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         LinearLayout layout = getView(R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
-        final View view = getLayoutInflater().inflate(layoutId, null);
+        final View view = activity.getLayoutInflater().inflate(layoutId, null);
         //关闭键盘
         hideKeyBoard();
         //给EditText的父控件设置焦点，防止键盘自动弹出
@@ -216,7 +238,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param clz 所跳转的目的Activity类
      */
     public void jumpTo(Class<?> clz) {
-        startActivity(new Intent(this, clz));
+        startActivity(new Intent(context, clz));
     }
 
     /**
@@ -226,7 +248,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param bundle 跳转所携带的信息
      */
     public void jumpTo(Class<?> clz, Bundle bundle) {
-        Intent intent = new Intent(this, clz);
+        Intent intent = new Intent(context, clz);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
@@ -240,7 +262,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param requestCode 请求码
      */
     public void jumpTo(Class<?> clz, int requestCode) {
-        startActivityForResult(new Intent(this, clz), requestCode);
+        startActivityForResult(new Intent(context, clz), requestCode);
     }
 
     /**
@@ -251,7 +273,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param requestCode 请求码
      */
     public void jumpTo(Class<?> clz, int requestCode, Bundle bundle) {
-        Intent intent = new Intent(this, clz);
+        Intent intent = new Intent(context, clz);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
@@ -276,46 +298,12 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * 关闭所有Activity（除MainActivity以外）
-     */
-    public void finishActivity() {
-        for (Activity activity : activities) {
-            activity.finish();
-        }
-    }
-
-    /**
-     * 跳转到指定的Activity
-     *
-     * @param clz 指定的Activity对应的class
-     */
-    public void backTo(Class<?> clz) {
-        if (clz.equals(MainActivity.class)) {
-            finishActivity();
-        } else {
-            for (int i = activities.size() - 1; i >= 0; i--) {
-                if (clz.equals(activities.get(i).getClass())) {
-                    break;
-                } else {
-                    activities.get(i).finish();
-                }
-            }
-        }
-    }
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        activities.remove(this);
+    public void onDetach() {
+        super.onDetach();
         evevt = null;
     }
 
-    /**
-     * 网络变化回调方法
-     *
-     * @param mobileNetState 当前的网络状态
-     */
     @Override
     public void onNetChanged(int mobileNetState) {
 
@@ -330,7 +318,33 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      */
     @SuppressWarnings("unchecked")
     public <T extends View> T getView(int viewId) {
-        return (T) findViewById(viewId);
+        return (T) currentLayout.findViewById(viewId);
+    }
+
+    /**
+     * 显示加载提示框
+     */
+    public void showLoadDialog() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                customProgressDialog.show();
+            }
+        });
+    }
+
+    /**
+     * 隐藏加载提示框
+     */
+    public void hideLoadDialog() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (customProgressDialog != null && customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+            }
+        });
     }
 
     /**
@@ -359,5 +373,4 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * 初始化Bundle
      */
     protected abstract void getBundle();
-
 }

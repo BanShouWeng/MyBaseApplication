@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
-import com.banshouweng.mybaseapplication.base.BaseActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
 import com.banshouweng.mybaseapplication.utils.NetUtil;
 
 /**

@@ -18,7 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.banshouweng.mybaseapplication.R;
-import com.banshouweng.mybaseapplication.base.BaseActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
 import com.banshouweng.mybaseapplication.utils.LogUtil;
 import com.banshouweng.mybaseapplication.zxing.MessageIDs;
 import com.banshouweng.mybaseapplication.zxing.camera.CameraManager;

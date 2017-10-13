@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
-import com.banshouweng.mybaseapplication.base.BaseNetFragment;
+import com.banshouweng.mybaseapplication.base.fragment.BaseNetFragment;
 import com.banshouweng.mybaseapplication.ui.activity.TestActivity;
 import com.banshouweng.mybaseapplication.utils.LogUtil;
 

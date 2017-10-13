@@ -3,8 +3,9 @@ package com.banshouweng.mybaseapplication.base;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+
+import com.banshouweng.mybaseapplication.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,96 +19,70 @@ import java.util.List;
  * 修订历史：
  * ================================================
  */
-public class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
+public abstract class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter {
+    protected final int VIEWTYPE_HEAD = 0;
+    protected final int VIEWTYPE_NORMAL = 1;
+
     protected List<T> mData = new ArrayList<>();
-    protected Context mContext;
-    protected int layoutId;
+    protected Context context;
     protected String status;
     protected LayoutInflater layoutInflater;
     protected boolean hasHead = false;
-    protected static final int VIEWTYPE_HEAD = 0;
-    protected static final int VIEWTYPE_NORMAL = 1;
-    public boolean isCanLoadMore = true;
+    protected OnItemClickListener<T> mOnItemClickListener;
 
-    public BaseRecyclerAdapter(List<T> mData, Context context) {
-        this.mData = mData;
-        this.mContext = context;
-        layoutInflater = LayoutInflater.from(mContext);
-    }
+    private int layoutId;
 
     public BaseRecyclerAdapter(List<T> mData, Context context, int layoutId) {
         this.mData = mData;
-        this.mContext = context;
+        this.context = context;
         this.layoutId = layoutId;
-        layoutInflater = LayoutInflater.from(mContext);
+        layoutInflater = LayoutInflater.from(this.context);
+    }
+
+    public BaseRecyclerAdapter(Context context, int layoutId) {
+        this(null, context, layoutId);
     }
 
     public void setData(List<T> mData) {
         this.mData = mData;
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //根据数据创建右边的操作view
-        RecyclerViewHolder holder;
-        holder = new RecyclerViewHolder(mContext, layoutInflater.inflate(layoutId, null));
-        setListener(parent, holder, viewType);
-        return holder;
+    public void addData(List<T> mData) {
+        this.mData.addAll(mData);
+        notifyDataSetChanged();
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-        // 因为底部布局要占一个位置，所以总数目要+1
-        return mData == null ? 0 : mData.size();
+    public void clearData(boolean isNotyfy) {
+        this.mData.clear();
+        if (isNotyfy) {
+            notifyDataSetChanged();
+        }
     }
 
     public void remove(int pos) {
         this.notifyItemRemoved(pos);
     }
 
-    protected void setListener(final ViewGroup parent, final RecyclerView.ViewHolder viewHolder, final int viewType) {
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnItemClickListener != null) {
-                    int position = viewHolder.getAdapterPosition();
-                    if (viewType == VIEWTYPE_HEAD && hasHead) {
-                        mOnItemClickListener.onItemClick(v, viewHolder, null, position);
-                    } else {
-                        mOnItemClickListener.onItemClick(v, viewHolder, mData.get(hasHead ? position - 1 : position), position);
-                    }
-
-                }
-            }
-        });
-
-        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mOnItemClickListener != null) {
-                    int position = viewHolder.getAdapterPosition();
-                    return mOnItemClickListener.onItemLongClick(v, viewHolder, mData.get(hasHead ? position - 1 : position), position);
-                }
-                return false;
-            }
-        });
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //根据数据创建右边的操作view
+        return new RecyclerViewHolder(context, layoutInflater.inflate(layoutId, null));
     }
 
-    public OnItemClickListener<T> mOnItemClickListener;
-
-    public interface OnItemClickListener<T> {
-        void onItemClick(View view, RecyclerView.ViewHolder holder, T o, int position);
-
-        boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, T o, int position);
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        convert((RecyclerViewHolder) holder, mData.get(position));
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    protected abstract void convert(RecyclerViewHolder holder, T t);
+
+    @Override
+    public int getItemCount() {
+        return Const.judgeListNull(mData);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
 }

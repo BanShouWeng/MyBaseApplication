@@ -1,8 +1,9 @@
-package com.banshouweng.mybaseapplication.base;
+package com.banshouweng.mybaseapplication.base.fragment;
 
 import android.os.Bundle;
 
 import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.utils.LogUtil;
 import com.banshouweng.mybaseapplication.utils.NetUtils;
 import com.banshouweng.mybaseapplication.widget.CustomProgressDialog;
@@ -19,20 +20,26 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 
-public abstract class BaseNetActivity<T extends BaseBean> extends BaseActivity {
+/**
+ * 《一个Android工程的从零开始》
+ *
+ * @author 半寿翁
+ * @博客：
+ * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
+ * @简书 http://www.jianshu.com/p/1410051701fe
+ */
+public abstract class BaseNetFragment<T extends BaseBean> extends BaseFragment {
 
     /**
      * 加载提示框
      */
     private CustomProgressDialog customProgressDialog;
-
     private NetUtils netUtils;
-
     public Map<String, String> params;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
         netUtils = new NetUtils();
@@ -97,37 +104,11 @@ public abstract class BaseNetActivity<T extends BaseBean> extends BaseActivity {
 
     public abstract void error(String action, Throwable e);
 
-    /**
-     * 显示加载提示框
-     */
-    private void showLoadDialog() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                customProgressDialog.show();
-            }
-        });
-    }
-
-    /**
-     * 隐藏加载提示框
-     */
-    private void hideLoadDialog() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (customProgressDialog != null && customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
-            }
-        });
-    }
-
-    private class MyObserver implements Observer<ResponseBody> {
+    class MyObserver implements Observer<ResponseBody> {
         private Class<T> clazz;
         private String action;
 
-        MyObserver(String action, Class<T> clazz) {
+        public MyObserver(String action, Class<T> clazz) {
             this.clazz = clazz;
             this.action = action;
         }
@@ -159,5 +140,31 @@ public abstract class BaseNetActivity<T extends BaseBean> extends BaseActivity {
         public void onComplete() {
             params = null;
         }
+    }
+
+    /**
+     * 显示加载提示框
+     */
+    public void showLoadDialog() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                customProgressDialog.show();
+            }
+        });
+    }
+
+    /**
+     * 隐藏加载提示框
+     */
+    public void hideLoadDialog() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (customProgressDialog != null && customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+            }
+        });
     }
 }

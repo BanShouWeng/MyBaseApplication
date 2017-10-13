@@ -13,31 +13,4 @@ import java.io.Serializable;
 
 public class BaseBean implements Serializable {
 
-    String name;
-    String myClass;
-    String grade;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getMyClass() {
-        return myClass;
-    }
-
-    public void setMyClass(String myClass) {
-        this.myClass = myClass;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
 }

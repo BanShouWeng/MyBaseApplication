@@ -3,7 +3,7 @@ package com.banshouweng.mybaseapplication.ui.activity;
 import android.os.Bundle;
 
 import com.banshouweng.mybaseapplication.R;
-import com.banshouweng.mybaseapplication.base.BaseActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
 
 /**
  * 《一个Android工程的从零开始》

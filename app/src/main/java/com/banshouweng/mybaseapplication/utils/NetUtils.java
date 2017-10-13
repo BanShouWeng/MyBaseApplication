@@ -83,7 +83,13 @@ public class NetUtils {
             params = new HashMap<>();
         }
 
-        getService.getResult(action.substring(action.lastIndexOf("/") + 1), params)
+        Map<String, String> headerParams = new HashMap<>();
+        headerParams.put("USER_TOKEN", "aaa");
+        headerParams.put("DEVICE_ID", "bbbbb");
+        headerParams.put("Content-Type", "application/json");
+        headerParams.put("SYSTEM_NAME", "smallPlace");
+
+        getService.getResult(action.substring(action.lastIndexOf("/") + 1), headerParams, params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);

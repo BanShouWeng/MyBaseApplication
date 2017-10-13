@@ -1,44 +1,34 @@
 package com.banshouweng.mybaseapplication.ui.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+
+import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.base.BaseRecyclerAdapter;
+import com.banshouweng.mybaseapplication.base.RecyclerViewHolder;
+import com.banshouweng.mybaseapplication.bean.SubjectsBean;
+import com.banshouweng.mybaseapplication.utils.GlideUtils;
+
+import java.util.List;
 
 /**
  * Created by dell on 2017/8/5.
  */
 
-public class MyAdapter<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter {
+public class MyAdapter extends BaseRecyclerAdapter<SubjectsBean> {
 
-    private Context context;
-    private int layoutId;
-
-    public MyAdapter(int layoutId, Context context) {
-        this.context = context;
-        this.layoutId = layoutId;
+    public MyAdapter(Context context, int layoutId) {
+        super(context, layoutId);
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder = new RecyclerView.ViewHolder(LayoutInflater.from(context
-        ).inflate(layoutId, parent,
-                false)) {
-            @Override
-            public String toString() {
-                return super.toString();
-            }
-        };
-        return viewHolder;
+    public void setData(List<SubjectsBean> mData) {
+        super.setData(mData);
+        notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
+    protected void convert(RecyclerViewHolder holder, SubjectsBean subjectsBean) {
+        holder.setText(R.id.doubantext, subjectsBean.getTitle());
+        GlideUtils.loadImageView(context, subjectsBean.getImages().getMedium(), holder.getImageView(R.id.doubanImg));
     }
 }
