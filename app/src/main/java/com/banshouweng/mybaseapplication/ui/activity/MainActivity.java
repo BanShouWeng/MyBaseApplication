@@ -1,7 +1,6 @@
 package com.banshouweng.mybaseapplication.ui.activity;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,9 +10,18 @@ import android.widget.TextView;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
+import com.banshouweng.mybaseapplication.base.RecyclerViewHolder;
 import com.banshouweng.mybaseapplication.base.activity.BaseFragmentActivity;
 import com.banshouweng.mybaseapplication.bean.DouBanBean;
-import com.banshouweng.mybaseapplication.ui.adapter.MyAdapter;
+import com.banshouweng.mybaseapplication.bean.SubjectsBean;
+import com.banshouweng.mybaseapplication.utils.Const;
+import com.banshouweng.mybaseapplication.utils.GlideUtils;
+import com.banshouweng.mybaseapplication.widget.MyRecyclerView.ConvertViewCallBack;
+import com.banshouweng.mybaseapplication.widget.MyRecyclerView.CustomRecyclerView;
+import com.banshouweng.mybaseapplication.widget.MyRecyclerView.OnLoadListener;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 《一个Android工程的从零开始》
@@ -23,14 +31,16 @@ import com.banshouweng.mybaseapplication.ui.adapter.MyAdapter;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MainActivity extends BaseFragmentActivity {
+public class MainActivity extends BaseFragmentActivity implements OnLoadListener {
 
     private ListView addressList;
     private TextView addressName;
-    private RecyclerView recyclerView;
+    private CustomRecyclerView<SubjectsBean> recyclerView;
     private ImageView icon;
     private String[] a = {"张三", "李四", "王二", "麻子"};
-    private MyAdapter adapter;
+    private int start = 0;
+    private int count = 10;
+//    private MyAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +74,9 @@ public class MainActivity extends BaseFragmentActivity {
         setBaseRightIcon1(R.mipmap.add, "更多", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                params = new HashMap<>();
+                params.put("start", start + "");
+                params.put("count", count + "");
                 post("top250", DouBanBean.class, false);
                 addressName.setText("加载了");
             }
@@ -80,7 +93,14 @@ public class MainActivity extends BaseFragmentActivity {
     public void success(String action, BaseBean baseBean) {
 //        icon.setImageBitmap(((BitmapBean) baseBean).getBitmap());
         addressName.setText("获取到数据了");
-        adapter.setData(((DouBanBean) baseBean).getSubjects());
+        List<SubjectsBean> data = ((DouBanBean) baseBean).getSubjects();
+        for (int i = 0; i < Const.judgeListNull(data); i++) {
+            if (i % 3 == 0) {
+                data.get(i).setBgChanged(true);
+            }
+        }
+        recyclerView.setData(data);
+//        adapter.setData(((DouBanBean) baseBean).getSubjects());
     }
 
     @Override
@@ -106,8 +126,23 @@ public class MainActivity extends BaseFragmentActivity {
     protected void formatViews() {
         addressName.setText("才开始");
 //        addressList.setAdapter(new ArrayAdapter(activity, android.R.layout.simple_list_item_1, a));
-        adapter = new MyAdapter(activity, R.layout.douban_layout);
-        recyclerView.setAdapter(adapter);
+
+//        adapter = new MyAdapter(activity, R.layout.douban_layout);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+//        recyclerView.setAdapter(adapter);
+        recyclerView.initAdapter(R.layout.douban_layout, new ConvertViewCallBack<SubjectsBean>() {
+            @Override
+            public void convert(RecyclerViewHolder holder, SubjectsBean subjectsBean, int position) {
+                holder.setText(R.id.doubantext, subjectsBean.getTitle());
+                GlideUtils.loadImageView(activity, subjectsBean.getImages().getMedium(), holder.getImageView(R.id.doubanImg));
+
+                if (position % 3 == 0) {
+                    holder.itemView.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+                } else {
+                    holder.itemView.setBackgroundColor(getResources().getColor(android.R.color.white));
+                }
+            }
+        }).setLayoutManager(CustomRecyclerView.VERTICAL).setLoadListener(this);
     }
 
     @Override
@@ -126,5 +161,20 @@ public class MainActivity extends BaseFragmentActivity {
             moveTaskToBack(false);
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void loadData() {
+        start += count;
+        params = new HashMap<>();
+        params.put("start", start + "");
+        params.put("count", count + "");
+        post("top250", DouBanBean.class, false);
+        addressName.setText("上拉加载中");
+    }
+
+    @Override
+    public boolean canLoadMore() {
+        return true;
     }
 }

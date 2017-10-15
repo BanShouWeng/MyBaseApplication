@@ -11,7 +11,7 @@ import android.util.Log;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 
-public class LogUtil {
+public class Logger {
     private static boolean debug = true;
     private static int showLength = 3999;
 

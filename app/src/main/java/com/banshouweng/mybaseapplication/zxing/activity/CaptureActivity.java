@@ -19,7 +19,7 @@ import android.view.WindowManager;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
-import com.banshouweng.mybaseapplication.utils.LogUtil;
+import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.zxing.MessageIDs;
 import com.banshouweng.mybaseapplication.zxing.camera.CameraManager;
 import com.banshouweng.mybaseapplication.zxing.decoding.CaptureActivityHandler;
@@ -205,7 +205,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     @NonNull
     private void handlerScanResult(Result rawResult) {
         String resultString = rawResult.getText();
-        LogUtil.i("toast", "resultString = " + resultString);
+        Logger.i("toast", "resultString = " + resultString);
         restartPreviewAfterDelay(0L);
     }
 

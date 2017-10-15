@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.bean.BitmapBean;
-import com.banshouweng.mybaseapplication.utils.LogUtil;
+import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.utils.NetUtils;
 import com.banshouweng.mybaseapplication.widget.CustomProgressDialog;
 import com.google.gson.Gson;
@@ -162,7 +162,7 @@ public abstract class BaseNetActivity extends BaseActivity {
             hideLoadDialog();
             try {
                 String responseString = responseBody.string();
-                LogUtil.i("responseString", action + "********** responseString get  " + responseString);
+                Logger.i("responseString", action + "********** responseString get  " + responseString);
                 success(action, (T)new Gson().fromJson(responseString, clazz));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -171,7 +171,7 @@ public abstract class BaseNetActivity extends BaseActivity {
 
         @Override
         public void onError(@NonNull Throwable e) {
-            LogUtil.i("responseString", "responseString get  " + e.toString());
+            Logger.i("responseString", "responseString get  " + e.toString());
             error(action, e);
         }
 
@@ -201,7 +201,7 @@ public abstract class BaseNetActivity extends BaseActivity {
 
         @Override
         public void onError(@NonNull Throwable e) {
-            LogUtil.i("responseString", "responseString get  " + e.toString());
+            Logger.i("responseString", "responseString get  " + e.toString());
             error(action, e);
         }
 

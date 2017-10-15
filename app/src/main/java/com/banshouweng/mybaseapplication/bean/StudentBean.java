@@ -1,10 +1,12 @@
 package com.banshouweng.mybaseapplication.bean;
 
+import com.banshouweng.mybaseapplication.base.BaseBean;
+
 /**
  * Created by leiming on 2017/10/10.
  */
 
-public class StudentBean {
+public class StudentBean extends BaseBean{
 
     private String name;
     private int age;

@@ -9,7 +9,7 @@ import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.base.fragment.BaseNetFragment;
 import com.banshouweng.mybaseapplication.ui.activity.TestActivity;
-import com.banshouweng.mybaseapplication.utils.LogUtil;
+import com.banshouweng.mybaseapplication.utils.Logger;
 
 /**
  * 《一个Android工程的从零开始》
@@ -92,7 +92,7 @@ public class MineFragment extends BaseNetFragment {
 
     @Override
     public void success(String action, BaseBean baseBean) {
-        LogUtil.e("dadadadad", action);
+        Logger.e("dadadadad", action);
     }
 
     @Override

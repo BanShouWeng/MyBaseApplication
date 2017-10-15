@@ -20,7 +20,7 @@
     <!--&lt;!&ndash;android:layout_height="0dip"&ndash;&gt;-->
     <!--&lt;!&ndash;android:layout_weight="1"/>&ndash;&gt;-->
 
-    <android.support.v7.widget.RecyclerView
+    <com.banshouweng.mybaseapplication.widget.MyRecyclerView.CustomRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

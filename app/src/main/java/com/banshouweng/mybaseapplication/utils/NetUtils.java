@@ -4,6 +4,8 @@ import com.banshouweng.mybaseapplication.BuildConfig;
 import com.banshouweng.mybaseapplication.service.RetrofitGetService;
 import com.banshouweng.mybaseapplication.service.RetrofitPostJsonService;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,31 +38,41 @@ public class NetUtils {
     private Retrofit retrofit;
     private Map<String, String> headerParams;
 
+    /**
+     * 初始化请求头，具体情况根据需求设置
+     */
     public void initHeader() {
         headerParams = new HashMap<>();
+        // 传参方式为json
         headerParams.put("Content-Type", "application/json");
     }
 
+    /**
+     * 初始化数据
+     *
+     * @param action 当前请求的尾址
+     */
     private void initBaseData(final String action) {
+        // 监听请求条件
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(5, TimeUnit.SECONDS);
         builder.addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request request = chain.request();
-                LogUtil.i("zzz", "request====" + action);
-                LogUtil.i("zzz", "request====" + request.headers().toString());
-                LogUtil.i("zzz", "request====" + request.toString());
+                Logger.i("zzz", "request====" + action);
+                Logger.i("zzz", "request====" + request.headers().toString());
+                Logger.i("zzz", "request====" + request.toString());
                 okhttp3.Response proceed = chain.proceed(request);
-                LogUtil.i("zzz", "proceed====" + proceed.headers().toString());
+                Logger.i("zzz", "proceed====" + proceed.headers().toString());
                 return proceed;
             }
         });
 
         Retrofit.Builder builder1 = new Retrofit.Builder()
-                .client(builder.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+                .client(builder.build())                                    // 配置监听请求
+                .addConverterFactory(GsonConverterFactory.create())         // 请求结果转换（当前为GSON）
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()); // 请求接受工具（当前为RxJava2）
         builder1.baseUrl(BuildConfig.BASE_URL + action.substring(0, action.lastIndexOf("/") + 1));
 
         retrofit = builder1.build();
@@ -89,6 +101,8 @@ public class NetUtils {
         headerParams.put("Content-Type", "application/json");
         headerParams.put("SYSTEM_NAME", "smallPlace");
 
+        Logger.i("zzz", "request====" + new JSONObject(params));
+
         getService.getResult(action.substring(action.lastIndexOf("/") + 1), headerParams, params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -109,6 +123,8 @@ public class NetUtils {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
                         json);
+
+        Logger.i("zzz", "request====" + json);
 
         jsonService.postResult(action.substring(action.lastIndexOf("/") + 1), requestBody)
                 .subscribeOn(Schedulers.io())

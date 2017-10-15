@@ -4,6 +4,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+/**
+ * 《一个Android工程的从零开始》
+ * 配置Fragment的Activity
+ *
+ * @author 半寿翁
+ * @博客：
+ * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
+ * @简书 http://www.jianshu.com/p/1410051701fe
+ */
 public abstract class BaseFragmentActivity extends BaseNetActivity {
 
     private FragmentTransaction transaction;

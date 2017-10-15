@@ -36,6 +36,15 @@ public class SubjectsBean extends BaseBean {
     private List<String> genres;
     private List<CastsBean> casts;
     private List<DirectorsBean> directors;
+    private boolean isBgChanged = false;
+
+    public boolean isBgChanged() {
+        return isBgChanged;
+    }
+
+    public void setBgChanged(boolean bgChanged) {
+        isBgChanged = bgChanged;
+    }
 
     public RatingBean getRating() {
         return rating;

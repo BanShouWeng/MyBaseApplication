@@ -3,64 +3,109 @@ package com.banshouweng.mybaseapplication.base;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.banshouweng.mybaseapplication.utils.Const;
+import com.banshouweng.mybaseapplication.widget.MyRecyclerView.ConvertViewCallBack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ================================================
- * 作    者：顾修忠-guxiuzhong@youku.com/gfj19900401@163.com
- * 版    本：
- * 创建日期：16/7/8-下午6:11
- * 描    述：
- * 修订历史：
- * ================================================
+ * @author 半寿翁
+ * @博客：
+ * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
+ * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter {
+public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter {
     protected final int VIEWTYPE_HEAD = 0;
     protected final int VIEWTYPE_NORMAL = 1;
 
-    protected List<T> mData = new ArrayList<>();
-    protected Context context;
-    protected String status;
-    protected LayoutInflater layoutInflater;
-    protected boolean hasHead = false;
-    protected OnItemClickListener<T> mOnItemClickListener;
-
+    /**
+     * 请求数据列表
+     */
+    private List<T> mData = new ArrayList<>();
+    /**
+     * 上下文
+     */
+    private Context context;
+    /**
+     * 布局解析
+     */
+    private LayoutInflater layoutInflater;
+    /**
+     * 布局ID
+     */
     private int layoutId;
+    private boolean hasHead = false;
 
-    public BaseRecyclerAdapter(List<T> mData, Context context, int layoutId) {
+    /**
+     * 布局设置回调接口
+     */
+    private ConvertViewCallBack<T> convertViewCallBack;
+
+    /**
+     * @param mData    所要展示的数据列表
+     * @param context  上下文
+     * @param layoutId 布局Id
+     * @param callBack 布局设置回调接口
+     */
+    public BaseRecyclerAdapter(List<T> mData, Context context, int layoutId, ConvertViewCallBack<T> callBack) {
         this.mData = mData;
         this.context = context;
         this.layoutId = layoutId;
+        convertViewCallBack = callBack;
         layoutInflater = LayoutInflater.from(this.context);
     }
 
-    public BaseRecyclerAdapter(Context context, int layoutId) {
-        this(null, context, layoutId);
+    /**
+     * @param context  上下文
+     * @param layoutId 布局Id
+     * @param callBack 布局设置回调接口
+     */
+    public BaseRecyclerAdapter(Context context, int layoutId, ConvertViewCallBack<T> callBack) {
+        this(null, context, layoutId, callBack);
     }
 
+    /**
+     * 设置数据
+     *
+     * @param mData 所要展示的数据列表
+     */
     public void setData(List<T> mData) {
         this.mData = mData;
         notifyDataSetChanged();
     }
 
+    /**
+     * 添加数据
+     *
+     * @param mData 所添加的数据列表
+     */
     public void addData(List<T> mData) {
         this.mData.addAll(mData);
         notifyDataSetChanged();
     }
 
-    public void clearData(boolean isNotyfy) {
+    /**
+     * 清除数据
+     *
+     * @param isNotify 是否刷新布局
+     */
+    public void clearData(boolean isNotify) {
         this.mData.clear();
-        if (isNotyfy) {
+        if (isNotify) {
             notifyDataSetChanged();
         }
     }
 
-    public void remove(int pos) {
+    /**
+     * 移除数据
+     *
+     * @param pos 被移除数据的位置
+     */
+    public void removeItem(int pos) {
         this.notifyItemRemoved(pos);
     }
 
@@ -71,18 +116,13 @@ public abstract class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        convert((RecyclerViewHolder) holder, mData.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        convertViewCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position);
     }
 
-    protected abstract void convert(RecyclerViewHolder holder, T t);
 
     @Override
     public int getItemCount() {
         return Const.judgeListNull(mData);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
     }
 }

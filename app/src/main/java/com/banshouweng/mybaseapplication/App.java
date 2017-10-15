@@ -3,6 +3,7 @@ package com.banshouweng.mybaseapplication;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 
 /**
  * 《一个Android工程的从零开始》
@@ -15,6 +16,7 @@ import android.content.SharedPreferences;
 public class App extends Application {
     private static App app;
     private static SharedPreferences preferences;
+    public static String storageUrl = Environment.getExternalStorageDirectory().getAbsolutePath();
 
     @Override
     public void onCreate() {
@@ -22,7 +24,7 @@ public class App extends Application {
         app = this;
     }
 
-    public static App getInstence() {
+    public static App getInstance() {
         return app;
     }
 
