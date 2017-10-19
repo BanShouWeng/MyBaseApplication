@@ -2,19 +2,13 @@ package com.banshouweng.mybaseapplication.base.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
 
@@ -26,23 +20,15 @@ import com.banshouweng.mybaseapplication.R;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseFragment extends Fragment{
-    /**
-     * 用于传递的上下文信息
-     */
-    protected Context context;
-    protected Activity activity;
+public abstract class BaseViewFragment extends BaseNetFragment {
+
     private ImageView baseBack;
     private RelativeLayout baseTitleLayout;
-
-    private View currentLayout;
-
-    protected boolean isNoTitle = true;
 
     /**
      * 隐藏头布局
      */
-    protected void hideTitle() {
+    public void hideTitle() {
         baseTitleLayout.setVisibility(View.GONE);
     }
 
@@ -54,33 +40,10 @@ public abstract class BaseFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the title_layout for this fragment
-        currentLayout = inflater.inflate(R.layout.fragment_base, container, false);
-        return currentLayout;
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        isNoTitle = false;
+        setBaseContentView(getLayoutId());
         super.onViewCreated(view, savedInstanceState);
-        initBaseView();
-        if (isNoTitle) {
-            setBaseContentView(getLayoutId());
-        }
-        getBundle();
-        initBaseView();
-        findViews();
-        formatData();
-        formatViews();
-    }
-
-    /**
-     * 控件初始化
-     */
-    protected void initBaseView() {
-        baseBack = getView(R.id.base_back);
-        baseTitleLayout = getView(R.id.base_title_layout);
     }
 
     @Override
@@ -93,7 +56,7 @@ public abstract class BaseFragment extends Fragment{
     /**
      * 隐藏返回键
      */
-    protected void hideBack() {
+    private void hideBack() {
         baseBack.setVisibility(View.GONE);
     }
 
@@ -102,7 +65,7 @@ public abstract class BaseFragment extends Fragment{
      *
      * @param title 标题的文本
      */
-    protected void setTitle(String title) {
+    public void setTitle(String title) {
         ((TextView) getView(R.id.base_title)).setText(title);
     }
 
@@ -111,7 +74,7 @@ public abstract class BaseFragment extends Fragment{
      *
      * @param clickListener 点击事件监听者
      */
-    protected void setBaseBack(View.OnClickListener clickListener) {
+    public void setBaseBack(View.OnClickListener clickListener) {
         if (clickListener == null) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -132,7 +95,7 @@ public abstract class BaseFragment extends Fragment{
      * @param clickListener 点击事件
      * @return 将当前ImageView返回方便进一步处理
      */
-    protected ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
+    public ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
         ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
@@ -150,7 +113,7 @@ public abstract class BaseFragment extends Fragment{
      * @param clickListener 点击事件
      * @return 将当前ImageView返回方便进一步处理
      */
-    protected ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
+    public ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
         ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
@@ -167,7 +130,7 @@ public abstract class BaseFragment extends Fragment{
      * @param clickListener 点击事件
      * @return 将当前TextView返回方便进一步处理
      */
-    protected TextView setBaseRightText(String text, View.OnClickListener clickListener) {
+    public TextView setBaseRightText(String text, View.OnClickListener clickListener) {
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
@@ -182,7 +145,7 @@ public abstract class BaseFragment extends Fragment{
      * @param clickListener 点击事件
      * @return 将当前TextView返回方便进一步处理
      */
-    protected TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
+    public TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(textId);
         baseRightText.setVisibility(View.VISIBLE);
@@ -209,120 +172,4 @@ public abstract class BaseFragment extends Fragment{
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         layout.addView(view, params);
     }
-
-    /**
-     * 隐藏键盘
-     */
-    protected void hideKeyBoard() {
-        View view = activity.getWindow().peekDecorView();
-        if (view != null) {
-            InputMethodManager inputmanger = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    /**
-     * 跳转页面
-     *
-     * @param clz 所跳转的目的Activity类
-     */
-    protected void jumpTo(Class<?> clz) {
-        startActivity(new Intent(context, clz));
-    }
-
-    /**
-     * 跳转页面
-     *
-     * @param clz    所跳转的目的Activity类
-     * @param bundle 跳转所携带的信息
-     */
-    protected void jumpTo(Class<?> clz, Bundle bundle) {
-        Intent intent = new Intent(context, clz);
-        if (bundle != null) {
-            intent.putExtra("bundle", bundle);
-        }
-        startActivity(intent);
-    }
-
-    /**
-     * 跳转页面
-     *
-     * @param clz         所跳转的Activity类
-     * @param requestCode 请求码
-     */
-    protected void jumpTo(Class<?> clz, int requestCode) {
-        startActivityForResult(new Intent(context, clz), requestCode);
-    }
-
-    /**
-     * 跳转页面
-     *
-     * @param clz         所跳转的Activity类
-     * @param bundle      跳转所携带的信息
-     * @param requestCode 请求码
-     */
-    protected void jumpTo(Class<?> clz, int requestCode, Bundle bundle) {
-        Intent intent = new Intent(context, clz);
-        if (bundle != null) {
-            intent.putExtra("bundle", bundle);
-        }
-        startActivityForResult(intent, requestCode);
-    }
-
-    /**
-     * 消息提示框
-     *
-     * @param message 提示消息文本
-     */
-    protected void showToast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * 消息提示框
-     *
-     * @param messageId 提示消息文本ID
-     */
-    protected void showToast(int messageId) {
-        Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * 简化获取View
-     *
-     * @param viewId View的ID
-     * @param <T>    将View转化为对应泛型，简化强转的步骤
-     * @return ID对应的View
-     */
-    @SuppressWarnings("unchecked")
-    protected <T extends View> T getView(int viewId) {
-        return (T) currentLayout.findViewById(viewId);
-    }
-
-    /**
-     * 获取布局ID
-     *
-     * @return 获取的布局ID
-     */
-    protected abstract int getLayoutId();
-
-    /**
-     * 获取所有View信息
-     */
-    protected abstract void findViews();
-
-    /**
-     * 初始化布局信息
-     */
-    protected abstract void formatViews();
-
-    /**
-     * 初始化数据信息
-     */
-    protected abstract void formatData();
-
-    /**
-     * 初始化Bundle
-     */
-    protected abstract void getBundle();
 }

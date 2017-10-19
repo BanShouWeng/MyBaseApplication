@@ -36,7 +36,8 @@ android {
             debug {
                 minifyEnabled false
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-                buildConfigField "String", "BASE_URL", "\"https://api.douban.com/v2/movie/\""
+                buildConfigField "String", "BASE_URL", "\"http://clips.vorwaerts-gmbh.de/\""
+//                buildConfigField "String", "BASE_URL", "\"https://api.douban.com/v2/movie/\""
                 buildConfigField "int", "INT", "0"
                 buildConfigField "boolean", "BOOLEAN", "true"
                 signingConfig signingConfigs.debug

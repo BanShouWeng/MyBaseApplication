@@ -17,7 +17,7 @@ import com.banshouweng.mybaseapplication.utils.NetUtil;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public class NetBroadcastReceiver extends BroadcastReceiver {
-    public NetEvevt evevt = BaseActivity.evevt;
+    public NetEvent event = BaseActivity.event;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -26,12 +26,12 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             int mobileNetState = NetUtil.getNetWorkState(context);
             // 接口回调传过去状态的类型
-            evevt.onNetChanged(mobileNetState);
+            event.onNetChanged(mobileNetState);
         }
     }
 
     // 自定义接口
-    public interface NetEvevt {
+    public interface NetEvent {
         void onNetChanged(int mobileNetState);
     }
 }

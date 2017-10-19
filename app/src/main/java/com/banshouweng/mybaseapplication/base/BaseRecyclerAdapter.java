@@ -3,11 +3,11 @@ package com.banshouweng.mybaseapplication.base;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.banshouweng.mybaseapplication.utils.Const;
 import com.banshouweng.mybaseapplication.widget.MyRecyclerView.ConvertViewCallBack;
+import com.banshouweng.mybaseapplication.widget.MyRecyclerView.MultiplexAdapterCallBack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,6 @@ import java.util.List;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter {
-    protected final int VIEWTYPE_HEAD = 0;
-    protected final int VIEWTYPE_NORMAL = 1;
 
     /**
      * 请求数据列表
@@ -38,6 +36,7 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
      * 布局ID
      */
     private int layoutId;
+    private int[] layoutIds;
     private boolean hasHead = false;
 
     /**
@@ -46,6 +45,13 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
     private ConvertViewCallBack<T> convertViewCallBack;
 
     /**
+     * 布局复用回调接口
+     */
+    private MultiplexAdapterCallBack<T> multiplexAdapterCallBack;
+
+    /**
+     * 显示单一布局的Adapter
+     *
      * @param mData    所要展示的数据列表
      * @param context  上下文
      * @param layoutId 布局Id
@@ -60,12 +66,48 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
     }
 
     /**
+     * 显示单一布局的Adapter
+     *
      * @param context  上下文
      * @param layoutId 布局Id
      * @param callBack 布局设置回调接口
      */
     public BaseRecyclerAdapter(Context context, int layoutId, ConvertViewCallBack<T> callBack) {
         this(null, context, layoutId, callBack);
+    }
+
+    /**
+     * 显示复用布局的Adapter
+     *
+     * @param context                  上下文
+     * @param multiplexAdapterCallBack 复用布局回调接口
+     */
+    public BaseRecyclerAdapter(Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
+        this(null, context, multiplexAdapterCallBack, layoutIds);
+    }
+
+    /**
+     * 显示复用布局的Adapter
+     *
+     * @param mData                    所要展示的数据列表
+     * @param context                  上下文
+     * @param multiplexAdapterCallBack 复用布局设置回调接口
+     */
+    public BaseRecyclerAdapter(List<T> mData, Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
+        this.mData = mData;
+        this.context = context;
+        this.layoutIds = layoutIds;
+        this.multiplexAdapterCallBack = multiplexAdapterCallBack;
+        layoutInflater = LayoutInflater.from(this.context);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (multiplexAdapterCallBack == null) {
+            return super.getItemViewType(position);
+        } else {
+            return multiplexAdapterCallBack.getItemViewType(position);
+        }
     }
 
     /**
@@ -112,12 +154,20 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //根据数据创建右边的操作view
-        return new RecyclerViewHolder(context, layoutInflater.inflate(layoutId, null));
+        if (multiplexAdapterCallBack == null) {
+            return new RecyclerViewHolder(context, layoutInflater.inflate(layoutId, null));
+        } else {
+            return new RecyclerViewHolder(context, layoutInflater.inflate(multiplexAdapterCallBack.onCreateHolder(viewType, layoutIds), null));
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        convertViewCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position);
+        if (multiplexAdapterCallBack == null) {
+            convertViewCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position);
+        } else {
+            multiplexAdapterCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position);
+        }
     }
 
 

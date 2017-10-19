@@ -33,9 +33,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public class NetUtils {
-    private RetrofitGetService getService;
-    private RetrofitPostJsonService jsonService;
-    private Retrofit retrofit;
     private Map<String, String> headerParams;
 
     /**
@@ -52,7 +49,7 @@ public class NetUtils {
      *
      * @param action 当前请求的尾址
      */
-    private void initBaseData(final String action) {
+    private Retrofit initBaseData(final String action) {
         // 监听请求条件
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(5, TimeUnit.SECONDS);
@@ -75,7 +72,7 @@ public class NetUtils {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()); // 请求接受工具（当前为RxJava2）
         builder1.baseUrl(BuildConfig.BASE_URL + action.substring(0, action.lastIndexOf("/") + 1));
 
-        retrofit = builder1.build();
+        return builder1.build();
     }
 
     /**
@@ -86,11 +83,7 @@ public class NetUtils {
      * @param observer 求情观察者
      */
     public void get(final String action, Map<String, String> params, Observer<ResponseBody> observer) {
-        initBaseData(action);
-
-        if (getService == null) {
-            getService = retrofit.create(RetrofitGetService.class);
-        }
+        RetrofitGetService getService = initBaseData(action).create(RetrofitGetService.class);
         if (params == null) {
             params = new HashMap<>();
         }
@@ -116,10 +109,7 @@ public class NetUtils {
      * @param observer 求情观察者
      */
     public void post(final String action, String json, Observer<ResponseBody> observer) {
-        initBaseData(action);
-        if (jsonService == null) {
-            jsonService = retrofit.create(RetrofitPostJsonService.class);
-        }
+        RetrofitPostJsonService jsonService = initBaseData(action).create(RetrofitPostJsonService.class);
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
                         json);

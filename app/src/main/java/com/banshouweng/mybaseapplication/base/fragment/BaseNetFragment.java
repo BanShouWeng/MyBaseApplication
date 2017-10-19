@@ -28,7 +28,7 @@ import okhttp3.ResponseBody;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseNetFragment<T extends BaseBean> extends BaseFragment {
+public abstract class BaseNetFragment extends BaseFragment {
 
     /**
      * 加载提示框
@@ -57,7 +57,7 @@ public abstract class BaseNetFragment<T extends BaseBean> extends BaseFragment {
      * @param clazz      要转换的Bean类型（需继承BaseBean）
      * @param showDialog 显示加载进度条
      */
-    public void get(final String action, Class<T> clazz, boolean showDialog) {
+    public<T extends BaseBean> void get(final String action, Class<T> clazz, boolean showDialog) {
         if (showDialog) {
             showLoadDialog();
         }
@@ -75,7 +75,7 @@ public abstract class BaseNetFragment<T extends BaseBean> extends BaseFragment {
      * @param clazz      要转换的Bean类型（需继承BaseBean）
      * @param showDialog 显示加载进度条
      */
-    public void post(final String action, Class<T> clazz, boolean showDialog) {
+    public<T extends BaseBean> void post(final String action, Class<T> clazz, boolean showDialog) {
         if (showDialog) {
             showLoadDialog();
         }
@@ -93,7 +93,7 @@ public abstract class BaseNetFragment<T extends BaseBean> extends BaseFragment {
      * @param clazz      要转换的Bean类型（需继承BaseBean）
      * @param showDialog 显示加载进度条
      */
-    public void post(final String action, String json, final Class<T> clazz, boolean showDialog) {
+    public<T extends BaseBean> void post(final String action, String json, final Class<T> clazz, boolean showDialog) {
         if (showDialog) {
             showLoadDialog();
         }
@@ -104,13 +104,24 @@ public abstract class BaseNetFragment<T extends BaseBean> extends BaseFragment {
 
     public abstract void error(String action, Throwable e);
 
-    class MyObserver implements Observer<ResponseBody> {
+    private class MyObserver<T extends BaseBean> implements Observer<ResponseBody> {
+
         private Class<T> clazz;
         private String action;
+        /**
+         * 返回结果状态：0、正常Bean；1、Bitmap；2、数据流
+         */
+        private int resultStatus = 0;
 
-        public MyObserver(String action, Class<T> clazz) {
+        MyObserver(String action, Class<T> clazz) {
             this.clazz = clazz;
             this.action = action;
+        }
+
+        MyObserver(String action, Class<T> clazz, int resultStatus) {
+            this.clazz = clazz;
+            this.action = action;
+            this.resultStatus = resultStatus;
         }
 
         @Override
@@ -122,9 +133,16 @@ public abstract class BaseNetFragment<T extends BaseBean> extends BaseFragment {
         public void onNext(@NonNull ResponseBody responseBody) {
             hideLoadDialog();
             try {
-                String responseString = responseBody.string();
-                Logger.i("responseString", action + "********** responseString get  " + responseString);
-                success(action, new Gson().fromJson(responseString, clazz));
+                switch (resultStatus) {
+                    case 0:
+                        String responseString = responseBody.string();
+                        Logger.i("responseString", action + "********** responseString get  " + responseString);
+                        success(action, (T) new Gson().fromJson(responseString, clazz));
+                        break;
+
+                    default:
+                        break;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

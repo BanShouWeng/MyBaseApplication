@@ -3,6 +3,8 @@ package com.banshouweng.mybaseapplication.base.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,12 +30,16 @@ import java.util.List;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseActivity extends AppCompatActivity implements NetBroadcastReceiver.NetEvevt {
+public abstract class BaseActivity extends AppCompatActivity implements NetBroadcastReceiver.NetEvent, View.OnClickListener {
+    public final int BACK_ID = R.id.base_back;
+    public final int RIGHT_TEXT_ID = R.id.base_right_text;
+    public final int RIGHT_ICON_ID = R.id.base_right_icon1;
+    public final int RIGHT_ICON_ID2 = R.id.base_right_icon2;
 
     /**
      * 网络状态监听接受者
      */
-    public static NetBroadcastReceiver.NetEvevt evevt;
+    public static NetBroadcastReceiver.NetEvent event;
     /**
      * 用于传递的上下文信息
      */
@@ -50,18 +56,18 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
         activities.add(this);
         context = getApplicationContext();
         activity = this;
-        evevt = this;
+        event = this;
 
+        setContentView(R.layout.activity_base);
         setBaseContentView(getLayoutId());
-        getBundle();
         initBaseView();
         findViews();
-        formatData();
+        getBundle(getIntent().getBundleExtra("bundle"));
         formatViews();
+        formatData();
     }
 
     /**
@@ -82,7 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * 隐藏返回键
      */
-    private void hideBack() {
+    public void hideBack() {
         baseBack.setVisibility(View.GONE);
     }
 
@@ -263,7 +269,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      *
      * @param message 提示消息文本
      */
-    public void showToast(String message) {
+    public void toast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -272,7 +278,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      *
      * @param messageId 提示消息文本ID
      */
-    public void showToast(int messageId) {
+    public void toast(int messageId) {
         Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
     }
 
@@ -308,7 +314,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     protected void onDestroy() {
         super.onDestroy();
         activities.remove(this);
-        evevt = null;
+        event = null;
     }
 
     /**
@@ -322,6 +328,26 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     }
 
     /**
+     * 检测当的网络（Wlan、3G/2G）状态
+     *
+     * @return true 表示网络可用
+     */
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected()) {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED) {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 简化获取View
      *
      * @param viewId View的ID
@@ -331,6 +357,12 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     @SuppressWarnings("unchecked")
     public <T extends View> T getView(int viewId) {
         return (T) findViewById(viewId);
+    }
+
+    protected void setOnClickListener(int... layouts) {
+        for (int layout : layouts) {
+            getView(layout).setOnClickListener(this);
+        }
     }
 
     /**
@@ -358,6 +390,5 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * 初始化Bundle
      */
-    protected abstract void getBundle();
-
+    protected abstract void getBundle(Bundle bundle);
 }

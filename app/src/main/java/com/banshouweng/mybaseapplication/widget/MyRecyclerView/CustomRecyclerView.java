@@ -75,7 +75,13 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @return 当前RecyclerView
      */
     public CustomRecyclerView initAdapter(int layoutId, ConvertViewCallBack<T> callBack) {
-        adapter = new BaseRecyclerAdapter(context, layoutId, callBack);
+        adapter = new BaseRecyclerAdapter<>(context, layoutId, callBack);
+        setAdapter(adapter);
+        return this;
+    }
+
+    public CustomRecyclerView initAdapter(MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layouts) {
+        adapter = new BaseRecyclerAdapter<>(context, multiplexAdapterCallBack, layouts);
         setAdapter(adapter);
         return this;
     }

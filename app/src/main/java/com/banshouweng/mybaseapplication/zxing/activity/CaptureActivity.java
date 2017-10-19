@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -143,7 +144,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     @Override
-    protected void getBundle() {
+    protected void getBundle(Bundle bundle) {
 
     }
 
@@ -296,4 +297,8 @@ public class CaptureActivity extends BaseActivity implements Callback {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }

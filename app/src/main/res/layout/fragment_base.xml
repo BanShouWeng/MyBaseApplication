@@ -1,18 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.banshouweng.mybaseapplication.base.fragment.BaseFragment">
-
-    <include
-        android:id="@+id/base_title_layout"
-        layout="@layout/title_layout" />
-
-    <LinearLayout
-        android:id="@+id/base_main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:orientation="vertical" />
-</LinearLayout>
+    tools:context="com.banshouweng.mybaseapplication.base.fragment.BaseFragment"/>
