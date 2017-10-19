@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,24 +27,22 @@ import com.banshouweng.mybaseapplication.R;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseFragment extends Fragment{
+public abstract class BaseFragment extends Fragment {
     /**
      * 用于传递的上下文信息
      */
     protected Context context;
     protected Activity activity;
     private ImageView baseBack;
-    private RelativeLayout baseTitleLayout;
 
     private View currentLayout;
-
-    protected boolean isNoTitle = true;
+    private ViewStub viewStub;
 
     /**
      * 隐藏头布局
      */
     protected void hideTitle() {
-        baseTitleLayout.setVisibility(View.GONE);
+        viewStub.setVisibility(View.GONE);
     }
 
     @Override
@@ -64,12 +63,8 @@ public abstract class BaseFragment extends Fragment{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initBaseView();
-        if (isNoTitle) {
-            setBaseContentView(getLayoutId());
-        }
+        setBaseContentView(getLayoutId());
         getBundle();
-        initBaseView();
         findViews();
         formatData();
         formatViews();
@@ -79,8 +74,11 @@ public abstract class BaseFragment extends Fragment{
      * 控件初始化
      */
     protected void initBaseView() {
-        baseBack = getView(R.id.base_back);
-        baseTitleLayout = getView(R.id.base_title_layout);
+        if (viewStub == null) {
+            viewStub = getView(R.id.base_title_layout);
+            viewStub.inflate();
+            baseBack = getView(R.id.base_back);
+        }
     }
 
     @Override
@@ -94,6 +92,7 @@ public abstract class BaseFragment extends Fragment{
      * 隐藏返回键
      */
     protected void hideBack() {
+        initBaseView();
         baseBack.setVisibility(View.GONE);
     }
 
@@ -103,6 +102,7 @@ public abstract class BaseFragment extends Fragment{
      * @param title 标题的文本
      */
     protected void setTitle(String title) {
+        initBaseView();
         ((TextView) getView(R.id.base_title)).setText(title);
     }
 
@@ -112,6 +112,7 @@ public abstract class BaseFragment extends Fragment{
      * @param clickListener 点击事件监听者
      */
     protected void setBaseBack(View.OnClickListener clickListener) {
+        initBaseView();
         if (clickListener == null) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -133,6 +134,7 @@ public abstract class BaseFragment extends Fragment{
      * @return 将当前ImageView返回方便进一步处理
      */
     protected ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
+        initBaseView();
         ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
@@ -151,6 +153,7 @@ public abstract class BaseFragment extends Fragment{
      * @return 将当前ImageView返回方便进一步处理
      */
     protected ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
+        initBaseView();
         ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
@@ -168,6 +171,7 @@ public abstract class BaseFragment extends Fragment{
      * @return 将当前TextView返回方便进一步处理
      */
     protected TextView setBaseRightText(String text, View.OnClickListener clickListener) {
+        initBaseView();
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
@@ -183,6 +187,7 @@ public abstract class BaseFragment extends Fragment{
      * @return 将当前TextView返回方便进一步处理
      */
     protected TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
+        initBaseView();
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(textId);
         baseRightText.setVisibility(View.VISIBLE);
@@ -296,6 +301,30 @@ public abstract class BaseFragment extends Fragment{
      */
     @SuppressWarnings("unchecked")
     protected <T extends View> T getView(int viewId) {
+        return (T) currentLayout.findViewById(viewId);
+    }
+
+    /**
+     * 简化获取View
+     *
+     * @param viewId View的ID
+     * @param <T>    将View转化为对应泛型，简化强转的步骤
+     * @return ID对应的View
+     */
+    @SuppressWarnings("unchecked")
+    protected <T extends View> T getTitleView(int viewId) {
+        return (T) viewStub.findViewById(viewId);
+    }
+
+    /**
+     * 简化获取View
+     *
+     * @param viewId View的ID
+     * @param <T>    将View转化为对应泛型，简化强转的步骤
+     * @return ID对应的View
+     */
+    @SuppressWarnings("unchecked")
+    protected <T extends View> T getStubView(int viewId) {
         return (T) currentLayout.findViewById(viewId);
     }
 

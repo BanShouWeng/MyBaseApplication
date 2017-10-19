@@ -30,28 +30,28 @@ public class MineFragment extends BaseNetFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //设置title文本
+//        //设置title文本
         setTitle("MineFragment");
-        //设置返回拦截
-        setBaseBack(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                jumpTo(TestActivity.class);
-            }
-        });
-        //设置功能键，以及点击方法回调监听
-        setBaseRightIcon1(R.mipmap.add, "更多", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                get("top250", BaseBean.class, false);
-            }
-        });
-        setBaseRightIcon2(R.mipmap.more, "更多", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                post("top250", BaseBean.class, false);
-            }
-        });
+//        //设置返回拦截
+//        setBaseBack(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                jumpTo(TestActivity.class);
+//            }
+//        });
+//        //设置功能键，以及点击方法回调监听
+//        setBaseRightIcon1(R.mipmap.add, "更多", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                get("top250", BaseBean.class, false);
+//            }
+//        });
+//        setBaseRightIcon2(R.mipmap.more, "更多", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                post("top250", BaseBean.class, false);
+//            }
+//        });
 //        hideTitle();
     }
 
