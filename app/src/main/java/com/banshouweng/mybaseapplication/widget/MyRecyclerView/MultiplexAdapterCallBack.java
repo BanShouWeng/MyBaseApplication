@@ -1,7 +1,5 @@
 package com.banshouweng.mybaseapplication.widget.MyRecyclerView;
 
-import com.banshouweng.mybaseapplication.base.RecyclerViewHolder;
-
 /**
  * 《一个Android工程的从零开始》
  * RecyclerView复用界面回调接口

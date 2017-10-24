@@ -33,7 +33,7 @@ import java.util.List;
 public abstract class BaseActivity extends AppCompatActivity implements NetBroadcastReceiver.NetEvent, View.OnClickListener {
     public final int BACK_ID = R.id.base_back;
     public final int RIGHT_TEXT_ID = R.id.base_right_text;
-    public final int RIGHT_ICON_ID = R.id.base_right_icon1;
+    public final int RIGHT_ICON_ID1 = R.id.base_right_icon1;
     public final int RIGHT_ICON_ID2 = R.id.base_right_icon2;
 
     /**
@@ -62,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         event = this;
 
         setContentView(R.layout.activity_base);
+        initSDK();
         setBaseContentView(getLayoutId());
         initBaseView();
         findViews();
@@ -348,6 +349,11 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     }
 
     /**
+     * SDK初始化
+     */
+    protected void initSDK(){};
+
+    /**
      * 简化获取View
      *
      * @param viewId View的ID
@@ -359,6 +365,23 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         return (T) findViewById(viewId);
     }
 
+    /**
+     * 简化获取View
+     *
+     * @param view 父view
+     * @param viewId View的ID
+     * @param <T>    将View转化为对应泛型，简化强转的步骤
+     * @return ID对应的View
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends View> T getView(View view,int viewId) {
+        return (T) view.findViewById(viewId);
+    }
+
+    /**
+     * 设置点击事件
+     * @param layouts 点击控件Id
+     */
     protected void setOnClickListener(int... layouts) {
         for (int layout : layouts) {
             getView(layout).setOnClickListener(this);

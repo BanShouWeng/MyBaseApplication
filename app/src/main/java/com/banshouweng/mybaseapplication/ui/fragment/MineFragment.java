@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.base.fragment.BaseNetFragment;
-import com.banshouweng.mybaseapplication.ui.activity.TestActivity;
 import com.banshouweng.mybaseapplication.utils.Logger;
 
 /**
@@ -59,9 +58,9 @@ public class MineFragment extends BaseNetFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (hidden) {
-            showToast("隐藏了");
+            toast("隐藏了");
         } else {
-            showToast("显示了");
+            toast("显示了");
         }
     }
 
@@ -97,6 +96,11 @@ public class MineFragment extends BaseNetFragment {
 
     @Override
     public void error(String action, Throwable e) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
 
     }
 }

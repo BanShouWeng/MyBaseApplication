@@ -13,7 +13,6 @@ import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +26,12 @@ import com.banshouweng.mybaseapplication.R;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements View.OnClickListener {
+    public final int BACK_ID = R.id.base_back;
+    public final int RIGHT_TEXT_ID = R.id.base_right_text;
+    public final int RIGHT_ICON_ID1 = R.id.base_right_icon1;
+    public final int RIGHT_ICON_ID2 = R.id.base_right_icon2;
+
     /**
      * 用于传递的上下文信息
      */
@@ -37,6 +41,7 @@ public abstract class BaseFragment extends Fragment {
 
     private View currentLayout;
     private ViewStub viewStub;
+    private boolean isUseBase = false;
 
     /**
      * 隐藏头布局
@@ -57,13 +62,16 @@ public abstract class BaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the title_layout for this fragment
         currentLayout = inflater.inflate(R.layout.fragment_base, container, false);
+        isUseBase = true;
         return currentLayout;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setBaseContentView(getLayoutId());
+        if (isUseBase) {
+            setBaseContentView(getLayoutId());
+        }
         getBundle();
         findViews();
         formatData();
@@ -104,6 +112,16 @@ public abstract class BaseFragment extends Fragment {
     protected void setTitle(String title) {
         initBaseView();
         ((TextView) getView(R.id.base_title)).setText(title);
+    }
+
+    /**
+     * 设置标题
+     *
+     * @param titleId 标题的文本
+     */
+    protected void setTitle(int titleId) {
+        initBaseView();
+        ((TextView) getView(R.id.base_title)).setText(titleId);
     }
 
     /**
@@ -279,7 +297,7 @@ public abstract class BaseFragment extends Fragment {
      *
      * @param message 提示消息文本
      */
-    protected void showToast(String message) {
+    protected void toast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -288,7 +306,7 @@ public abstract class BaseFragment extends Fragment {
      *
      * @param messageId 提示消息文本ID
      */
-    protected void showToast(int messageId) {
+    protected void toast(int messageId) {
         Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
     }
 
@@ -307,25 +325,25 @@ public abstract class BaseFragment extends Fragment {
     /**
      * 简化获取View
      *
+     * @param view 父view
      * @param viewId View的ID
      * @param <T>    将View转化为对应泛型，简化强转的步骤
      * @return ID对应的View
      */
     @SuppressWarnings("unchecked")
-    protected <T extends View> T getTitleView(int viewId) {
-        return (T) viewStub.findViewById(viewId);
+    public <T extends View> T getView(View view,int viewId) {
+        return (T) view.findViewById(viewId);
     }
 
     /**
-     * 简化获取View
+     * 设置点击事件
      *
-     * @param viewId View的ID
-     * @param <T>    将View转化为对应泛型，简化强转的步骤
-     * @return ID对应的View
+     * @param layouts 点击控件Id
      */
-    @SuppressWarnings("unchecked")
-    protected <T extends View> T getStubView(int viewId) {
-        return (T) currentLayout.findViewById(viewId);
+    protected void setOnClickListener(int... layouts) {
+        for (int layout : layouts) {
+            getView(layout).setOnClickListener(this);
+        }
     }
 
     /**

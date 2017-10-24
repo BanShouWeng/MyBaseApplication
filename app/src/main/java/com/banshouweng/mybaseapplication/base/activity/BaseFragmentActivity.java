@@ -1,5 +1,6 @@
 package com.banshouweng.mybaseapplication.base.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,12 +16,10 @@ import android.support.v4.app.FragmentTransaction;
  */
 public abstract class BaseFragmentActivity extends BaseNetActivity {
 
-    private FragmentTransaction transaction;
-
+    @SuppressLint("CommitTransaction")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        transaction = getSupportFragmentManager().beginTransaction();
     }
 
     /**
@@ -30,6 +29,7 @@ public abstract class BaseFragmentActivity extends BaseNetActivity {
      * @param fragments       所要添加的Fragment，可以添加多个
      */
     public void addFragment(int containerViewId, Fragment... fragments) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (fragments != null) {
             for (int i = 0; i < fragments.length; i++) {
                 transaction.add(containerViewId, fragments[i]);
@@ -47,6 +47,7 @@ public abstract class BaseFragmentActivity extends BaseNetActivity {
      * @param fragment 所要显示的Fragment
      */
     public void showFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (fragment != null) {
             transaction.show(fragment).commitAllowingStateLoss();
         }
@@ -55,11 +56,15 @@ public abstract class BaseFragmentActivity extends BaseNetActivity {
     /**
      * 隐藏Fragment
      *
-     * @param fragment 所要隐藏的Fragment，可以添加多个
+     * @param fragments 所要隐藏的Fragment，可以添加多个
      */
-    public void hideFragment(Fragment fragment) {
-        if (fragment != null) {
-            transaction.hide(fragment).commitAllowingStateLoss();
+    public void hideFragment(Fragment... fragments) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                transaction.hide(fragment);
+            }
+            transaction.commitAllowingStateLoss();
         }
     }
 
@@ -70,9 +75,23 @@ public abstract class BaseFragmentActivity extends BaseNetActivity {
      * @param fragment        用于替代原有Fragment的心Fragment
      */
     public void replaceFragment(int containerViewId, Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (fragment != null) {
             transaction.replace(containerViewId, fragment).commitAllowingStateLoss();
         }
     }
 
+    /**
+     * 移除Fragment
+     * @param fragments 所要移除的Fragment，可以添加多个
+     */
+    public void removeFragment(Fragment... fragments){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                transaction.hide(fragment);
+            }
+            transaction.commitAllowingStateLoss();
+        }
+    }
 }
