@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     public Activity activity;
 
     private ImageView baseBack;
+    private ViewStub titleStub;
 
     /**
      * 当前打开Activity存储List
@@ -64,19 +66,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         setContentView(R.layout.activity_base);
         initSDK();
         setBaseContentView(getLayoutId());
-        initBaseView();
         findViews();
         getBundle(getIntent().getBundleExtra("bundle"));
         formatViews();
         formatData();
-    }
-
-    /**
-     * 控件初始化
-     */
-    public void initBaseView() {
-        baseBack = (ImageView) findViewById(R.id.base_back);
-        setBaseBack(null);
     }
 
     /**
@@ -94,12 +87,58 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     }
 
     /**
+     * 显示返回键
+     */
+    public void showBack() {
+        baseBack.setVisibility(View.VISIBLE);
+    }
+
+    /**
      * 设置标题
      *
      * @param title 标题的文本
      */
     public void setTitle(String title) {
+        setTitle(title, true);
+    }
+
+    /**
+     * 设置标题
+     *
+     * @param titleId 标题的文本
+     */
+    public void setTitle(int titleId) {
+        setTitle(titleId, true);
+    }
+
+    /**
+     * 设置标题
+     *
+     * @param title    标题的文本
+     * @param showBack 是否显示返回键
+     */
+    public void setTitle(String title, boolean showBack) {
+        titleStub = getView(R.id.base_title_layout);
+        titleStub.inflate();
         ((TextView) getView(R.id.base_title)).setText(title);
+        baseBack = getView(R.id.base_back);
+        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
+        setBaseBack(null);
+    }
+
+    /**
+     * 设置标题
+     *
+     * @param titleId  标题的文本
+     * @param showBack 是否显示返回键
+     */
+    public void setTitle(int titleId, boolean showBack) {
+        titleStub = getView(R.id.base_title_layout);
+        titleStub.inflate();
+        ((TextView) getView(R.id.base_title)).setText(titleId);
+        baseBack = getView(R.id.base_back);
+        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
+        setBaseBack(null);
     }
 
     /**
@@ -129,6 +168,9 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前ImageView返回方便进一步处理
      */
     public ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
+        titleStub = getView(R.id.base_title_layout);
+        titleStub.inflate();
+
         ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
@@ -147,6 +189,9 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前ImageView返回方便进一步处理
      */
     public ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
+        titleStub = getView(R.id.base_title_layout);
+        titleStub.inflate();
+
         ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
@@ -164,6 +209,9 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前TextView返回方便进一步处理
      */
     public TextView setBaseRightText(String text, View.OnClickListener clickListener) {
+        titleStub = getView(R.id.base_title_layout);
+        titleStub.inflate();
+
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
@@ -179,6 +227,9 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前TextView返回方便进一步处理
      */
     public TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
+        titleStub = getView(R.id.base_title_layout);
+        titleStub.inflate();
+
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(textId);
         baseRightText.setVisibility(View.VISIBLE);
@@ -351,7 +402,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * SDK初始化
      */
-    protected void initSDK(){};
+    protected void initSDK() {
+    }
+
+    ;
 
     /**
      * 简化获取View
@@ -368,18 +422,19 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * 简化获取View
      *
-     * @param view 父view
+     * @param view   父view
      * @param viewId View的ID
      * @param <T>    将View转化为对应泛型，简化强转的步骤
      * @return ID对应的View
      */
     @SuppressWarnings("unchecked")
-    public <T extends View> T getView(View view,int viewId) {
+    public <T extends View> T getView(View view, int viewId) {
         return (T) view.findViewById(viewId);
     }
 
     /**
      * 设置点击事件
+     *
      * @param layouts 点击控件Id
      */
     protected void setOnClickListener(int... layouts) {
