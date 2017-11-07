@@ -7,9 +7,11 @@
     android:orientation="vertical"
     tools:context="com.banshouweng.mybaseapplication.base.activity.BaseActivity">
 
-    <include
+    <ViewStub
         android:id="@+id/base_title_layout"
-        layout="@layout/title_layout" />
+        android:layout="@layout/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/base_main_layout"
