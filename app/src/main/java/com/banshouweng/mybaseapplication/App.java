@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 
+import com.banshouweng.mybaseapplication.crash.CrashHandler;
+
 /**
  * 《一个Android工程的从零开始》
  *
@@ -22,6 +24,10 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         app = this;
+
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        // 注册crashHandler
+        crashHandler.init(getApplicationContext());
     }
 
     public static App getInstance() {

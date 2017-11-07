@@ -20,4 +20,6 @@ public class Const {
             return list.size();
         }
     }
+
+    protected String a = "a";
 }

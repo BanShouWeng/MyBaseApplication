@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.banshouweng.mybaseapplication.App;
 import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.utils.Const;
 
 import java.io.File;
 
@@ -26,7 +27,7 @@ public class CropActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView image;
     private EditText editText;
 
-    private Uri mImageUri = Uri.fromFile(new File(App.getInstance().storageUrl + "fuck.jpg"));
+    private Uri mImageUri = Uri.fromFile(new File(App.getInstance().storageUrl + "temp.jpg"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +47,11 @@ public class CropActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button1:
                 startActionPick();
                 break;
+
             case R.id.button2:
                 startActionGetContent();
                 break;
+             v
             case R.id.button3:
                 takePicture();
                 break;
