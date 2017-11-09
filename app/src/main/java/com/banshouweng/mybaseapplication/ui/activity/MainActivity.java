@@ -69,7 +69,7 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
         setBaseRightIcon1(R.mipmap.add, "更多", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                params = new HashMap<>();
+//                params = new HashMap<>();
                 params.put("start", start + "");
                 params.put("count", count + "");
                 post("top250", DouBanBean.class, false);

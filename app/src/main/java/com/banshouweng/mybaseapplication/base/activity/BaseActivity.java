@@ -118,8 +118,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param showBack 是否显示返回键
      */
     public void setTitle(String title, boolean showBack) {
-        titleStub = getView(R.id.base_title_layout);
-        titleStub.inflate();
+        if (titleStub == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+        }
         ((TextView) getView(R.id.base_title)).setText(title);
         baseBack = getView(R.id.base_back);
         baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
@@ -133,8 +135,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param showBack 是否显示返回键
      */
     public void setTitle(int titleId, boolean showBack) {
-        titleStub = getView(R.id.base_title_layout);
-        titleStub.inflate();
+        if (titleStub == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+        }
         ((TextView) getView(R.id.base_title)).setText(titleId);
         baseBack = getView(R.id.base_back);
         baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
@@ -147,6 +151,11 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param clickListener 点击事件监听者
      */
     public void setBaseBack(View.OnClickListener clickListener) {
+        if (baseBack == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+            baseBack = getView(R.id.base_back);
+        }
         if (clickListener == null) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -168,8 +177,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前ImageView返回方便进一步处理
      */
     public ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
-        titleStub = getView(R.id.base_title_layout);
-        titleStub.inflate();
+        if (titleStub == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+        }
 
         ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
@@ -189,8 +200,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前ImageView返回方便进一步处理
      */
     public ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
-        titleStub = getView(R.id.base_title_layout);
-        titleStub.inflate();
+        if (titleStub == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+        }
 
         ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
@@ -209,8 +222,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前TextView返回方便进一步处理
      */
     public TextView setBaseRightText(String text, View.OnClickListener clickListener) {
-        titleStub = getView(R.id.base_title_layout);
-        titleStub.inflate();
+        if (titleStub == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+        }
 
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(text);
@@ -227,8 +242,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前TextView返回方便进一步处理
      */
     public TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
-        titleStub = getView(R.id.base_title_layout);
-        titleStub.inflate();
+        if (titleStub == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+        }
 
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(textId);

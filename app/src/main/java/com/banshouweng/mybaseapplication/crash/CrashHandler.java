@@ -1,12 +1,10 @@
 package com.banshouweng.mybaseapplication.crash;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Looper;
 import android.util.Log;
 
-import com.banshouweng.mybaseapplication.App;
 import com.banshouweng.mybaseapplication.R;
-import com.banshouweng.mybaseapplication.utils.Const;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -37,25 +35,32 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
-        if (!handleException(throwable) && mDefaultHandler != null) {
-
-            // 如果用户没有处理则让系统默认的异常处理器来处理    
-            mDefaultHandler.uncaughtException(thread, throwable);
-        } else {
-            // Sleep一会后结束程序    
-            // 来让线程停止一会是为了显示Toast信息给用户，然后Kill程序    
-            try {
-                Thread.sleep(3000);
-            } catch (Exception e) {
-                Log.e(TAG, "Error : ", e);
-            }
-            try {
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(10);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        handleException(throwable);
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            Log.e(TAG, "Error : ", e);
         }
+        mDefaultHandler.uncaughtException(thread, throwable);
+//        if (!handleException(throwable) && mDefaultHandler != null) {
+//
+//            // 如果用户没有处理则让系统默认的异常处理器来处理
+//            mDefaultHandler.uncaughtException(thread, throwable);
+//        } else {
+//            // Sleep一会后结束程序
+//            // 来让线程停止一会是为了显示Toast信息给用户，然后Kill程序
+//            try {
+//                Thread.sleep(3000);
+//            } catch (Exception e) {
+//                Log.e(TAG, "Error : ", e);
+//            }
+//            try {
+//                android.os.Process.killProcess(android.os.Process.myPid());
+//                System.exit(10);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private boolean handleException(Throwable ex) {
@@ -73,16 +78,16 @@ public class CrashHandler implements UncaughtExceptionHandler {
             @Override
             public void run() {
                 // Toast 显示需要出现在一个线程的消息队列中    
-                Looper.prepare();
+//                Looper.prepare();
                 try {
                     Log.e("crash", msg);
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
                     MailSenderInfo mailInfo = new MailSenderInfo();
-                    mailInfo.setMailServerHost("com.banshouweng.mybaseapplication");
+                    mailInfo.setMailServerHost("smtp.163.com");
                     mailInfo.setMailServerPort("25");
                     mailInfo.setValidate(true);
                     mailInfo.setUserName("");               //你的邮箱地址
-                    mailInfo.setPassword("");               //您的邮箱密码
+                    mailInfo.setPassword("");                 //您的邮箱密码
                     mailInfo.setFromAddress("");            //你的邮箱地址
                     mailInfo.setToAddress("");              //你的邮箱地址
 //                    mailInfo.setSubject(mContext.getString(R.string.app_name) + ":Exception Catched  : DEVICE_NAME: " + Const.DEVICE_NAME + " ; APP_VER" + Const.APP_VER + " ; time : " + simpleDateFormat.format(new Date())
@@ -93,12 +98,12 @@ public class CrashHandler implements UncaughtExceptionHandler {
                     //这个类主要来发送邮件
                     SimpleMailSender sms = new SimpleMailSender();
 //                    sms.sendTextMail(mailInfo);//发送文体格式
-                    sms.sendHtmlMail(mailInfo);//发送html格式
+                    SimpleMailSender.sendHtmlMail(mailInfo);//发送html格式
 
                 } catch (Exception e) {
                     Log.e("SendMail", e.getMessage(), e);
                 }
-                Looper.loop();
+//                Looper.loop();
             }
         }.start();
         return true;

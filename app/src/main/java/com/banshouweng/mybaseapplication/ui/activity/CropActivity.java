@@ -13,7 +13,6 @@ import android.widget.ImageView;
 
 import com.banshouweng.mybaseapplication.App;
 import com.banshouweng.mybaseapplication.R;
-import com.banshouweng.mybaseapplication.utils.Const;
 
 import java.io.File;
 
@@ -51,7 +50,7 @@ public class CropActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button2:
                 startActionGetContent();
                 break;
-             v
+
             case R.id.button3:
                 takePicture();
                 break;
