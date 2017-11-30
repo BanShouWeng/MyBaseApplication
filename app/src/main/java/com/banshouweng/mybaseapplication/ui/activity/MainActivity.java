@@ -11,6 +11,8 @@ import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.base.activity.BaseFragmentActivity;
 import com.banshouweng.mybaseapplication.bean.DouBanBean;
 import com.banshouweng.mybaseapplication.bean.SubjectsBean;
+import com.banshouweng.mybaseapplication.factory.CustomAlertDialogFactory;
+import com.banshouweng.mybaseapplication.factory.OnDialogClickListener;
 import com.banshouweng.mybaseapplication.ui.fragment.MineFragment;
 import com.banshouweng.mybaseapplication.utils.Const;
 import com.banshouweng.mybaseapplication.widget.MyRecyclerView.OnLoadListener;
@@ -26,7 +28,7 @@ import java.util.List;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MainActivity extends BaseFragmentActivity implements OnLoadListener {
+public class MainActivity extends BaseFragmentActivity implements OnLoadListener, OnDialogClickListener {
 
 //    private ListView addressList;
 //    private TextView addressName;
@@ -70,9 +72,10 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
             @Override
             public void onClick(View v) {
 //                params = new HashMap<>();
-                params.put("start", start + "");
-                params.put("count", count + "");
-                post("top250", DouBanBean.class, false);
+//                params.put("start", start + "");
+//                params.put("count", count + "");
+//                post("top250", DouBanBean.class, false);
+                showDialog();
 //                addressName.setText("加载了");
             }
         });
@@ -81,6 +84,10 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
         replaceFragment(R.id.FrameLayout, mineFragment);
 
 //        post("top250", BaseBean.class, false);
+    }
+
+    private void showDialog() {
+        CustomAlertDialogFactory.getCustomAlertDialog(activity, "set_name_tag", this).touchOutside().show();
     }
 
     @Override
@@ -174,6 +181,11 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
 
     @Override
     public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onClick(String tag, View view) {
 
     }
 }

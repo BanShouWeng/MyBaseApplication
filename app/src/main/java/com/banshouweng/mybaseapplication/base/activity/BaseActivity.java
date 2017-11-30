@@ -339,7 +339,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param message 提示消息文本
      */
     public void toast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -348,7 +348,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param messageId 提示消息文本ID
      */
     public void toast(int messageId) {
-        Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, messageId, Toast.LENGTH_LONG).show();
     }
 
     /**
