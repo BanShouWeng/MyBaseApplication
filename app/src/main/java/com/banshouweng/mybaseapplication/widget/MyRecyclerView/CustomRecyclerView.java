@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.banshouweng.mybaseapplication.base.BaseBean;
-import com.banshouweng.mybaseapplication.base.BaseRecyclerAdapter;
 
 import java.util.List;
 
