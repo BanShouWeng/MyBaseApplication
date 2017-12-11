@@ -1,7 +1,6 @@
 package com.banshouweng.mybaseapplication;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 
@@ -49,6 +48,15 @@ public class App extends Application {
 
         return preferences;
 
+    }
+
+    /**
+     * 获取内部存储路径
+     *
+     * @return 路径
+     */
+    public String getDirPath() {
+        return getApplicationContext().getFilesDir().getAbsolutePath();
     }
 
 }
