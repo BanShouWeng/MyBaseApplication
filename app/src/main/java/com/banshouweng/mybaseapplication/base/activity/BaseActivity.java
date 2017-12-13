@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
@@ -422,8 +423,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     protected void initSDK() {
     }
 
-    ;
-
     /**
      * 简化获取View
      *
@@ -447,6 +446,19 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     @SuppressWarnings("unchecked")
     public <T extends View> T getView(View view, int viewId) {
         return (T) view.findViewById(viewId);
+    }
+
+    /**
+     * 简化获取View
+     *
+     * @param layoutId 父布局Id
+     * @param viewId   View的ID
+     * @param <T>      将View转化为对应泛型，简化强转的步骤
+     * @return ID对应的View
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends View> T getView(int layoutId, int viewId) {
+        return (T) LayoutInflater.from(context).inflate(layoutId, null).findViewById(viewId);
     }
 
     /**
