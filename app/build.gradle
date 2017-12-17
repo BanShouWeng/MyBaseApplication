@@ -36,15 +36,18 @@ android {
             debug {
                 minifyEnabled false
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-                buildConfigField "String", "BASE_URL", "\"http://clips.vorwaerts-gmbh.de/\""
-//                buildConfigField "String", "BASE_URL", "\"https://api.douban.com/v2/movie/\""
-                buildConfigField "int", "INT", "0"
-                buildConfigField "boolean", "BOOLEAN", "true"
+                buildConfigField( "boolean", "BOOLEAN", project.properties['DEBUG_BOOLEAN'])
+                buildConfigField( "String", "BASE_URL", project.properties['OUBAN_URL'])
+                buildConfigField( "int", "INT", project.properties['INT'])
                 signingConfig signingConfigs.debug
             }
-            minifyEnabled false
+            buildConfigField( "boolean", "BOOLEAN", project.properties['DEBUG_BOOLEAN'])
+            buildConfigField( "String", "BASE_URL", project.properties['OUBAN_URL'])
+            buildConfigField( "int", "INT", project.properties['INT'])
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"https://api.douban.com/v2/movie/\""
+            minifyEnabled true // 混淆
+            zipAlignEnabled true // zip align(对齐，排列)优化。
+            shrinkResources true // 去掉没有用的资源文件
             signingConfig signingConfigs.release
         }
         debug {
