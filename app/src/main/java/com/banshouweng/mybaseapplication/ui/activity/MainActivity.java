@@ -1,9 +1,12 @@
 package com.banshouweng.mybaseapplication.ui.activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.banshouweng.mybaseapplication.R;
@@ -15,6 +18,7 @@ import com.banshouweng.mybaseapplication.factory.CustomAlertDialogFactory;
 import com.banshouweng.mybaseapplication.factory.OnDialogClickListener;
 import com.banshouweng.mybaseapplication.ui.fragment.MineFragment;
 import com.banshouweng.mybaseapplication.utils.Const;
+import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.widget.MyRecyclerView.OnLoadListener;
 
 import java.util.HashMap;
@@ -30,18 +34,20 @@ import java.util.List;
  */
 public class MainActivity extends BaseFragmentActivity implements OnLoadListener, OnDialogClickListener {
 
-//    private ListView addressList;
+    //    private ListView addressList;
 //    private TextView addressName;
 //    private CustomRecyclerView<SubjectsBean> recyclerView;
     private ImageView icon;
     private String[] a = {"张三", "李四", "王二", "麻子"};
     private int start = 0;
     private int count = 10;
+    private EditText edit;
 //    private MyAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 //        List<BaseBean> beanList = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {
 //            BaseBean baseBean = new BaseBean();
@@ -55,12 +61,7 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
 //        //设置title文本
 //        setTitle("MainActivity");
 //        //设置返回拦截
-        setBaseBack(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                jumpTo(TestActivity.class);
-            }
-        });
+        setBaseBack();
 //        //设置功能键，以及点击方法回调监听
 //        setBaseRightIcon1(R.mipmap.more, "更多", new View.OnClickListener() {
 //            @Override
@@ -68,17 +69,7 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
 //                getImage("mobile/public/getValidateCode", false);
 //            }
 //        });
-        setBaseRightIcon1(R.mipmap.add, "更多", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                params = new HashMap<>();
-//                params.put("start", start + "");
-//                params.put("count", count + "");
-//                post("top250", DouBanBean.class, false);
-                showDialog();
-//                addressName.setText("加载了");
-            }
-        });
+        setBaseRightIcon1(R.mipmap.add, "更多");
 
         MineFragment mineFragment = MineFragment.getInstance();
         replaceFragment(R.id.FrameLayout, mineFragment);
@@ -120,11 +111,28 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
 //        addressName = getView(R.id.address_name);
 //        recyclerView = getView(R.id.recyclerView);
 //        icon = getView(R.id.icon);
+        edit = getView(R.id.edit);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void formatViews() {
+        edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Logger.i("onTextChanged", "CharSequence" + s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 //        addressName.setText("才开始");
 //        addressList.setAdapter(new ArrayAdapter(activity, android.R.layout.simple_list_item_1, a));
 
@@ -181,7 +189,15 @@ public class MainActivity extends BaseFragmentActivity implements OnLoadListener
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case BACK_ID:
+                jumpTo(CropActivity.class);
+                break;
 
+            case RIGHT_ICON_ID1:
+                showDialog();
+                break;
+        }
     }
 
     @Override

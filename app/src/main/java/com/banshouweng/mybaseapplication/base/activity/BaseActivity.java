@@ -114,20 +114,33 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     }
 
     /**
+     * 控件初始化
+     */
+    protected void initBaseView() {
+        if (titleStub == null) {
+            titleStub = getView(R.id.base_title_layout);
+            titleStub.inflate();
+        }
+    }
+
+    /**
      * 设置标题
      *
      * @param title    标题的文本
      * @param showBack 是否显示返回键
      */
     public void setTitle(String title, boolean showBack) {
-        if (titleStub == null) {
-            titleStub = getView(R.id.base_title_layout);
-            titleStub.inflate();
-        }
+        initBaseView();
         ((TextView) getView(R.id.base_title)).setText(title);
-        baseBack = getView(R.id.base_back);
-        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
-        setBaseBack(null);
+        if (showBack) {
+            baseBack = getView(R.id.base_back);
+            baseBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
     /**
@@ -137,122 +150,95 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param showBack 是否显示返回键
      */
     public void setTitle(int titleId, boolean showBack) {
-        if (titleStub == null) {
-            titleStub = getView(R.id.base_title_layout);
-            titleStub.inflate();
-        }
+        initBaseView();
         ((TextView) getView(R.id.base_title)).setText(titleId);
-        baseBack = getView(R.id.base_back);
-        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
-        setBaseBack(null);
-    }
-
-    /**
-     * 设置返回点击事件
-     *
-     * @param clickListener 点击事件监听者
-     */
-    public void setBaseBack(View.OnClickListener clickListener) {
-        if (baseBack == null) {
-            titleStub = getView(R.id.base_title_layout);
-            titleStub.inflate();
+        if (showBack) {
             baseBack = getView(R.id.base_back);
-        }
-        if (clickListener == null) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     finish();
                 }
             });
-        } else {
-            baseBack.setOnClickListener(clickListener);
         }
+    }
+
+    /**
+     * 设置返回点击事件
+     */
+    public void setBaseBack() {
+        initBaseView();
+        baseBack = getView(R.id.base_back);
+        baseBack.setOnClickListener(this);
     }
 
     /**
      * 最右侧图片功能键设置方法
      *
-     * @param resId         图片id
-     * @param alertText     语音辅助提示读取信息
-     * @param clickListener 点击事件
+     * @param resId     图片id
+     * @param alertText 语音辅助提示读取信息
      * @return 将当前ImageView返回方便进一步处理
      */
-    public ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
-        if (titleStub == null) {
-            titleStub = getView(R.id.base_title_layout);
-            titleStub.inflate();
-        }
+    public ImageView setBaseRightIcon1(int resId, String alertText) {
+        initBaseView();
 
         ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon1.setContentDescription(alertText);
-        baseRightIcon1.setOnClickListener(clickListener);
+        baseRightIcon1.setOnClickListener(this);
         return baseRightIcon1;
     }
 
     /**
      * 右数第二个图片功能键设置方法
      *
-     * @param resId         图片id
-     * @param alertText     语音辅助提示读取信息
-     * @param clickListener 点击事件
+     * @param resId     图片id
+     * @param alertText 语音辅助提示读取信息
      * @return 将当前ImageView返回方便进一步处理
      */
-    public ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
-        if (titleStub == null) {
-            titleStub = getView(R.id.base_title_layout);
-            titleStub.inflate();
-        }
+    public ImageView setBaseRightIcon2(int resId, String alertText) {
+        initBaseView();
 
         ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon2.setContentDescription(alertText);
-        baseRightIcon2.setOnClickListener(clickListener);
+        baseRightIcon2.setOnClickListener(this);
         return baseRightIcon2;
     }
 
     /**
      * 最右侧文本功能键设置方法
      *
-     * @param text          文本信息
-     * @param clickListener 点击事件
+     * @param text 文本信息
      * @return 将当前TextView返回方便进一步处理
      */
-    public TextView setBaseRightText(String text, View.OnClickListener clickListener) {
-        if (titleStub == null) {
-            titleStub = getView(R.id.base_title_layout);
-            titleStub.inflate();
-        }
+    public TextView setBaseRightText(String text) {
+        initBaseView();
 
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
-        baseRightText.setOnClickListener(clickListener);
+        baseRightText.setOnClickListener(this);
         return baseRightText;
     }
 
     /**
      * 最右侧文本功能键设置方法
      *
-     * @param textId        文本信息id
-     * @param clickListener 点击事件
+     * @param textId 文本信息id
      * @return 将当前TextView返回方便进一步处理
      */
-    public TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
-        if (titleStub == null) {
-            titleStub = getView(R.id.base_title_layout);
-            titleStub.inflate();
-        }
+    public TextView setBaseRightText(int textId) {
+        initBaseView();
 
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(textId);
         baseRightText.setVisibility(View.VISIBLE);
-        baseRightText.setOnClickListener(clickListener);
+        baseRightText.setOnClickListener(this);
         return baseRightText;
     }
 
@@ -363,7 +349,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     }
 
     /**
-     * 跳转到指定的Activity
+     * 返回历史界面
      *
      * @param clz 指定的Activity对应的class
      */

@@ -3,7 +3,10 @@ package com.banshouweng.mybaseapplication.widget;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+
+import com.banshouweng.mybaseapplication.utils.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
@@ -29,6 +32,7 @@ public class HideHintEditText extends AppCompatEditText {
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
         CharSequence noEmojiString = emojiJudge(text);
+        Logger.i("onTextChanged", "text = " + text + " noEmojiString " + noEmojiString);
         // text是SpannableStringBuilder，不能直接判断
         if (!text.toString().equals(noEmojiString.toString())) {
             setText(noEmojiString);
@@ -45,7 +49,7 @@ public class HideHintEditText extends AppCompatEditText {
      */
     private CharSequence emojiJudge(CharSequence text) {
         try {
-            return Pattern.compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]|\r|\n|\\s",
+            return Pattern.compile("[\ud800\udc00-\udbff\udfff]|[\u2600-\u27ff]|\r|\n|\\s",
                     Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE).matcher(new String(text.toString().getBytes("UTF-8"), "UTF-8")).replaceAll("");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -59,16 +63,21 @@ public class HideHintEditText extends AppCompatEditText {
      * @author admin 2016-9-5 下午4:32:19
      */
     private void init() {
-        hint = getHint().toString();
+        CharSequence hint = getHint();
+        if (!TextUtils.isEmpty(hint)) {
+            this.hint = hint.toString();
+        }
     }
 
     @Override
     protected void onFocusChanged(boolean focused, int direction,
                                   Rect previouslyFocusedRect) {
-        if (focused) {
-            setHint("");
-        } else {
-            setHint(hint);
+        if (!TextUtils.isEmpty(hint)) {
+            if (focused) {
+                setHint("");
+            } else {
+                setHint(hint);
+            }
         }
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
     }

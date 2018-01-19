@@ -85,7 +85,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         if (viewStub == null) {
             viewStub = getView(R.id.base_title_layout);
             viewStub.inflate();
-            baseBack = getView(R.id.base_back);
         }
     }
 
@@ -109,9 +108,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      *
      * @param title 标题的文本
      */
-    protected void setTitle(String title) {
-        initBaseView();
-        ((TextView) getView(R.id.base_title)).setText(title);
+    public void setTitle(String title) {
+        setTitle(title, true);
     }
 
     /**
@@ -119,97 +117,121 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      *
      * @param titleId 标题的文本
      */
-    protected void setTitle(int titleId) {
-        initBaseView();
-        ((TextView) getView(R.id.base_title)).setText(titleId);
+    public void setTitle(int titleId) {
+        setTitle(titleId, true);
     }
 
     /**
-     * 设置返回点击事件
+     * 设置标题
      *
-     * @param clickListener 点击事件监听者
+     * @param title    标题的文本
+     * @param showBack 是否显示返回键
      */
-    protected void setBaseBack(View.OnClickListener clickListener) {
+    public void setTitle(String title, boolean showBack) {
         initBaseView();
-        if (clickListener == null) {
+        ((TextView) getView(R.id.base_title)).setText(title);
+        if (showBack) {
+            baseBack = getView(R.id.base_back);
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     activity.finish();
                 }
             });
-        } else {
-            baseBack.setOnClickListener(clickListener);
         }
+    }
+
+    /**
+     * 设置标题
+     *
+     * @param titleId  标题的文本
+     * @param showBack 是否显示返回键
+     */
+    public void setTitle(int titleId, boolean showBack) {
+        initBaseView();
+        ((TextView) getView(R.id.base_title)).setText(titleId);
+        if (showBack) {
+            baseBack = getView(R.id.base_back);
+            baseBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.finish();
+                }
+            });
+        }
+    }
+
+    /**
+     * 设置返回点击事件
+     */
+    protected void setBaseBack() {
+        initBaseView();
+        baseBack.setOnClickListener(this);
     }
 
     /**
      * 最右侧图片功能键设置方法
      *
-     * @param resId         图片id
-     * @param alertText     语音辅助提示读取信息
-     * @param clickListener 点击事件
+     * @param resId     图片id
+     * @param alertText 语音辅助提示读取信息
      * @return 将当前ImageView返回方便进一步处理
      */
-    protected ImageView setBaseRightIcon1(int resId, String alertText, View.OnClickListener clickListener) {
+    protected ImageView setBaseRightIcon1(int resId, String alertText) {
         initBaseView();
         ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon1.setContentDescription(alertText);
-        baseRightIcon1.setOnClickListener(clickListener);
+        baseRightIcon1.setOnClickListener(this);
         return baseRightIcon1;
     }
 
     /**
      * 右数第二个图片功能键设置方法
      *
-     * @param resId         图片id
-     * @param alertText     语音辅助提示读取信息
-     * @param clickListener 点击事件
+     * @param resId     图片id
+     * @param alertText 语音辅助提示读取信息
      * @return 将当前ImageView返回方便进一步处理
      */
-    protected ImageView setBaseRightIcon2(int resId, String alertText, View.OnClickListener clickListener) {
+    protected ImageView setBaseRightIcon2(int resId, String alertText) {
         initBaseView();
         ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
         baseRightIcon2.setImageResource(resId);
         baseRightIcon2.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
         baseRightIcon2.setContentDescription(alertText);
-        baseRightIcon2.setOnClickListener(clickListener);
+        baseRightIcon2.setOnClickListener(this);
         return baseRightIcon2;
     }
 
     /**
      * 最右侧文本功能键设置方法
      *
-     * @param text          文本信息
-     * @param clickListener 点击事件
+     * @param text 文本信息
      * @return 将当前TextView返回方便进一步处理
      */
-    protected TextView setBaseRightText(String text, View.OnClickListener clickListener) {
+    protected TextView setBaseRightText(String text) {
         initBaseView();
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(text);
         baseRightText.setVisibility(View.VISIBLE);
-        baseRightText.setOnClickListener(clickListener);
+        baseRightText.setOnClickListener(this);
         return baseRightText;
     }
 
     /**
      * 最右侧文本功能键设置方法
      *
-     * @param textId        文本信息id
-     * @param clickListener 点击事件
+     * @param textId 文本信息id
      * @return 将当前TextView返回方便进一步处理
      */
-    protected TextView setBaseRightText(int textId, View.OnClickListener clickListener) {
+    protected TextView setBaseRightText(int textId) {
         initBaseView();
         TextView baseRightText = getView(R.id.base_right_text);
         baseRightText.setText(textId);
         baseRightText.setVisibility(View.VISIBLE);
-        baseRightText.setOnClickListener(clickListener);
+        baseRightText.setOnClickListener(this);
         return baseRightText;
     }
 
@@ -325,13 +347,13 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 简化获取View
      *
-     * @param view 父view
+     * @param view   父view
      * @param viewId View的ID
      * @param <T>    将View转化为对应泛型，简化强转的步骤
      * @return ID对应的View
      */
     @SuppressWarnings("unchecked")
-    public <T extends View> T getView(View view,int viewId) {
+    public <T extends View> T getView(View view, int viewId) {
         return (T) view.findViewById(viewId);
     }
 

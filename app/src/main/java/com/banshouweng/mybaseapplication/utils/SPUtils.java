@@ -1,11 +1,10 @@
 package com.banshouweng.mybaseapplication.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -50,6 +49,14 @@ public class SPUtils {
         preferences.edit().putInt(key, value).apply();
     }
 
+    public void put(String key, Activity activity) {
+        preferences.edit().putString(key, activity.getClass().getName()).apply();
+    }
+
+    public void put(String key, Class clazz) {
+        preferences.edit().putString(key, clazz.getName()).apply();
+    }
+
     public void put(String key, float value) {
         preferences.edit().putFloat(key, value).apply();
     }
@@ -88,6 +95,10 @@ public class SPUtils {
 
     public float getFloat(String key, float defaultFloat) {
         return preferences.getFloat(key, defaultFloat);
+    }
+
+    public Class getClass(String key) throws ClassNotFoundException {
+        return Class.forName(key);
     }
 
     public float getFloat(String key) {

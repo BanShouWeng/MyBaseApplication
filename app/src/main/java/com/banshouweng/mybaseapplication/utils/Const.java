@@ -21,5 +21,17 @@ public class Const {
         }
     }
 
-    protected String a = "a";
+    /**
+     * 判断集合的长度
+     *
+     * @param list 索要获取长度的集合
+     * @return 该集合的长度
+     */
+    public static <T extends Object> int judgeListNull(T[] list) {
+        if (list == null || list.length == 0) {
+            return 0;
+        } else {
+            return list.length;
+        }
+    }
 }
