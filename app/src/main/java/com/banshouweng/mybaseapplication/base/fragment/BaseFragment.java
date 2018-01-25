@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     private View currentLayout;
     private ViewStub viewStub;
     private boolean isUseBase = false;
+    private Toast toast;
 
     /**
      * 隐藏头布局
@@ -316,20 +318,46 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     /**
      * 消息提示框
+     * https://www.jianshu.com/p/4551734b3c21
      *
      * @param message 提示消息文本
      */
-    protected void toast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    public void toast(String message) {
+        try {
+            if (toast != null) {
+                toast.setText(message);
+            } else {
+                toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            }
+            toast.show();
+        } catch (Exception e) {
+            //解决在子线程中调用Toast的异常情况处理
+            Looper.prepare();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        }
     }
 
     /**
      * 消息提示框
+     * https://www.jianshu.com/p/4551734b3c21
      *
      * @param messageId 提示消息文本ID
      */
     protected void toast(int messageId) {
-        Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
+        try {
+            if (toast != null) {
+                toast.setText(messageId);
+            } else {
+                toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            }
+            toast.show();
+        } catch (Exception e) {
+            //解决在子线程中调用Toast的异常情况处理
+            Looper.prepare();
+            Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        }
     }
 
     /**

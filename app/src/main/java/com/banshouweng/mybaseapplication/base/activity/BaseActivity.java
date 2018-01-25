@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * 当前打开Activity存储List
      */
     private static List<Activity> activities = new ArrayList<>();
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -323,20 +325,46 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
 
     /**
      * 消息提示框
+     * https://www.jianshu.com/p/4551734b3c21
      *
      * @param message 提示消息文本
      */
     public void toast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        try {
+            if (toast != null) {
+                toast.setText(message);
+            } else {
+                toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            }
+            toast.show();
+        } catch (Exception e) {
+            //解决在子线程中调用Toast的异常情况处理
+            Looper.prepare();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        }
     }
 
     /**
      * 消息提示框
+     * https://www.jianshu.com/p/4551734b3c21
      *
      * @param messageId 提示消息文本ID
      */
-    public void toast(int messageId) {
-        Toast.makeText(context, messageId, Toast.LENGTH_LONG).show();
+    protected void toast(int messageId) {
+        try {
+            if (toast != null) {
+                toast.setText(messageId);
+            } else {
+                toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            }
+            toast.show();
+        } catch (Exception e) {
+            //解决在子线程中调用Toast的异常情况处理
+            Looper.prepare();
+            Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        }
     }
 
     /**
