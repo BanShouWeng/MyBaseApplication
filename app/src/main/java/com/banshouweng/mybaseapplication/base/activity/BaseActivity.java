@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
-import com.banshouweng.mybaseapplication.event.NetBroadcastReceiver;
+import com.banshouweng.mybaseapplication.reciever.NetBroadcastReceiver;
 import com.banshouweng.mybaseapplication.ui.activity.MainActivity;
 
 import java.util.ArrayList;
@@ -80,7 +80,9 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * 隐藏头布局
      */
     public void hideTitle() {
-        getView(R.id.base_title_layout).setVisibility(View.GONE);
+        if (titleStub != null) {
+            titleStub.setVisibility(View.GONE);
+        }
     }
 
     /**

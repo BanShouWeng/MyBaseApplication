@@ -33,14 +33,14 @@
         <activity android:name=".zxing.activity.CaptureActivity" />
         <activity android:name=".ui.activity.TestActivity" />
 
-        <receiver android:name=".event.NetBroadcastReceiver">
+        <receiver android:name=".reciever.NetBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.CropActivity"/>
+        <activity android:name=".ui.activity.CropActivity" />
     </application>
 
 </manifest>

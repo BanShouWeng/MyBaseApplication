@@ -9,9 +9,9 @@
 
     <ViewStub
         android:id="@+id/base_title_layout"
-        android:layout="@layout/title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout="@layout/title_layout" />
 
     <LinearLayout
         android:id="@+id/base_main_layout"

@@ -7,31 +7,12 @@
     android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
 
-    <!--<TextView-->
-    <!--android:id="@+id/address_name"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="@dimen/size_8"-->
-    <!--android:gravity="center" />-->
+    <include
+        android:id="@+id/merge_layout"
+        layout="@layout/merge_test" />
 
-    <!--<com.banshouweng.mybaseapplication.widget.MyRecyclerView.CustomRecyclerView-->
-    <!--android:id="@+id/recyclerView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"/>-->
-
-    <FrameLayout
-        android:id="@+id/FrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <com.banshouweng.mybaseapplication.widget.HideHintEditText
-        android:id="@+id/edit"
+    <Button
+        android:id="@+id/merge_btn2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <!--<ImageView-->
-    <!--android:id="@+id/icon"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="1" />-->
 </LinearLayout>
