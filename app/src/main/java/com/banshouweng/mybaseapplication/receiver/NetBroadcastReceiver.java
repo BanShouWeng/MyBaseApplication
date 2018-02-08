@@ -1,4 +1,4 @@
-package com.banshouweng.mybaseapplication.reciever;
+package com.banshouweng.mybaseapplication.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

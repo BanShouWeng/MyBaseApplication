@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
-import com.banshouweng.mybaseapplication.reciever.NetBroadcastReceiver;
+import com.banshouweng.mybaseapplication.receiver.NetBroadcastReceiver;
 import com.banshouweng.mybaseapplication.ui.activity.MainActivity;
 
 import java.util.ArrayList;
