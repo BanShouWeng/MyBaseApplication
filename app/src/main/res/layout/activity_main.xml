@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/merge_layout"
-        layout="@layout/merge_test" />
+        layout="@layout/merge_test_include" />
 
     <Button
         android:id="@+id/merge_btn2"

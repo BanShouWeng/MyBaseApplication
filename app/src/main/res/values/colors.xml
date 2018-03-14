@@ -6,4 +6,6 @@
 
     <color name="blue_border">#2fbeff</color>
     <color name="blue">#0071e4</color>
+    <color name="green">#1AAD19</color>
+    <color name="color_ccc">#CCCCCC</color>
 </resources>

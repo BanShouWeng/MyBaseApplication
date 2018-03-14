@@ -1,10 +1,11 @@
 package com.banshouweng.mybaseapplication.base.activity;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Looper;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,10 +22,12 @@ import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.receiver.NetBroadcastReceiver;
-import com.banshouweng.mybaseapplication.ui.activity.MainActivity;
+import com.banshouweng.mybaseapplication.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -35,7 +39,15 @@ import java.util.List;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public abstract class BaseActivity extends AppCompatActivity implements NetBroadcastReceiver.NetEvent, View.OnClickListener {
+    /**
+     * BACK_ID          : title返回按钮
+     * CLOSE_ID         : title关闭按钮
+     * RIGHT_TEXT_ID    : title右侧文本功能键按钮
+     * RIGHT_ICON_ID1   : title右侧图片功能键（右）
+     * RIGHT_ICON_ID2   : title右侧图片功能键（左）
+     */
     public final int BACK_ID = R.id.base_back;
+    public final int CLOSE_ID = R.id.base_close;
     public final int RIGHT_TEXT_ID = R.id.base_right_text;
     public final int RIGHT_ICON_ID1 = R.id.base_right_icon1;
     public final int RIGHT_ICON_ID2 = R.id.base_right_icon2;
@@ -50,19 +62,35 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     public Context context;
     public Activity activity;
 
+    /**
+     * 返回按钮
+     */
     private ImageView baseBack;
+    /**
+     * 关闭按钮
+     */
+    private ImageView baseClose;
+    /**
+     * Title ViewStub
+     */
     private ViewStub titleStub;
 
     /**
      * 当前打开Activity存储List
      */
     private static List<Activity> activities = new ArrayList<>();
+    /**
+     * 调用backTo方法时，验证该Activity是否已经存在
+     */
+    private static Map<Class<?>, Activity> activitiesMap = new HashMap<>();
     private Toast toast;
+    private ImageView baseRightIcon1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activities.add(this);
+        activitiesMap.put(getClass(), this);
         context = getApplicationContext();
         activity = this;
         event = this;
@@ -89,14 +117,22 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * 隐藏返回键
      */
     public void hideBack() {
-        baseBack.setVisibility(View.GONE);
+        if (null != baseBack) {
+            baseBack.setVisibility(View.GONE);
+        } else {
+            Logger.e(getName(), "baseBack is not exist!");
+        }
     }
 
     /**
      * 显示返回键
      */
     public void showBack() {
-        baseBack.setVisibility(View.VISIBLE);
+        if (null != baseBack) {
+            baseBack.setVisibility(View.VISIBLE);
+        } else {
+            Logger.e(getName(), "baseBack is not exist!");
+        }
     }
 
     /**
@@ -151,7 +187,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * 设置标题
      *
      * @param titleId  标题的文本
-     * @param showBack 是否显示返回键
+     * @param showBack 是否显示返回键（一般只用于首页）
      */
     public void setTitle(int titleId, boolean showBack) {
         initBaseView();
@@ -168,12 +204,103 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     }
 
     /**
-     * 设置返回点击事件
+     * 重置返回点击事件
      */
-    public void setBaseBack() {
+    public void resetBaseBack() {
+        if (null != baseBack) {
+            baseBack.setOnClickListener(this);
+        } else {
+            Logger.e(getName(), "baseBack is not exist!");
+        }
+    }
+
+    /**
+     * 重置返回点击事件
+     *
+     * @param resId 重置返回按钮图标
+     */
+    public void setBaseBack(int resId) {
         initBaseView();
         baseBack = getView(R.id.base_back);
+        baseBack.setImageResource(resId);
         baseBack.setOnClickListener(this);
+    }
+
+    /**
+     * 设置关闭点击事件
+     */
+    public void setBaseClose() {
+        setBaseClose(false);
+    }
+
+    /**
+     * 设置关闭点击事件
+     *
+     * @param isResetClose 是否重置关闭按钮点击事件
+     */
+    public void setBaseClose(boolean isResetClose) {
+        initBaseView();
+        baseClose = getView(R.id.base_close);
+        if (isResetClose) {
+            baseClose.setOnClickListener(this);
+        } else {
+            baseClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        }
+    }
+
+    /**
+     * 设置关闭点击事件
+     *
+     * @param resId 重置关闭按钮图标
+     */
+    public void setBaseClose(int resId) {
+        initBaseView();
+        baseClose = getView(R.id.base_close);
+        baseClose.setImageResource(resId);
+        baseClose.setOnClickListener(this);
+    }
+
+    /**
+     * 设置关闭部分页面
+     *
+     * @param targetActivity 关闭后所要返回的Activity
+     */
+    public void setBaseClose(final Class<?> targetActivity) {
+        initBaseView();
+        baseClose = getView(R.id.base_close);
+        baseClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backTo(targetActivity);
+            }
+        });
+    }
+
+    /**
+     * 隐藏关闭按钮
+     */
+    public void hideBaseClose() {
+        if (null != baseClose) {
+            baseClose.setVisibility(View.GONE);
+        } else {
+            Logger.e(getName(), "baseClose is not exist");
+        }
+    }
+
+    /**
+     * 显示关闭按钮
+     */
+    public void showBaseClose() {
+        if (null != baseClose) {
+            baseClose.setVisibility(View.VISIBLE);
+        } else {
+            Logger.e(getName(), "baseClose is not exist");
+        }
     }
 
     /**
@@ -186,7 +313,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     public ImageView setBaseRightIcon1(int resId, String alertText) {
         initBaseView();
 
-        ImageView baseRightIcon1 = getView(R.id.base_right_icon1);
+        baseRightIcon1 = getView(R.id.base_right_icon1);
         baseRightIcon1.setImageResource(resId);
         baseRightIcon1.setVisibility(View.VISIBLE);
         //语音辅助提示的时候读取的信息
@@ -203,14 +330,16 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return 将当前ImageView返回方便进一步处理
      */
     public ImageView setBaseRightIcon2(int resId, String alertText) {
-        initBaseView();
-
         ImageView baseRightIcon2 = getView(R.id.base_right_icon2);
-        baseRightIcon2.setImageResource(resId);
-        baseRightIcon2.setVisibility(View.VISIBLE);
-        //语音辅助提示的时候读取的信息
-        baseRightIcon2.setContentDescription(alertText);
-        baseRightIcon2.setOnClickListener(this);
+        if (null != baseRightIcon1) {
+            baseRightIcon2.setImageResource(resId);
+            baseRightIcon2.setVisibility(View.VISIBLE);
+            //语音辅助提示的时候读取的信息
+            baseRightIcon2.setContentDescription(alertText);
+            baseRightIcon2.setOnClickListener(this);
+        } else {
+            Logger.e(getName(),"You must inflate the baseRightIcon1 before use baseRightIcon2!");
+        }
         return baseRightIcon2;
     }
 
@@ -252,7 +381,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @param layoutId 布局id
      */
     private void setBaseContentView(int layoutId) {
-        LinearLayout layout = getView(R.id.base_main_layout);
+        FrameLayout layout = getView(R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
         final View view = getLayoutInflater().inflate(layoutId, null);
@@ -261,7 +390,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         //给EditText的父控件设置焦点，防止键盘自动弹出
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         layout.addView(view, params);
     }
@@ -280,49 +409,94 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * 跳转页面
      *
-     * @param clz 所跳转的目的Activity类
+     * @param targetActivity 所跳转的目的Activity类
      */
-    public void jumpTo(Class<?> clz) {
-        startActivity(new Intent(this, clz));
+    public void jumpTo(Class<?> targetActivity) {
+        Intent intent = new Intent(this, targetActivity);
+        if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
     }
 
     /**
      * 跳转页面
      *
-     * @param clz    所跳转的目的Activity类
-     * @param bundle 跳转所携带的信息
+     * @param targetActivity 所跳转的目的Activity类
+     * @param bundle         跳转所携带的信息
      */
-    public void jumpTo(Class<?> clz, Bundle bundle) {
-        Intent intent = new Intent(this, clz);
+    public void jumpTo(Class<?> targetActivity, Bundle bundle) {
+        Intent intent = new Intent(this, targetActivity);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
-        startActivity(intent);
+        if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
     }
 
     /**
      * 跳转页面
      *
-     * @param clz         所跳转的Activity类
-     * @param requestCode 请求码
+     * @param targetActivity 所跳转的Activity类
+     * @param requestCode    请求码
      */
-    public void jumpTo(Class<?> clz, int requestCode) {
-        startActivityForResult(new Intent(this, clz), requestCode);
+    public void jumpTo(Class<?> targetActivity, int requestCode) {
+        Intent intent = new Intent(this, targetActivity);
+        if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivityForResult(intent, requestCode);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
     }
 
     /**
      * 跳转页面
      *
-     * @param clz         所跳转的Activity类
-     * @param bundle      跳转所携带的信息
-     * @param requestCode 请求码
+     * @param targetActivity 所跳转的Activity类
+     * @param bundle         跳转所携带的信息
+     * @param requestCode    请求码
      */
-    public void jumpTo(Class<?> clz, int requestCode, Bundle bundle) {
-        Intent intent = new Intent(this, clz);
+    public void jumpTo(Class<?> targetActivity, int requestCode, Bundle bundle) {
+        Intent intent = new Intent(this, targetActivity);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
-        startActivityForResult(intent, requestCode);
+        if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivityForResult(intent, requestCode);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
+    }
+
+    /**
+     * 获取当前Activity类名
+     *
+     * @return 类名字符串
+     */
+    protected String getName() {
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * 获取类名
+     *
+     * @param clz 需要获取名称的类
+     * @return 类名字符串
+     */
+    protected String getName(Class<?> clz) {
+        return clz.getClass().getSimpleName();
     }
 
     /**
@@ -381,26 +555,29 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * 返回历史界面
      *
-     * @param clz 指定的Activity对应的class
+     * @param targetActivity 指定的Activity对应的class
      */
-    public void backTo(Class<?> clz) {
-        if (clz.equals(MainActivity.class)) {
-            finishActivity();
-        } else {
-            for (int i = activities.size() - 1; i >= 0; i--) {
-                if (clz.equals(activities.get(i).getClass())) {
+    public static void backTo(Class<?> targetActivity) {
+        int size = activities.size();
+        if (activitiesMap.get(targetActivity) != null)
+            for (int i = size - 1; i >= 0; i--) {
+                if (targetActivity.equals(activities.get(i).getClass())) {
                     break;
                 } else {
                     activities.get(i).finish();
                 }
             }
-        }
+        else
+            Logger.e(activities.get(size - 1).getClass().getSimpleName(), "activity not open for " + targetActivity.getSimpleName());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // 移除当前的Activity
         activities.remove(this);
+        activitiesMap.remove(getClass());
+        // 清除网络状态接受者
         event = null;
     }
 
@@ -432,12 +609,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
             }
         }
         return false;
-    }
-
-    /**
-     * SDK初始化
-     */
-    protected void initSDK() {
     }
 
     /**
@@ -487,6 +658,12 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         for (int layout : layouts) {
             getView(layout).setOnClickListener(this);
         }
+    }
+
+    /**
+     * SDK初始化
+     */
+    protected void initSDK() {
     }
 
     /**

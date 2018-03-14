@@ -1,79 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:background="@android:color/transparent">-->
+<?xml version="1.0" encoding="utf-8"?><!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:background="@android:color/transparent">-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:background="@drawable/corner_white_4_solid"
+    android:orientation="vertical"
+    tools:context="com.banshouweng.mybaseapplication.widget.CustomAlertDialog.CustomAlertDialog"
+    tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage,ContentDescription">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
+        android:id="@+id/dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@android:color/white"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/size_5"
+        android:layout_marginLeft="@dimen/size_20"
+        android:layout_marginRight="@dimen/size_20"
+        android:layout_marginTop="@dimen/size_30"
+        android:gravity="center"
+        android:text="@string/confirm_abandon"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/size_17" />
+
+    <TextView
+        android:id="@+id/dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_5"
+        android:gravity="center"
+        android:paddingLeft="@dimen/size_32"
+        android:paddingRight="@dimen/size_32"
+        android:text="@string/confirm_abandon"
+        android:textSize="@dimen/size_14"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_20" />
+
+    <include layout="@layout/horizontal_line" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/dialog_title"
-            android:layout_width="match_parent"
+            android:id="@+id/dialog_cancel"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/size_20"
-            android:layout_marginRight="@dimen/size_20"
-            android:layout_marginTop="@dimen/size_30"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="确认放弃当前操作"
+            android:padding="@dimen/size_15"
+            android:text="@string/cancel"
             android:textColor="@android:color/black"
             android:textSize="@dimen/size_17" />
 
-        <TextView
-            android:id="@+id/dialog_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:paddingLeft="32dp"
-            android:paddingRight="32dp"
-            android:text="确认放弃当前操作"
-            android:textSize="14dp"
-            android:visibility="gone" />
-
         <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_20"/>
+            android:id="@+id/dialog_middle_line"
+            android:layout_width="@dimen/line_height"
+            android:layout_height="match_parent"
+            android:background="@color/color_ccc" />
 
-        <include layout="@layout/horizontal_line"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/dialog_confirm"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/dialog_cancel"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="15dp"
-                android:text="取消"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/size_17" />
-
-            <View
-                android:id="@+id/dialog_middle_line"
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="#cccccc"/>
-
-            <TextView
-                android:id="@+id/dialog_confirm"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="15dp"
-                android:text="取消"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/size_17" />
-        </LinearLayout>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/size_15"
+            android:text="@string/confirm"
+            android:textColor="@color/green"
+            android:textSize="@dimen/size_17" />
     </LinearLayout>
-<!--</RelativeLayout>-->
+</LinearLayout><!--</RelativeLayout>-->

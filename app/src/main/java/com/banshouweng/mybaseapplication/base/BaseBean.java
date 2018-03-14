@@ -12,5 +12,12 @@ import java.io.Serializable;
  */
 
 public class BaseBean implements Serializable {
-
+    /**
+     * 获取当前Bean对象类名
+     *
+     * @return 类名字符串
+     */
+    protected String getName() {
+        return getClass().getSimpleName();
+    }
 }

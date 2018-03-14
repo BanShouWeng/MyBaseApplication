@@ -25,7 +25,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("title");
+        setTitle(R.string.title);
     }
 
     @Override
@@ -41,19 +41,18 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void formatViews() {
-        setOnClickListener(R.id.merge_btn,R.id.merge_btn2);
+        setOnClickListener(R.id.merge_btn, R.id.merge_btn2);
     }
 
     @Override
     protected void formatData() {
-
     }
 
     @Override
     protected void getBundle(Bundle bundle) {
-
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -63,7 +62,7 @@ public class MainActivity extends BaseActivity {
                 break;
 
             case R.id.merge_btn2:
-                jumpTo(TestActivity.class);
+                backTo(TestActivity.class);
                 break;
         }
     }

@@ -1,18 +1,21 @@
-package com.banshouweng.mybaseapplication.factory;
+package com.banshouweng.mybaseapplication.widget.CustomAlertDialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.banshouweng.mybaseapplication.R;
 
+
 /**
  * 提示弹窗类
  *
  * @author leiming
- * @date 2017/10/11
+ * @date 2017 /10/11
  */
 public class CustomAlertDialog {
 
@@ -22,6 +25,9 @@ public class CustomAlertDialog {
      */
     public static final int CANCEL_ID = R.id.dialog_cancel;
     public static final int CONFIRM_ID = R.id.dialog_confirm;
+
+    public static final String NO_NET_TAG = "no_net_tag";
+
     /**
      * 上下文信息
      */
@@ -66,39 +72,91 @@ public class CustomAlertDialog {
      */
     private boolean isTouchOutsideCanDismiss = true;
 
-    public void setTitle(String title) {
+    private DialogInterface.OnKeyListener onKeyListener;
+
+    /**
+     * 设置标题
+     *
+     * @param title 标题
+     */
+    protected void setTitle(String title) {
         this.title = title;
     }
 
-    public void setContent(String content) {
+    /**
+     * 设置信息
+     *
+     * @param content 信息
+     */
+    protected void setContent(String content) {
         this.content = content;
     }
 
-    public void setCancel(String cancel) {
+    /**
+     * 设置取消按键文字
+     *
+     * @param cancel 取消按键文字
+     */
+    protected void setCancel(String cancel) {
         this.cancel = cancel;
     }
 
-    public void setConfirm(String confirm) {
+    /**
+     * 设置确认按键文字
+     *
+     * @param confirm 确认按键文字
+     */
+    protected void setConfirm(String confirm) {
         this.confirm = confirm;
     }
 
-    public void onlyMakeSure() {
+    /**
+     * 只显示确认键
+     */
+    protected void onlyMakeSure() {
         isOnlyMakeSure = true;
     }
 
-    public CustomAlertDialog(Context context, String tag, OnDialogClickListener listener) {
+    /**
+     * 构造提示弹窗
+     *
+     * @param context  上下文
+     * @param tag      弹窗识别标签
+     * @param listener 弹窗点击事件
+     */
+    protected CustomAlertDialog(Context context, String tag, OnDialogClickListener listener) {
         this.context = context;
         this.tag = tag;
         this.listener = listener;
     }
 
+    void setOnKeyListener(DialogInterface.OnKeyListener onKeyListener) {
+        this.onKeyListener = onKeyListener;
+    }
+
+    /**
+     * 初始化弹窗
+     */
     private void initDialog() {
         // 创建弹窗
         myDialog = new AlertDialog.Builder(context).create();
         myDialog.show();
 
         // 获取弹窗布局
-        myDialog.getWindow().setContentView(R.layout.common_alert_dialog);
+        myDialog.getWindow().setContentView(R.layout.alert_dialog);
+
+        myDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                return false;
+            }
+        });
+        myDialog.setOnKeyListener(onKeyListener != null ? onKeyListener : new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                return false;
+            }
+        });
 
         // 初始化取消键
         dialogCancel = (TextView) myDialog.getWindow().findViewById(R.id.dialog_cancel);
@@ -106,7 +164,9 @@ public class CustomAlertDialog {
             @Override
             public void onClick(View v) {
                 myDialog.dismiss();
-                listener.onClick(tag, v);
+                if (listener != null) {
+                    listener.onClick(tag, v);
+                }
             }
         });
 
@@ -116,7 +176,9 @@ public class CustomAlertDialog {
             @Override
             public void onClick(View v) {
                 myDialog.dismiss();
-                listener.onClick(tag, v);
+                if (listener != null) {
+                    listener.onClick(tag, v);
+                }
             }
         });
 
@@ -138,25 +200,31 @@ public class CustomAlertDialog {
     /**
      * 展示方法
      */
-    public void show() {
+    protected void show() {
         initDialog();
         myDialog.setCanceledOnTouchOutside(isTouchOutsideCanDismiss);
-        if (!TextUtils.isEmpty(title)) {
+        if (! TextUtils.isEmpty(title)) {
             dialogTitle.setText(title);
         }
-        if (!TextUtils.isEmpty(content)) {
+        if (! TextUtils.isEmpty(content)) {
             dialogContent.setText(content);
             dialogContent.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(cancel)) {
+        if (! TextUtils.isEmpty(cancel)) {
             dialogCancel.setText(cancel);
         }
-        if (!TextUtils.isEmpty(confirm)) {
+        if (! TextUtils.isEmpty(confirm)) {
             dialogConfirm.setText(confirm);
         }
         if (isOnlyMakeSure) {
             dialogMiddleLine.setVisibility(View.GONE);
             dialogCancel.setVisibility(View.GONE);
+        }
+    }
+
+    public void dismiss() {
+        if (myDialog != null) {
+            myDialog.dismiss();
         }
     }
 }

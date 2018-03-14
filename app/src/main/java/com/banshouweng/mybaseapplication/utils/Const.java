@@ -34,4 +34,14 @@ public class Const {
             return list.length;
         }
     }
+
+    /**
+     * 获取类名
+     *
+     * @param clz 需要获取名称的类
+     * @return 类名字符串
+     */
+    protected String getName(Class<?> clz) {
+        return clz.getClass().getSimpleName();
+    }
 }

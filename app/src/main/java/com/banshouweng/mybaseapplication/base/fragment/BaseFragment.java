@@ -1,8 +1,10 @@
 package com.banshouweng.mybaseapplication.base.fragment;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -18,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
+import com.banshouweng.mybaseapplication.utils.Logger;
 
 /**
  * 《一个Android工程的从零开始》
@@ -28,7 +32,15 @@ import com.banshouweng.mybaseapplication.R;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
+    /**
+     * BACK_ID          : title返回按钮
+     * CLOSE_ID         : title关闭按钮
+     * RIGHT_TEXT_ID    : title右侧文本功能键按钮
+     * RIGHT_ICON_ID1   : title右侧图片功能键（右）
+     * RIGHT_ICON_ID2   : title右侧图片功能键（左）
+     */
     public final int BACK_ID = R.id.base_back;
+    public final int CLOSE_ID = R.id.base_close;
     public final int RIGHT_TEXT_ID = R.id.base_right_text;
     public final int RIGHT_ICON_ID1 = R.id.base_right_icon1;
     public final int RIGHT_ICON_ID2 = R.id.base_right_icon2;
@@ -38,7 +50,15 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     protected Context context;
     protected Activity activity;
+
+    /**
+     * 返回按钮
+     */
     private ImageView baseBack;
+    /**
+     * 关闭按钮
+     */
+    private ImageView baseClose;
 
     private View currentLayout;
     private ViewStub viewStub;
@@ -100,9 +120,23 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 隐藏返回键
      */
-    protected void hideBack() {
-        initBaseView();
-        baseBack.setVisibility(View.GONE);
+    public void hideBack() {
+        if (null != baseBack) {
+            baseBack.setVisibility(View.GONE);
+        } else {
+            Logger.e(getName(), "baseBack is not exist!");
+        }
+    }
+
+    /**
+     * 显示返回键
+     */
+    public void showBack() {
+        if (null != baseBack) {
+            baseBack.setVisibility(View.VISIBLE);
+        } else {
+            Logger.e(getName(), "baseBack is not exist!");
+        }
     }
 
     /**
@@ -169,6 +203,82 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     protected void setBaseBack() {
         initBaseView();
         baseBack.setOnClickListener(this);
+    }
+
+    /**
+     * 设置关闭点击事件
+     */
+    public void setBaseClose() {
+        initBaseView();
+        setBaseClose(false);
+    }
+
+    /**
+     * 设置关闭点击事件
+     *
+     * @param isResetClose 是否重置关闭按钮点击事件
+     */
+    public void setBaseClose(boolean isResetClose) {
+        baseClose = getView(R.id.base_close);
+        if (isResetClose) {
+            baseClose.setOnClickListener(this);
+        } else {
+            baseClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    activity.finish();
+                }
+            });
+        }
+    }
+
+    /**
+     * 设置关闭点击事件
+     *
+     * @param resId 重置关闭按钮图标
+     */
+    public void setBaseClose(int resId) {
+        initBaseView();
+        baseClose = getView(R.id.base_close);
+        baseClose.setImageResource(resId);
+        baseClose.setOnClickListener(this);
+    }
+
+    /**
+     * 设置关闭部分页面
+     * @param clz 关闭后所要返回的Activity
+     */
+    public void setBaseClose(final Class<?> clz) {
+        initBaseView();
+        baseClose = getView(R.id.base_close);
+        baseClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BaseActivity.backTo(clz);
+            }
+        });
+    }
+
+    /**
+     * 隐藏关闭按钮
+     */
+    public void hideBaseClose() {
+        if (null != baseClose) {
+            baseClose.setVisibility(View.GONE);
+        } else {
+            Logger.e(getName(), "baseClose is not exist");
+        }
+    }
+
+    /**
+     * 显示关闭按钮
+     */
+    public void showBaseClose() {
+        if (null != baseClose) {
+            baseClose.setVisibility(View.VISIBLE);
+        } else {
+            Logger.e(getName(), "baseClose is not exist");
+        }
     }
 
     /**
@@ -271,49 +381,94 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 跳转页面
      *
-     * @param clz 所跳转的目的Activity类
+     * @param targetActivity 所跳转的目标Activity类
      */
-    protected void jumpTo(Class<?> clz) {
-        startActivity(new Intent(context, clz));
+    protected void jumpTo(Class<?> targetActivity) {
+        Intent intent =  new Intent(context, targetActivity);
+        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
     }
 
     /**
      * 跳转页面
      *
-     * @param clz    所跳转的目的Activity类
+     * @param targetActivity    所跳转的目的Activity类
      * @param bundle 跳转所携带的信息
      */
-    protected void jumpTo(Class<?> clz, Bundle bundle) {
-        Intent intent = new Intent(context, clz);
+    protected void jumpTo(Class<?> targetActivity, Bundle bundle) {
+        Intent intent = new Intent(context, targetActivity);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
-        startActivity(intent);
+        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
     }
 
     /**
      * 跳转页面
      *
-     * @param clz         所跳转的Activity类
+     * @param targetActivity         所跳转的Activity类
      * @param requestCode 请求码
      */
-    protected void jumpTo(Class<?> clz, int requestCode) {
-        startActivityForResult(new Intent(context, clz), requestCode);
+    protected void jumpTo(Class<?> targetActivity, int requestCode) {
+        Intent intent =  new Intent(context, targetActivity);
+        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivityForResult(intent, requestCode);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
     }
 
     /**
      * 跳转页面
      *
-     * @param clz         所跳转的Activity类
+     * @param targetActivity         所跳转的Activity类
      * @param bundle      跳转所携带的信息
      * @param requestCode 请求码
      */
-    protected void jumpTo(Class<?> clz, int requestCode, Bundle bundle) {
-        Intent intent = new Intent(context, clz);
+    protected void jumpTo(Class<?> targetActivity, int requestCode, Bundle bundle) {
+        Intent intent = new Intent(context, targetActivity);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
-        startActivityForResult(intent, requestCode);
+        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            try {
+                startActivityForResult(intent, requestCode);
+            } catch (ActivityNotFoundException e) {
+                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            }
+        }
+    }
+
+    /**
+     * 获取当前Fragment类名
+     *
+     * @return 类名字符串
+     */
+    protected String getName() {
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * 获取类名
+     *
+     * @param clz 需要获取名称的类
+     * @return 类名字符串
+     */
+    protected String getName(Class<?> clz) {
+        return clz.getClass().getSimpleName();
     }
 
     /**

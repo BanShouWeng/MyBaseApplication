@@ -2,9 +2,13 @@
     <string name="app_name">MyBaseApplication</string>
     <string name="title">MyTitle</string>
     <string name="make_sure">确定</string>
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
     <string name="first_function_key">第一功能键</string>
     <string name="second_function_key">第二功能键</string>
     <string name="onload">玩命加载中</string>
+
+    <string name="confirm_abandon">确认放弃当前操作</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

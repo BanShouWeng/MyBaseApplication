@@ -11,12 +11,11 @@
         android:id="@+id/base_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout="@layout/title_layout" />
+        android:layout="@layout/title_include" />
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/base_main_layout"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"
-        android:orientation="vertical" />
+        android:layout_weight="1"/>
 </LinearLayout>
