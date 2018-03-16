@@ -34,6 +34,26 @@ public class CustomAlertDialogFactory {
         return factory;
     }
 
+    public CustomAlertDialogFactory setTitle(int title) throws Exception{
+        dialog.setTitle(context.getResources().getString(title));
+        return factory;
+    }
+
+    public CustomAlertDialogFactory setContent(int content) throws Exception{
+        dialog.setContent(context.getResources().getString(content));
+        return factory;
+    }
+
+    public CustomAlertDialogFactory setCancel(int cancel) throws Exception{
+        dialog.setCancel(context.getResources().getString(cancel));
+        return factory;
+    }
+
+    public CustomAlertDialogFactory setConfirm(int confirm) throws Exception{
+        dialog.setConfirm(context.getResources().getString(confirm));
+        return factory;
+    }
+
     private CustomAlertDialogFactory(Context context, String tag, OnDialogClickListener listener) {
         dialog = new CustomAlertDialog(context, tag, listener);
     }
