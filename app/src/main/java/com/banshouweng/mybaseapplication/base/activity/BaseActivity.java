@@ -1,5 +1,6 @@
 package com.banshouweng.mybaseapplication.base.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -505,6 +506,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      *
      * @param message 提示消息文本
      */
+    @SuppressLint("ShowToast")
     public void toast(String message) {
         try {
             if (toast != null) {
@@ -516,7 +518,8 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            toast.show();
             Looper.loop();
         }
     }
@@ -527,6 +530,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      *
      * @param messageId 提示消息文本ID
      */
+    @SuppressLint("ShowToast")
     protected void toast(int messageId) {
         try {
             if (toast != null) {
@@ -538,7 +542,8 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
+            toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            toast.show();
             Looper.loop();
         }
     }

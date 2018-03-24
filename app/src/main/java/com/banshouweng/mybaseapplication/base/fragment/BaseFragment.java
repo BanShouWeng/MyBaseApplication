@@ -1,5 +1,6 @@
 package com.banshouweng.mybaseapplication.base.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -477,6 +478,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      *
      * @param message 提示消息文本
      */
+    @SuppressLint("ShowToast")
     public void toast(String message) {
         try {
             if (toast != null) {
@@ -488,7 +490,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            toast.show();
             Looper.loop();
         }
     }
@@ -510,7 +513,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            Toast.makeText(context, messageId, Toast.LENGTH_SHORT).show();
+            toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            toast.show();
             Looper.loop();
         }
     }
