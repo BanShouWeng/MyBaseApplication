@@ -15,4 +15,10 @@
         android:id="@+id/merge_btn2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/click_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
 </LinearLayout>

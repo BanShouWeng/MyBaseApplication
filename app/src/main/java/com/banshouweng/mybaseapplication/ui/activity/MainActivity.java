@@ -4,10 +4,14 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
 import com.banshouweng.mybaseapplication.utils.Logger;
+import com.banshouweng.mybaseapplication.utils.TxtUtils;
+
+import java.util.Locale;
 
 /**
  * 《一个Android工程的从零开始》
@@ -19,8 +23,10 @@ import com.banshouweng.mybaseapplication.utils.Logger;
  */
 public class MainActivity extends BaseActivity {
 
-    private Button view;
+    private Button view, mergeBtn2;
     private int count = 0;
+
+    private EditText clickEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +43,19 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void findViews() {
         view = getView(R.id.merge_btn);
+        mergeBtn2 = getView(R.id.merge_btn2);
+        clickEt = getView(R.id.click_et);
     }
 
     @Override
     protected void formatViews() {
-        setOnClickListener(R.id.merge_btn, R.id.merge_btn2);
+        setOnClickListener(R.id.merge_btn, R.id.merge_btn2, R.id.click_et);
     }
 
     @Override
     protected void formatData() {
+        mergeBtn2.setText(String.format(Locale.CHINA, TxtUtils.getText(context, R.string.all), "55555"));
+        view.setText(String.format(Locale.CHINA, TxtUtils.getText(context, R.string.all), "12345"));
     }
 
     @Override

@@ -55,6 +55,7 @@ public class CustomAlertDialogFactory {
     }
 
     private CustomAlertDialogFactory(Context context, String tag, OnDialogClickListener listener) {
+        this.context = context;
         dialog = new CustomAlertDialog(context, tag, listener);
     }
 
