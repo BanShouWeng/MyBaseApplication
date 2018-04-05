@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     aaptOptions.cruncherEnabled = false
     aaptOptions.useNewCruncher = false
@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.banshouweng.mybaseapplication"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 5
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -71,10 +71,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile files('libs/BaiduLBS_Android.jar')
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
     compile 'com.jakewharton:butterknife:8.7.0'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'io.reactivex.rxjava2:rxjava:2.1.1'
@@ -82,15 +79,17 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.google.code.gson:gson:2.8.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.google.zxing:core:3.3.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
     compile 'com.github.bumptech.glide:glide:4.2.0'
     compile files('libs/mail.jar')
     compile files('libs/activation.jar')
     compile files('libs/additionnal.jar')
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
 }
 
 configurations.all {

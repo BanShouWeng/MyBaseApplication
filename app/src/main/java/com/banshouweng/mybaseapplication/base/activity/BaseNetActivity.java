@@ -22,7 +22,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 
-public abstract class BaseNetActivity extends BaseActivity {
+public abstract class BaseNetActivity extends BaseLayoutActivity {
 
     /**
      * 加载提示框

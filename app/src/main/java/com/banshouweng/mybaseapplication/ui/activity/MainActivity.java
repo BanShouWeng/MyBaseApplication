@@ -7,7 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseLayoutActivity;
 import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.utils.TxtUtils;
 
@@ -21,7 +23,7 @@ import java.util.Locale;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseLayoutActivity {
 
     private Button view, mergeBtn2;
     private int count = 0;
@@ -67,12 +69,14 @@ public class MainActivity extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.merge_btn:
-                view.setText(count++ + "");
+                view.setText(getName(BaseBean.class));
                 Logger.i("111", count + "");
                 break;
 
             case R.id.merge_btn2:
-                backTo(TestActivity.class);
+//                backTo(TestActivity.class);
+//                jumpTo(TestActivity.class);
+                finishActivity();
                 break;
         }
     }

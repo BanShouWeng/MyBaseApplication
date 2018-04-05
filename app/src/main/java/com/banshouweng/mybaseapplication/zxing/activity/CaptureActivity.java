@@ -20,6 +20,7 @@ import android.view.WindowManager;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseLayoutActivity;
 import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.zxing.MessageIDs;
 import com.banshouweng.mybaseapplication.zxing.camera.CameraManager;
@@ -42,7 +43,7 @@ import java.util.Vector;
  * Initial the camera
  * 扫描二维码界面
  */
-public class CaptureActivity extends BaseActivity implements Callback {
+public class CaptureActivity extends BaseLayoutActivity implements Callback {
     public static final String QR_RESULT = "RESULT";
 
     private CaptureActivityHandler handler;
