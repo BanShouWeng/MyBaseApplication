@@ -88,11 +88,9 @@ public class NetUtils {
             params = new HashMap<>();
         }
 
-        Map<String, String> headerParams = new HashMap<>();
-        headerParams.put("USER_TOKEN", "aaa");
-        headerParams.put("DEVICE_ID", "bbbbb");
-        headerParams.put("Content-Type", "application/json");
-        headerParams.put("SYSTEM_NAME", "smallPlace");
+        if (null == headerParams){
+            headerParams = new HashMap<>();
+        }
 
         Logger.i("zzz", "request====" + new JSONObject(params));
 

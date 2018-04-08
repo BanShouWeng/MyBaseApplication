@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 《一个Android工程的从零开始》
+ *
  * @author 半寿翁
  * @博客：
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960

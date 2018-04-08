@@ -31,7 +31,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
 
     private NetUtils netUtils;
 
-    public Map<String, String> params;
+    protected Map<String, String> params;
 
 
     @Override
@@ -42,7 +42,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
         netUtils.initHeader();
     }
 
-    public void refreshHeader() {
+    protected void refreshHeader() {
         netUtils.initHeader();
     }
 
@@ -53,7 +53,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
      * @param clazz      要转换的Bean类型（需继承BaseBean）
      * @param showDialog 显示加载进度条
      */
-    public <T extends BaseBean> void get(final String action, Class<T> clazz, boolean showDialog) {
+    protected <T extends BaseBean> void get(final String action, Class<T> clazz, boolean showDialog) {
         if (!isNetworkAvailable()) {
             toast("网络异常，请检查网络是否连接");
             error(action, new Exception("网络异常，请检查网络是否连接"));
@@ -75,7 +75,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
      * @param action     请求接口的尾址
      * @param showDialog 显示加载进度条
      */
-    public <T extends BaseBean> void getImage(final String action, boolean showDialog) {
+    protected <T extends BaseBean> void getImage(final String action, boolean showDialog) {
         if (!isNetworkAvailable()) {
             toast("网络异常，请检查网络是否连接");
             error(action, new Exception("网络异常，请检查网络是否连接"));
@@ -98,7 +98,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
      * @param clazz      要转换的Bean类型（需继承BaseBean）
      * @param showDialog 显示加载进度条
      */
-    public <T extends BaseBean> void post(final String action, Class<T> clazz, boolean showDialog) {
+    protected <T extends BaseBean> void post(final String action, Class<T> clazz, boolean showDialog) {
         if (!isNetworkAvailable()) {
             toast("网络异常，请检查网络是否连接");
             error(action, new Exception("网络异常，请检查网络是否连接"));
@@ -121,7 +121,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
      * @param clazz      要转换的Bean类型（需继承BaseBean）
      * @param showDialog 显示加载进度条
      */
-    public <T extends BaseBean> void post(final String action, String json, final Class<T> clazz, boolean showDialog) {
+    protected <T extends BaseBean> void post(final String action, String json, final Class<T> clazz, boolean showDialog) {
         if (!isNetworkAvailable()) {
             toast("网络异常，请检查网络是否连接");
             error(action, new Exception("网络异常，请检查网络是否连接"));
@@ -139,7 +139,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
      * @param action   网络访问尾址
      * @param baseBean 返回的数据Bean
      */
-    public abstract void success(String action, BaseBean baseBean);
+    protected abstract void success(String action, BaseBean baseBean);
 
     /**
      * 访问成功回调方法
@@ -147,10 +147,10 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
      * @param action 网络访问尾址
      * @param bitmap 获取的Bitmap
      */
-    public void success(String action, Bitmap bitmap) {
+    protected void success(String action, Bitmap bitmap) {
     }
 
-    public abstract void error(String action, Throwable e);
+    protected abstract void error(String action, Throwable e);
 
     /**
      * 显示加载提示框
