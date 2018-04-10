@@ -1,6 +1,7 @@
 package com.banshouweng.mybaseapplication.base.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
@@ -19,6 +20,7 @@ import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 
 /**
  * 《一个Android工程的从零开始》
@@ -112,6 +114,7 @@ public abstract class BaseNetFragment extends BaseFragment {
          * 返回结果状态：0、正常Bean；1、Bitmap；2、数据流
          */
         private int resultStatus = 0;
+        private String errorbody;
 
         MyObserver(String action, Class<T> clazz) {
             this.clazz = clazz;
@@ -150,7 +153,12 @@ public abstract class BaseNetFragment extends BaseFragment {
 
         @Override
         public void onError(@NonNull Throwable e) {
-            Logger.i("responseString", "responseString get  " + e.toString());
+            try {
+                errorbody = ((HttpException) e).response().errorBody().string();
+                Logger.i("responseString", String.format("%s********** responseString get error %s content %s", action, e.toString(), TextUtils.isEmpty(errorbody) ? "" : errorbody));
+            } catch (IOException | NullPointerException e1) {
+                e1.printStackTrace();
+            }
             error(action, e);
         }
 
