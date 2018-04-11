@@ -232,8 +232,12 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
         @Override
         public void onError(@NonNull Throwable e) {
             try {
-                errorbody = ((HttpException) e).response().errorBody().string();
-                Logger.i("responseString", String.format("%s********** responseString get error %s content %s", action, e.toString(), TextUtils.isEmpty(errorbody) ? "" : errorbody));
+                if (e instanceof HttpException) {
+                    errorbody = ((HttpException) e).response().errorBody().string();
+                    Logger.i("responseString", String.format("%s********** responseString get error %s content %s", action, e.toString(), TextUtils.isEmpty(errorbody) ? "" : errorbody));
+                } else {
+                    Logger.i("responseString", String.format("%s********** responseString get error %s", action, e.toString()));
+                }
             } catch (IOException | NullPointerException e1) {
                 e1.printStackTrace();
             }
