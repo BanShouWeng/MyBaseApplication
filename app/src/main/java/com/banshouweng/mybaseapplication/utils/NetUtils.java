@@ -1,5 +1,7 @@
 package com.banshouweng.mybaseapplication.utils;
 
+import android.annotation.SuppressLint;
+
 import com.banshouweng.mybaseapplication.BuildConfig;
 import com.banshouweng.mybaseapplication.service.RetrofitGetService;
 import com.banshouweng.mybaseapplication.service.RetrofitPostJsonService;
@@ -7,9 +9,19 @@ import com.banshouweng.mybaseapplication.service.RetrofitPostJsonService;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -50,26 +62,70 @@ public class NetUtils {
      * @param action 当前请求的尾址
      */
     private Retrofit initBaseData(final String action) {
-        // 监听请求条件
+
+        // https信任管理
+        TrustManager[] trustManager = new TrustManager[]{
+                new X509TrustManager() {
+
+                    @SuppressLint("TrustAllX509TrustManager")
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+
+                    }
+
+                    @SuppressLint("TrustAllX509TrustManager")
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+
+                    }
+
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[0];
+                    }
+                }
+        };
+
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(5, TimeUnit.SECONDS);
+        // 请求超时
+        builder.connectTimeout(10, TimeUnit.SECONDS);
+        // 请求参数获取
         builder.addInterceptor(new Interceptor() {
             @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
+            public okhttp3.Response intercept(@android.support.annotation.NonNull Chain chain) throws IOException {
                 Request request = chain.request();
-                Logger.i("zzz", "request====" + action);
-                Logger.i("zzz", "request====" + request.headers().toString());
-                Logger.i("zzz", "request====" + request.toString());
+                Logger.i("zzz", String.format("request====%s", request.headers().toString()));
+                Logger.i("zzz", String.format("request====%s", request.toString()));
                 okhttp3.Response proceed = chain.proceed(request);
-                Logger.i("zzz", "proceed====" + proceed.headers().toString());
+                Logger.i("zzz", String.format("proceed====%s", proceed.headers().toString()));
                 return proceed;
             }
         });
 
+        try {
+            // https信任
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustManager, new SecureRandom());
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            builder.sslSocketFactory(sslSocketFactory);
+            builder.hostnameVerifier(new HostnameVerifier() {
+                @SuppressLint("BadHostnameVerifier")
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    // 全部信任
+                    return true;
+                }
+            });
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            e.printStackTrace();
+        }
+
+        // 构建Builder，请求结果RxJava接收，使用GSON转化为Bean，
         Retrofit.Builder builder1 = new Retrofit.Builder()
-                .client(builder.build())                                    // 配置监听请求
-                .addConverterFactory(GsonConverterFactory.create())         // 请求结果转换（当前为GSON）
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()); // 请求接受工具（当前为RxJava2）
+                .client(builder.build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+
         builder1.baseUrl(BuildConfig.BASE_URL + action.substring(0, action.lastIndexOf("/") + 1));
 
         return builder1.build();
