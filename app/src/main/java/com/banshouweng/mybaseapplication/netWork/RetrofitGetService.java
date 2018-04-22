@@ -1,4 +1,4 @@
-package com.banshouweng.mybaseapplication.service;
+package com.banshouweng.mybaseapplication.netWork;
 
 import java.util.Map;
 

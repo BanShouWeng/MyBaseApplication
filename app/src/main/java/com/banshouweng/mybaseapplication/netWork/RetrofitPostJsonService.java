@@ -1,11 +1,9 @@
-package com.banshouweng.mybaseapplication.service;
-
-import java.util.Map;
+package com.banshouweng.mybaseapplication.netWork;
 
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -17,10 +15,8 @@ import retrofit2.http.Path;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
+public interface RetrofitPostJsonService {
 
-public interface RetrofitPostService {
-
-    @FormUrlEncoded
     @POST("{action}")
-    Observable<ResponseBody> postResult(@Path("action") String action, @FieldMap Map<String, String> params);
+    Observable<ResponseBody> postResult(@Path("action") String action, @Body RequestBody requestBody);
 }

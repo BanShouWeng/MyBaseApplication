@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.utils.Logger;
-import com.banshouweng.mybaseapplication.utils.NetUtils;
+import com.banshouweng.mybaseapplication.netWork.NetUtils;
 import com.banshouweng.mybaseapplication.widget.CustomProgressDialog;
 import com.google.gson.Gson;
 
@@ -40,7 +40,7 @@ public abstract class BaseNetActivity extends BaseLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         customProgressDialog = new CustomProgressDialog(activity, R.style.progress_dialog_loading, "玩命加载中。。。");
-        netUtils = new NetUtils();
+        netUtils = new NetUtils(context);
         netUtils.initHeader();
     }
 

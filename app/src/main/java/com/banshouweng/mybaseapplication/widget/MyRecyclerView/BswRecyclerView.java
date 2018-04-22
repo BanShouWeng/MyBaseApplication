@@ -20,7 +20,7 @@ import java.util.List;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
+public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
     /**
      * 纵向布局
      */
@@ -37,12 +37,12 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
     /**
      * 自定义适配器
      */
-    private BaseRecyclerAdapter<T> adapter;
+    private BswRecyclerAdapter<T> adapter;
 
     /**
      * @param context 上下文
      */
-    public CustomRecyclerView(Context context) {
+    public BswRecyclerView(Context context) {
         super(context);
         this.context = context;
     }
@@ -51,7 +51,7 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param context 上下文
      * @param attrs   属性设置
      */
-    public CustomRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public BswRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
     }
@@ -61,7 +61,7 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param attrs    属性设置
      * @param defStyle http://blog.csdn.net/mybeta/article/details/39993449大神的博客
      */
-    public CustomRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public BswRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
     }
@@ -73,14 +73,14 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param callBack 布局配置回调接口
      * @return 当前RecyclerView
      */
-    public CustomRecyclerView initAdapter(int layoutId, ConvertViewCallBack<T> callBack) {
-        adapter = new BaseRecyclerAdapter<>(context, layoutId, callBack);
+    public BswRecyclerView initAdapter(int layoutId, ConvertViewCallBack<T> callBack) {
+        adapter = new BswRecyclerAdapter<>(context, layoutId, callBack);
         setAdapter(adapter);
         return this;
     }
 
-    public CustomRecyclerView initAdapter(MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layouts) {
-        adapter = new BaseRecyclerAdapter<>(context, multiplexAdapterCallBack, layouts);
+    public BswRecyclerView initAdapter(MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layouts) {
+        adapter = new BswRecyclerAdapter<>(context, multiplexAdapterCallBack, layouts);
         setAdapter(adapter);
         return this;
     }
@@ -127,7 +127,7 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param layoutrType 布局样式
      * @return 当前RecyclerView
      */
-    public CustomRecyclerView setLayoutManager(int layoutrType) {
+    public BswRecyclerView setLayoutManager(int layoutrType) {
         if (layoutrType == HORIZONTAL) // 横向列表
         {
             setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -145,7 +145,7 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param reverseLayout 横向布局是否可以循环滑动标志位： true，可以；false，不可以
      * @return 当前RecyclerView
      */
-    public CustomRecyclerView setLayoutManager(int layoutrType, boolean reverseLayout) {
+    public BswRecyclerView setLayoutManager(int layoutrType, boolean reverseLayout) {
         if (layoutrType == HORIZONTAL) // 横向列表
         {
             setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, reverseLayout));
@@ -163,7 +163,7 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param spanCount   拓展到多少行/列
      * @return 当前RecyclerView
      */
-    public CustomRecyclerView setLayoutManager(int layoutrType, int spanCount) {
+    public BswRecyclerView setLayoutManager(int layoutrType, int spanCount) {
         if (spanCount == 1) // 当spanCount为的时候，为线性列表
         {
             return setLayoutManager(layoutrType);
@@ -186,7 +186,7 @@ public class CustomRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param reverseLayout 横向布局是否可以循环滑动标志位： true，可以；false，不可以
      * @return 当前RecyclerView
      */
-    public CustomRecyclerView setLayoutManager(int layoutrType, int spanCount, boolean reverseLayout) {
+    public BswRecyclerView setLayoutManager(int layoutrType, int spanCount, boolean reverseLayout) {
         if (spanCount == 1) {
             return setLayoutManager(layoutrType, reverseLayout);
         }

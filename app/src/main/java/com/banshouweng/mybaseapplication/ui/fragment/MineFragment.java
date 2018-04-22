@@ -85,7 +85,7 @@ public class MineFragment extends BaseNetFragment {
     }
 
     @Override
-    protected void getBundle() {
+    protected void getBundle(Bundle bundle) {
 
     }
 

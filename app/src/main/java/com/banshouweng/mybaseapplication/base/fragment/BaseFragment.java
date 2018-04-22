@@ -76,8 +76,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+        getBundle(getArguments());
     }
 
     @Override
@@ -95,7 +94,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         if (isUseBase) {
             setBaseContentView(getLayoutId());
         }
-        getBundle();
         findViews();
         formatData();
         formatViews();
@@ -247,6 +245,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     /**
      * 设置关闭部分页面
+     *
      * @param clz 关闭后所要返回的Activity
      */
     public void setBaseClose(final Class<?> clz) {
@@ -385,7 +384,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param targetActivity 所跳转的目标Activity类
      */
     protected void jumpTo(Class<?> targetActivity) {
-        Intent intent =  new Intent(context, targetActivity);
+        Intent intent = new Intent(context, targetActivity);
         if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             try {
                 startActivity(intent);
@@ -398,8 +397,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 跳转页面
      *
-     * @param targetActivity    所跳转的目的Activity类
-     * @param bundle 跳转所携带的信息
+     * @param targetActivity 所跳转的目的Activity类
+     * @param bundle         跳转所携带的信息
      */
     protected void jumpTo(Class<?> targetActivity, Bundle bundle) {
         Intent intent = new Intent(context, targetActivity);
@@ -418,11 +417,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 跳转页面
      *
-     * @param targetActivity         所跳转的Activity类
-     * @param requestCode 请求码
+     * @param targetActivity 所跳转的Activity类
+     * @param requestCode    请求码
      */
     protected void jumpTo(Class<?> targetActivity, int requestCode) {
-        Intent intent =  new Intent(context, targetActivity);
+        Intent intent = new Intent(context, targetActivity);
         if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             try {
                 startActivityForResult(intent, requestCode);
@@ -435,9 +434,9 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 跳转页面
      *
-     * @param targetActivity         所跳转的Activity类
-     * @param bundle      跳转所携带的信息
-     * @param requestCode 请求码
+     * @param targetActivity 所跳转的Activity类
+     * @param bundle         跳转所携带的信息
+     * @param requestCode    请求码
      */
     protected void jumpTo(Class<?> targetActivity, int requestCode, Bundle bundle) {
         Intent intent = new Intent(context, targetActivity);
@@ -580,5 +579,5 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 初始化Bundle
      */
-    protected abstract void getBundle();
+    protected abstract void getBundle(Bundle bundle);
 }

@@ -10,6 +10,7 @@ import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
 import com.banshouweng.mybaseapplication.base.activity.BaseLayoutActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseNetActivity;
 import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.utils.TxtUtils;
 
@@ -23,7 +24,7 @@ import java.util.Locale;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MainActivity extends BaseLayoutActivity {
+public class MainActivity extends BaseNetActivity {
 
     private Button view, mergeBtn2;
     private int count = 0;
@@ -34,6 +35,16 @@ public class MainActivity extends BaseLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.title);
+    }
+
+    @Override
+    protected void success(String action, BaseBean baseBean) {
+
+    }
+
+    @Override
+    protected void error(String action, Throwable e) {
+
     }
 
     @Override

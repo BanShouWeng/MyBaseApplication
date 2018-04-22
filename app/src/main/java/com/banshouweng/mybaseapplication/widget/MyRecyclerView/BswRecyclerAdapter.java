@@ -19,7 +19,7 @@ import java.util.List;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter {
+public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter {
 
     /**
      * 请求数据列表
@@ -58,7 +58,7 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
      * @param layoutId 布局Id
      * @param callBack 布局设置回调接口
      */
-    public BaseRecyclerAdapter(List<T> mData, Context context, int layoutId, ConvertViewCallBack<T> callBack) {
+    public BswRecyclerAdapter(List<T> mData, Context context, int layoutId, ConvertViewCallBack<T> callBack) {
         this.mData = mData;
         this.context = context;
         this.layoutId = layoutId;
@@ -73,7 +73,7 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
      * @param layoutId 布局Id
      * @param callBack 布局设置回调接口
      */
-    public BaseRecyclerAdapter(Context context, int layoutId, ConvertViewCallBack<T> callBack) {
+    public BswRecyclerAdapter(Context context, int layoutId, ConvertViewCallBack<T> callBack) {
         this(null, context, layoutId, callBack);
     }
 
@@ -83,7 +83,7 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
      * @param context                  上下文
      * @param multiplexAdapterCallBack 复用布局回调接口
      */
-    public BaseRecyclerAdapter(Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
+    public BswRecyclerAdapter(Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
         this(null, context, multiplexAdapterCallBack, layoutIds);
     }
 
@@ -94,7 +94,7 @@ public class BaseRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapte
      * @param context                  上下文
      * @param multiplexAdapterCallBack 复用布局设置回调接口
      */
-    public BaseRecyclerAdapter(List<T> mData, Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
+    public BswRecyclerAdapter(List<T> mData, Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
         this.mData = mData;
         this.context = context;
         this.layoutIds = layoutIds;

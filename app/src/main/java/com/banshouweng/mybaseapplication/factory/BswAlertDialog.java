@@ -14,7 +14,7 @@ import com.banshouweng.mybaseapplication.R;
  * @author leiming
  * @date 2017/10/11
  */
-public class CustomAlertDialog {
+public class BswAlertDialog {
 
     /**
      * CANCEL_ID    取消按键的ID
@@ -86,7 +86,7 @@ public class CustomAlertDialog {
         isOnlyMakeSure = true;
     }
 
-    public CustomAlertDialog(Context context, String tag, OnDialogClickListener listener) {
+    public BswAlertDialog(Context context, String tag, OnDialogClickListener listener) {
         this.context = context;
         this.tag = tag;
         this.listener = listener;

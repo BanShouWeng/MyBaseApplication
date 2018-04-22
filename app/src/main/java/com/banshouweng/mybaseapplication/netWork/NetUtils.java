@@ -1,18 +1,24 @@
-package com.banshouweng.mybaseapplication.utils;
+package com.banshouweng.mybaseapplication.netWork;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 
 import com.banshouweng.mybaseapplication.BuildConfig;
-import com.banshouweng.mybaseapplication.service.RetrofitGetService;
-import com.banshouweng.mybaseapplication.service.RetrofitPostJsonService;
+import com.banshouweng.mybaseapplication.netWork.RetrofitGetService;
+import com.banshouweng.mybaseapplication.netWork.RetrofitPostJsonService;
+import com.banshouweng.mybaseapplication.utils.Logger;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +32,11 @@ import javax.net.ssl.X509TrustManager;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.JavaNetCookieJar;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -45,7 +55,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public class NetUtils {
+    private final Context context;
     private Map<String, String> headerParams;
+
+    private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
+
+    public NetUtils(Context context) {
+        this.context = context;
+    }
 
     /**
      * 初始化请求头，具体情况根据需求设置
@@ -64,7 +81,7 @@ public class NetUtils {
     private Retrofit initBaseData(final String action) {
 
         // https信任管理
-        TrustManager[] trustManager = new TrustManager[]{
+        TrustManager[] trustManager = new TrustManager[] {
                 new X509TrustManager() {
 
                     @SuppressLint("TrustAllX509TrustManager")
@@ -101,6 +118,8 @@ public class NetUtils {
                 return proceed;
             }
         });
+        CookieManager cookieManager = new java.net.CookieManager(new InDiskCookieStore(context), CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+        builder.cookieJar(new JavaNetCookieJar(cookieManager));
 
         try {
             // https信任
@@ -144,7 +163,7 @@ public class NetUtils {
             params = new HashMap<>();
         }
 
-        if (null == headerParams){
+        if (null == headerParams) {
             headerParams = new HashMap<>();
         }
 
