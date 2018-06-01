@@ -8,12 +8,16 @@ import android.widget.EditText;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
-import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
-import com.banshouweng.mybaseapplication.base.activity.BaseLayoutActivity;
 import com.banshouweng.mybaseapplication.base.activity.BaseNetActivity;
 import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.utils.TxtUtils;
+import com.banshouweng.mybaseapplication.widget.BswRecyclerView.BswRecyclerView;
+import com.banshouweng.mybaseapplication.widget.BswRecyclerView.ConvertViewCallBack;
+import com.banshouweng.mybaseapplication.widget.BswRecyclerView.OnLoadListener;
+import com.banshouweng.mybaseapplication.widget.BswRecyclerView.RecyclerViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -30,6 +34,7 @@ public class MainActivity extends BaseNetActivity {
     private int count = 0;
 
     private EditText clickEt;
+    private BswRecyclerView<BaseBean> bswList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,9 @@ public class MainActivity extends BaseNetActivity {
 
     @Override
     protected void success(String action, BaseBean baseBean) {
+        switch (action) {
 
+        }
     }
 
     @Override
@@ -58,10 +65,51 @@ public class MainActivity extends BaseNetActivity {
         view = getView(R.id.merge_btn);
         mergeBtn2 = getView(R.id.merge_btn2);
         clickEt = getView(R.id.click_et);
+        bswList = getView(R.id.bsw_list);
+    }
+
+    private List<BaseBean> getBaseBeans() {
+        List<BaseBean> baseBeans = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            baseBeans.add(new BaseBean());
+        }
+        return baseBeans;
     }
 
     @Override
     protected void formatViews() {
+        bswList.initAdapter(R.layout.tv_list_item, convertViewCallBack);
+        bswList.setLayoutManager().setDecoration();
+        bswList.setLoadListener(new OnLoadListener() {
+            @Override
+            public void loadData() {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } finally {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    bswList.addData(getBaseBeans());
+                                    Logger.i(getName(), "加载到第" + bswList.getItemCount() + "个");
+                                }
+                            });
+                        }
+                    }
+                }).start();
+                Logger.i(getName(),"加载了");
+            }
+
+            @Override
+            public boolean canLoadMore() {
+                return true;
+            }
+        });
+        bswList.setData(getBaseBeans());
         setOnClickListener(R.id.merge_btn, R.id.merge_btn2, R.id.click_et);
     }
 
@@ -91,4 +139,11 @@ public class MainActivity extends BaseNetActivity {
                 break;
         }
     }
+
+    private ConvertViewCallBack<BaseBean> convertViewCallBack = new ConvertViewCallBack<BaseBean>() {
+        @Override
+        public void convert(RecyclerViewHolder holder, BaseBean baseBean, int position) {
+            holder.setText(R.id.item_tv, "第" + (position + 1) + "项");
+        }
+    };
 }

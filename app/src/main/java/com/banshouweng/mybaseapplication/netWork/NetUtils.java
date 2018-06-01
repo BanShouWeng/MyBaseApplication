@@ -118,7 +118,7 @@ public class NetUtils {
                 return proceed;
             }
         });
-        CookieManager cookieManager = new java.net.CookieManager(new InDiskCookieStore(context), CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+        CookieManager cookieManager = new CookieManager(new InDiskCookieStore(context), CookiePolicy.ACCEPT_ORIGINAL_SERVER);
         builder.cookieJar(new JavaNetCookieJar(cookieManager));
 
         try {

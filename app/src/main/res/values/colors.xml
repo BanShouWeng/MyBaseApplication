@@ -8,4 +8,5 @@
     <color name="blue">#0071e4</color>
     <color name="green">#1AAD19</color>
     <color name="color_ccc">#CCCCCC</color>
+    <color name="divider_line_color">#F0F0F0</color>
 </resources>

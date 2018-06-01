@@ -19,13 +19,13 @@ public class Logger {
     private static int showLength = 3999;
 
     /**
-     * 打印捕获的错误日志
+     * 分段打印出较长log文本
      *
-     * @param exception 异常
+     * @param exception 异常日志
      * @param tag       打印log的标记
      */
-    public static <T extends Exception> void i(String tag, T exception) {
-        if (!debug) {
+    public static <T extends Exception> void e(String tag, T exception) {
+        if (! debug) {
             return;
         }
         StringWriter stackTrace = new StringWriter();
@@ -33,17 +33,17 @@ public class Logger {
         String logContent = stackTrace.toString();
         if (logContent.length() > showLength) {
             String show = logContent.substring(0, showLength);
-            Log.i(tag, show);
+            Log.e(tag, show);
             /*剩余的字符串如果大于规定显示的长度，截取剩余字符串进行递归，否则打印结果*/
             if ((logContent.length() - showLength) > showLength) {
                 String partLog = logContent.substring(showLength, logContent.length());
-                i(tag, partLog);
+                e(tag, partLog);
             } else {
                 String printLog = logContent.substring(showLength, logContent.length());
-                Log.i(tag, printLog);
+                Log.e(tag, printLog);
             }
         } else {
-            Log.i(tag, logContent);
+            Log.e(tag, logContent);
         }
     }
 
@@ -54,7 +54,7 @@ public class Logger {
      * @param tag        打印log的标记
      */
     public static void i(String tag, String logContent) {
-        if (!debug) {
+        if (! debug) {
             return;
         }
         if (logContent.length() > showLength) {
@@ -80,7 +80,7 @@ public class Logger {
      * @param tag        打印log的标记
      */
     public static void e(String tag, String logContent) {
-        if (!debug) {
+        if (! debug) {
             return;
         }
         if (logContent.length() > showLength) {
@@ -106,7 +106,7 @@ public class Logger {
      * @param tag        打印log的标记
      */
     public static void d(String tag, String logContent) {
-        if (!debug) {
+        if (! debug) {
             return;
         }
         if (logContent.length() > showLength) {

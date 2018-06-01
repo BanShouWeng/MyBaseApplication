@@ -1,26 +1,27 @@
-package com.banshouweng.mybaseapplication.widget.MyRecyclerView;
+package com.banshouweng.mybaseapplication.widget.BswRecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import com.banshouweng.mybaseapplication.base.BaseBean;
+import com.banshouweng.mybaseapplication.R;
 
 import java.util.List;
 
 /**
- * 《一个Android工程的从零开始》
  * 自定义RecyclerView布局
  *
- * @author 半寿翁
- * @博客：
- * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
- * @简书 http://www.jianshu.com/p/1410051701fe
+ * @author leiming
+ * @date 2018/4/22 11:26
  */
-public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
+public class BswFilterRecyclerView<T> extends RecyclerView {
     /**
      * 纵向布局
      */
@@ -34,15 +35,17 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      * 上下文
      */
     private Context context;
+
     /**
      * 自定义适配器
      */
-    private BswRecyclerAdapter<T> adapter;
+    private BswFilterRecyclerAdapter<T> adapter;
+    private Toast toast;
 
     /**
      * @param context 上下文
      */
-    public BswRecyclerView(Context context) {
+    public BswFilterRecyclerView(Context context) {
         super(context);
         this.context = context;
     }
@@ -51,7 +54,7 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param context 上下文
      * @param attrs   属性设置
      */
-    public BswRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public BswFilterRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
     }
@@ -61,7 +64,7 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param attrs    属性设置
      * @param defStyle http://blog.csdn.net/mybeta/article/details/39993449大神的博客
      */
-    public BswRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public BswFilterRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
     }
@@ -73,34 +76,57 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param callBack 布局配置回调接口
      * @return 当前RecyclerView
      */
-    public BswRecyclerView initAdapter(int layoutId, ConvertViewCallBack<T> callBack) {
-        adapter = new BswRecyclerAdapter<>(context, layoutId, callBack);
+    public BswFilterRecyclerView initAdapter(int layoutId, EditText filterEt, FilterConvertViewCallBack<T> callBack) {
+        adapter = new BswFilterRecyclerAdapter<>(context, layoutId, filterEt, callBack);
         setAdapter(adapter);
         return this;
     }
 
-    public BswRecyclerView initAdapter(MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layouts) {
-        adapter = new BswRecyclerAdapter<>(context, multiplexAdapterCallBack, layouts);
-        setAdapter(adapter);
+    /**
+     * 设置devider
+     *
+     * @param type devider类型
+     * @return 当前RecyclerView
+     */
+    public BswFilterRecyclerView setDecoration(int type) {
+        addItemDecoration(new BswDecoration(context, type));
+        return this;
+    }
+
+    /**
+     * 设置默认devider
+     *
+     * @return 当前RecyclerView
+     */
+    public BswFilterRecyclerView setDecoration() {
+        setDecoration(BswDecoration.BOTTOM_DECORATION);
         return this;
     }
 
     /**
      * 设置数据
      *
-     * @param myData 所要展示的数据
+     * @param mData 所要展示的数据
      */
-    public void setData(List<T> myData) {
-        adapter.setData(myData);
+    public void setData(List<T> mData) {
+        adapter.setData(mData);
     }
 
     /**
-     * 添加数据
+     * 设置数据
      *
-     * @param myData 所要添加的数据
+     * @param mData 所要展示的数据
      */
-    public void addData(List<T> myData) {
-        adapter.addData(myData);
+    public void setData(List<T> mData, int pageNumber) {
+        adapter.setData(mData, pageNumber);
+    }
+
+    /**
+     * 替换数据
+     * @param mData 用来替换的数据
+     */
+    public void replaceData(List<T> mData){
+        adapter.replaceData(mData);
     }
 
     /**
@@ -110,6 +136,22 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      */
     public void clearData(boolean isNotify) {
         adapter.clearData(isNotify);
+    }
+
+    /**
+     * 获取某一项
+     *
+     * @param position 位置
+     */
+    public T getItem(int position) {
+        return adapter.getItem(position);
+    }
+
+    /**
+     * 刷新数据
+     */
+    public void notifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
     }
 
     /**
@@ -124,10 +166,20 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
     /**
      * 设置布局样式
      *
+     * @return 当前RecyclerView
+     */
+    public BswFilterRecyclerView setLayoutManager() {
+        setLayoutManager(VERTICAL);
+        return this;
+    }
+
+    /**
+     * 设置布局样式
+     *
      * @param layoutrType 布局样式
      * @return 当前RecyclerView
      */
-    public BswRecyclerView setLayoutManager(int layoutrType) {
+    public BswFilterRecyclerView setLayoutManager(int layoutrType) {
         if (layoutrType == HORIZONTAL) // 横向列表
         {
             setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -145,7 +197,7 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param reverseLayout 横向布局是否可以循环滑动标志位： true，可以；false，不可以
      * @return 当前RecyclerView
      */
-    public BswRecyclerView setLayoutManager(int layoutrType, boolean reverseLayout) {
+    public BswFilterRecyclerView setLayoutManager(int layoutrType, boolean reverseLayout) {
         if (layoutrType == HORIZONTAL) // 横向列表
         {
             setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, reverseLayout));
@@ -163,7 +215,7 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param spanCount   拓展到多少行/列
      * @return 当前RecyclerView
      */
-    public BswRecyclerView setLayoutManager(int layoutrType, int spanCount) {
+    public BswFilterRecyclerView setLayoutManager(int layoutrType, int spanCount) {
         if (spanCount == 1) // 当spanCount为的时候，为线性列表
         {
             return setLayoutManager(layoutrType);
@@ -186,7 +238,7 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
      * @param reverseLayout 横向布局是否可以循环滑动标志位： true，可以；false，不可以
      * @return 当前RecyclerView
      */
-    public BswRecyclerView setLayoutManager(int layoutrType, int spanCount, boolean reverseLayout) {
+    public BswFilterRecyclerView setLayoutManager(int layoutrType, int spanCount, boolean reverseLayout) {
         if (spanCount == 1) {
             return setLayoutManager(layoutrType, reverseLayout);
         }
@@ -217,6 +269,11 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
             int lastVisibleItem;
 
             /**
+             * 是否是为了显示Footer而滑动导致的到最后一项
+             */
+            boolean isSmoothToEnd = false;
+
+            /**
              * 滑动结束
              * @param recyclerView 当前recyclerView
              * @param newState 滑动后的状态newState
@@ -231,8 +288,20 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
                  * SCROLL_STATE_FLING是当用户由于之前划动屏幕并抬起手指，屏幕产生惯性滑动时
                  */
                 if (newState == SCROLL_STATE_IDLE) {
-                    if (lastPosition > 0 && lastVisibleItem == adapter.getItemCount() - 1 && loadListener.canLoadMore()) {
-                        loadListener.loadData();
+                    boolean toBottom = recyclerView.getBottom() == recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount() - 1).getBottom();
+                    if (lastPosition > 0 && lastVisibleItem == adapter.getItemCount() - 1 && toBottom) {
+                        if (loadListener.canLoadMore()) {
+                            if (isSmoothToEnd) {
+                                isSmoothToEnd = false;
+                            } else {
+                                isSmoothToEnd = true;
+                                adapter.setShowFooter();
+                                smoothScrollToPosition(adapter.getItemCount());
+                                loadListener.loadData();
+                            }
+                        } else {
+                            toast(R.string.all_loaded);
+                        }
                     }
                 }
             }
@@ -250,5 +319,29 @@ public class BswRecyclerView<T extends BaseBean> extends RecyclerView {
                 lastPosition = dy;
             }
         });
+    }
+
+    /**
+     * 消息提示框
+     * https://www.jianshu.com/p/4551734b3c21
+     *
+     * @param messageId 提示消息文本ID
+     */
+    @SuppressLint("ShowToast")
+    protected void toast(int messageId) {
+        try {
+            if (toast != null) {
+                toast.setText(messageId);
+            } else {
+                toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            }
+            toast.show();
+        } catch (Exception e) {
+            //解决在子线程中调用Toast的异常情况处理
+            Looper.prepare();
+            toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            toast.show();
+            Looper.loop();
+        }
     }
 }

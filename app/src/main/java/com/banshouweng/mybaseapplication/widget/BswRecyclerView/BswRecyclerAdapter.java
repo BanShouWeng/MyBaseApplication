@@ -1,25 +1,28 @@
-package com.banshouweng.mybaseapplication.widget.MyRecyclerView;
+package com.banshouweng.mybaseapplication.widget.BswRecyclerView;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.banshouweng.mybaseapplication.base.BaseBean;
+import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 《一个Android工程的从零开始》
+ * RecyclerView适配器
  *
- * @author 半寿翁
- * @博客：
- * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
- * @简书 http://www.jianshu.com/p/1410051701fe
+ * @author leiming
+ * @date 2018/4/22 11:25
  */
-public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter {
+public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
+
+    private final int FOOTER_TYPE = 0x9999;
 
     /**
      * 请求数据列表
@@ -38,7 +41,17 @@ public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter
      */
     private int layoutId;
     private int[] layoutIds;
-    private boolean hasHead = false;
+
+    private boolean showFooter = false;
+    /**
+     * 分页页码，用于判断是加载数据，还是替换数据
+     */
+    private int pageNumber = 1;
+
+    public void setShowFooter() {
+        showFooter = true;
+        notifyDataSetChanged();
+    }
 
     /**
      * 布局设置回调接口
@@ -104,6 +117,9 @@ public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter
 
     @Override
     public int getItemViewType(int position) {
+        if (showFooter && position == Const.judgeListNull(mData)) {
+            return FOOTER_TYPE;
+        }
         if (multiplexAdapterCallBack == null) {
             return super.getItemViewType(position);
         } else {
@@ -122,11 +138,61 @@ public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter
     }
 
     /**
+     * 设置数据
+     *
+     * @param mData      所要展示的数据列表
+     * @param pageNumber 页码
+     */
+    public void setData(List<T> mData, int pageNumber) {
+        this.mData = mData;
+        if (pageNumber == 1) {
+            setData(mData);
+        } else if (pageNumber == this.pageNumber) {
+            replaceData(mData);
+        } else {
+            addData(mData);
+        }
+        this.pageNumber = pageNumber;
+    }
+
+    /**
      * 添加数据
      *
-     * @param mData 所添加的数据列表
+     * @param mData 所添加的数据列表,刷新放在Footer进行
      */
     public void addData(List<T> mData) {
+        this.mData.addAll(mData);
+        showFooter = false;
+        // 网络请求快时，footer无法显示
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 数据替换
+     *
+     * @param mData 替换的数据
+     */
+    public void replaceData(List<T> mData) {
+        int stringListSize = getItemCount();
+        for (int i = 1; i <= Const.judgeListNull(mData); i++) {
+            this.mData.remove(stringListSize - i);
+        }
         this.mData.addAll(mData);
         notifyDataSetChanged();
     }
@@ -143,6 +209,14 @@ public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter
         }
     }
 
+    public T getItem(int position) {
+        return mData.get(position);
+    }
+
+    public List<T> getData() {
+        return mData;
+    }
+
     /**
      * 移除数据
      *
@@ -152,18 +226,28 @@ public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter
         this.notifyItemRemoved(pos);
     }
 
+    @NonNull
+    @SuppressLint("InflateParams")
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //根据数据创建右边的操作view
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (FOOTER_TYPE == viewType) {
+            // inflate形式是避免内部布局宽高失效
+            return new RecyclerViewHolder(context, layoutInflater.inflate(R.layout.footer_laoding_layout, parent, false));
+        }
         if (multiplexAdapterCallBack == null) {
-            return new RecyclerViewHolder(context, layoutInflater.inflate(layoutId, null));
+            // inflate形式是避免内部布局宽高失效
+            return new RecyclerViewHolder(context, layoutInflater.inflate(layoutId, parent, false));
         } else {
-            return new RecyclerViewHolder(context, layoutInflater.inflate(multiplexAdapterCallBack.onCreateHolder(viewType, layoutIds), null));
+            // inflate形式是避免内部布局宽高失效
+            return new RecyclerViewHolder(context, layoutInflater.inflate(multiplexAdapterCallBack.onCreateHolder(viewType, layoutIds), parent, false));
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (position >= Const.judgeListNull(mData)) {
+            return;
+        }
         if (multiplexAdapterCallBack == null) {
             convertViewCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position);
         } else {
@@ -174,6 +258,10 @@ public class BswRecyclerAdapter<T extends BaseBean> extends RecyclerView.Adapter
 
     @Override
     public int getItemCount() {
-        return Const.judgeListNull(mData);
+        int mDataSize = Const.judgeListNull(mData);
+        if (showFooter) {
+            mDataSize++;
+        }
+        return mDataSize;
     }
 }

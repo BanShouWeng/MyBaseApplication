@@ -1,4 +1,4 @@
-package com.banshouweng.mybaseapplication.widget.MyRecyclerView;
+package com.banshouweng.mybaseapplication.widget.BswRecyclerView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,7 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Administrator on 2016/11/17.
+ * ViewHolder
+ *
+ * @author leiming
+ * @date 2018/4/22 11:26
  */
 public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     private SparseArray<View> mViews;//集合类，layout里包含的View,以view的id作为key，value是view对象
@@ -33,16 +36,41 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
             view = itemView.findViewById(viewId);
             mViews.put(viewId, view);
         }
-        return (T)view;
+        return (T) view;
     }
 
-    public ImageView getImageView(int viewId){
+    public ImageView getImageView(int viewId) {
         return getView(viewId);
     }
 
     public RecyclerViewHolder setText(int viewId, String value) {
         TextView view = getView(viewId);
         view.setText(value);
+        return this;
+    }
+
+    public RecyclerViewHolder setVisibility(int viewId, int visibility) {
+        View view = getView(viewId);
+        view.setVisibility(visibility);
+        return this;
+    }
+
+    public int getVisibility(int viewId, int visibility) {
+        return getView(viewId).getVisibility();
+    }
+
+    /**
+     * 设置文本以及色值
+     *
+     * @param viewId 设置文本的View的Id
+     * @param color  设置的颜色 由于在Const的getStateColor方法封装了根据状态获取色值，所以这里直接使用，而不是传入色值Id了
+     * @param value  设置的文字
+     * @return holder
+     */
+    public RecyclerViewHolder setText(int viewId, int color, String value) {
+        TextView view = getView(viewId);
+        view.setText(value);
+        view.setTextColor(color);
         return this;
     }
 

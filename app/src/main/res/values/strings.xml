@@ -10,6 +10,8 @@
 
     <string name="confirm_abandon">确认放弃当前操作</string>
 
+    <string name="all_loaded">已全部加载</string>
+
     <string name="all">共%s个</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -21,4 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
+
+    <com.banshouweng.mybaseapplication.widget.BswRecyclerView.BswRecyclerView
+        android:id="@+id/bsw_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </LinearLayout>
