@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -14,7 +15,11 @@ import android.widget.ImageView;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
-import com.banshouweng.mybaseapplication.base.activity.BaseNetActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseLayoutActivity;
+import com.banshouweng.mybaseapplication.netWork.NetUtils;
+import com.banshouweng.mybaseapplication.utils.Const;
+
+import java.util.Map;
 
 /**
  * 《一个Android工程的从零开始》
@@ -24,7 +29,7 @@ import com.banshouweng.mybaseapplication.base.activity.BaseNetActivity;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class TestActivity extends BaseNetActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, TextureView.SurfaceTextureListener {
+public class TestActivity extends BaseLayoutActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, TextureView.SurfaceTextureListener {
 
     //    private Uri uri = Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
     private String path = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
@@ -38,6 +43,8 @@ public class TestActivity extends BaseNetActivity implements MediaPlayer.OnBuffe
 
     private Handler handler = new Handler();
 
+    private NetUtils netUtils;
+
     private final Runnable mTicker = new Runnable() {
         public void run() {
             long now = SystemClock.uptimeMillis();
@@ -47,21 +54,16 @@ public class TestActivity extends BaseNetActivity implements MediaPlayer.OnBuffe
         }
     };
 
+    private String title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("TestActivity");
-
-    }
-
-    @Override
-    public void success(String action, BaseBean baseBean) {
-
-    }
-
-    @Override
-    public void error(String action, Throwable e) {
-
+//        setTitle("TestActivity");
+        if (! TextUtils.isEmpty(title)) {
+            setTitle(title);
+        }
+        netUtils = new NetUtils(mContext,netRequestCallBack);
     }
 
     @Override
@@ -112,7 +114,9 @@ public class TestActivity extends BaseNetActivity implements MediaPlayer.OnBuffe
 
     @Override
     protected void getBundle(Bundle bundle) {
-
+        if (Const.notEmpty(bundle)) {
+            title = bundle.getString("title");
+        }
     }
 
     @Override
@@ -182,4 +186,18 @@ public class TestActivity extends BaseNetActivity implements MediaPlayer.OnBuffe
             }
         }
     }
+
+    private NetUtils.NetRequestCallBack netRequestCallBack = new NetUtils.NetRequestCallBack() {
+        @Override
+        public void success(String action, BaseBean t, Map tag) {
+            switch (action) {
+
+            }
+        }
+
+        @Override
+        public void error(String action, Throwable e, Map tag) {
+
+        }
+    };
 }

@@ -30,7 +30,7 @@ import com.banshouweng.mybaseapplication.utils.Logger;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public abstract class BaseFragmentActivity extends BaseNetActivity {
+public abstract class BaseFragmentActivity extends BaseLayoutActivity{
 
     @SuppressLint("CommitTransaction")
     @Override

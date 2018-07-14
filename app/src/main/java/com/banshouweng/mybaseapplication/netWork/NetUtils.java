@@ -1,24 +1,33 @@
 package com.banshouweng.mybaseapplication.netWork;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 import com.banshouweng.mybaseapplication.BuildConfig;
-import com.banshouweng.mybaseapplication.netWork.RetrofitGetService;
-import com.banshouweng.mybaseapplication.netWork.RetrofitPostJsonService;
+import com.banshouweng.mybaseapplication.R;
+import com.banshouweng.mybaseapplication.base.BaseBean;
+import com.banshouweng.mybaseapplication.utils.Const;
 import com.banshouweng.mybaseapplication.utils.Logger;
+import com.banshouweng.mybaseapplication.utils.TxtUtils;
+import com.banshouweng.mybaseapplication.widget.BswAlertDialog.BswAlertDialog;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -31,10 +40,9 @@ import javax.net.ssl.X509TrustManager;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.MediaType;
@@ -42,6 +50,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -55,13 +64,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
 public class NetUtils {
-    private final Context context;
+    /**
+     * 上下文
+     */
+    private final Context mContext;
+    /**
+     * 网络请求结果回调
+     */
+    private final NetRequestCallBack netRequestCallBack;
+    /**
+     * header
+     */
     private Map<String, String> headerParams;
+    /**
+     * 网络请求弹窗
+     */
+    private BswAlertDialog customProgressDialog;
 
-    private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
-
-    public NetUtils(Context context) {
-        this.context = context;
+    public  NetUtils(Context mContext, NetRequestCallBack netRequestCallBack) {
+        this.netRequestCallBack = netRequestCallBack;
+        this.mContext = mContext;
     }
 
     /**
@@ -118,7 +140,7 @@ public class NetUtils {
                 return proceed;
             }
         });
-        CookieManager cookieManager = new CookieManager(new InDiskCookieStore(context), CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+        CookieManager cookieManager = new CookieManager(new InDiskCookieStore(mContext), CookiePolicy.ACCEPT_ORIGINAL_SERVER);
         builder.cookieJar(new JavaNetCookieJar(cookieManager));
 
         try {
@@ -153,11 +175,17 @@ public class NetUtils {
     /**
      * Get请求
      *
-     * @param action   请求接口的尾址
-     * @param params   索要传递的参数
-     * @param observer 求情观察者
+     * @param action     网络请求尾址
+     * @param params     请求参数
+     * @param clazz      返回数据类
+     * @param tag        请求复用时的判断标签
+     * @param showDialog 是否展示请求加载框
      */
-    public void get(final String action, Map<String, String> params, Observer<ResponseBody> observer) {
+    public<T extends BaseBean> void get(final String action, Map<String, Object> params, Class<T> clazz, Map<String, ?> tag, boolean showDialog) {
+        if (showDialog) {
+            showLoadDialog();
+        }
+
         RetrofitGetService getService = initBaseData(action).create(RetrofitGetService.class);
         if (params == null) {
             params = new HashMap<>();
@@ -172,26 +200,225 @@ public class NetUtils {
         getService.getResult(action.substring(action.lastIndexOf("/") + 1), headerParams, params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+                .subscribe(new MyObserver<>(action, clazz, tag, showDialog));
     }
 
     /**
      * Post请求
      *
-     * @param action   请求接口的尾址
-     * @param observer 求情观察者
+     * @param action     网络请求尾址
+     * @param params     请求参数
+     * @param clazz      返回数据类
+     * @param tag        请求复用时的判断标签
+     * @param showDialog 是否展示请求加载框
      */
-    public void post(final String action, String json, Observer<ResponseBody> observer) {
+    public<T extends BaseBean> void post(final String action, Map<String, Object> params, Class<T> clazz, Map<String, ?> tag, boolean showDialog) {
+
+        if (showDialog) {
+            showLoadDialog();
+        }
+
+        if (params == null) {
+            params = new HashMap<>();
+        }
+
+        String requestString = String.valueOf(new JSONObject(params));
+        if (TextUtils.isEmpty(requestString) && Const.notEmpty(netRequestCallBack)) {
+            //noinspection unchecked
+            netRequestCallBack.error(action, new Exception(TxtUtils.getText(mContext, R.string.data_abnormal)), tag);
+        }
+
         RetrofitPostJsonService jsonService = initBaseData(action).create(RetrofitPostJsonService.class);
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
-                        json);
+                        requestString);
 
-        Logger.i("zzz", "request====" + json);
+        Logger.i("zzz", "request====" + requestString);
 
         jsonService.postResult(action.substring(action.lastIndexOf("/") + 1), requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+                .subscribe(new MyObserver<>(action, clazz, tag, showDialog));
+    }
+
+    /**
+     * Post请求
+     *
+     * @param action     网络请求尾址
+     * @param o          请求参数类
+     * @param clazz      返回数据类
+     * @param tag        请求复用时的判断标签
+     * @param showDialog 是否展示请求加载框
+     */
+    public<T extends BaseBean> void post(final String action, Object o, Class<T> clazz, Map<String, ?> tag, boolean showDialog) {
+
+        if (showDialog) {
+            showLoadDialog();
+        }
+
+        String requestString = new Gson().toJson(o);
+        if (TextUtils.isEmpty(requestString) && Const.notEmpty(netRequestCallBack)) {
+            //noinspection unchecked
+            netRequestCallBack.error(action, new Exception(TxtUtils.getText(mContext, R.string.data_abnormal)), tag);
+        }
+
+        RetrofitPostJsonService jsonService = initBaseData(action).create(RetrofitPostJsonService.class);
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                        requestString);
+
+        Logger.i("zzz", "request====" + requestString);
+
+        jsonService.postResult(action.substring(action.lastIndexOf("/") + 1), requestBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MyObserver<>(action, clazz, tag, showDialog));
+    }
+
+    private class MyObserver<T extends BaseBean> implements Observer<ResponseBody> {
+
+        private Class<T> clazz;
+        private String action;
+        boolean showDialog;
+        /**
+         * 返回结果状态：0、正常Bean；1、Bitmap
+         */
+        private int resultStatus = 0;
+        private Map<String, ?> tag;
+
+        MyObserver(String action, Class<T> clazz, Map<String, ?> tag, boolean showDialog) {
+            this.clazz = clazz;
+            this.action = action;
+            this.tag = tag;
+            this.showDialog = showDialog;
+        }
+
+        MyObserver(String action, int resultStatus) {
+            this.action = action;
+            this.resultStatus = resultStatus;
+        }
+
+        @Override
+        public void onSubscribe(@NonNull Disposable d) {
+
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onNext(@NonNull ResponseBody responseBody) {
+            if (showDialog) {
+                hideLoadDialog();
+            }
+            try {
+                switch (resultStatus) {
+                    case 0:
+                        String responseString = responseBody.string();
+                        Logger.i("responseString", action + "********** responseString get  " + responseString);
+                        if (Const.notEmpty(netRequestCallBack)) {
+                            netRequestCallBack.success(action, (T) new Gson().fromJson(responseString, clazz), tag);
+                        }
+                        break;
+
+                    case 1:
+                        if (Const.notEmpty(netRequestCallBack)) {
+                            netRequestCallBack.success(action, BitmapFactory.decodeStream(responseBody.byteStream()), tag);
+                        }
+                        Logger.i("responseString", action + "********** 图片获取成功 ");
+                        break;
+
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onError(@NonNull Throwable e) {
+            if (showDialog) {
+                hideLoadDialog();
+            }
+            try {
+                if (e instanceof HttpException) {
+                    ResponseBody errorbody = ((HttpException) e).response().errorBody();
+                    if (Const.notEmpty(errorbody)) {
+                        Logger.i("responseString", String.format("%s********** responseString get error %s content %s", action, e.toString(), TextUtils.isEmpty(errorbody.string()) ? "" : errorbody));
+                    }
+                } else {
+                    Logger.i("responseString", String.format("%s********** responseString get error %s", action, e.toString()));
+                }
+            } catch (IOException | NullPointerException e1) {
+                e1.printStackTrace();
+            }
+            if (Const.notEmpty(netRequestCallBack)) {
+                netRequestCallBack.error(action, e, tag);
+            }
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    }
+
+    /**
+     * 隐藏加载提示框
+     */
+    public void hideLoadDialog() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (customProgressDialog != null && customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+            }
+        });
+    }
+
+    /**
+     * 显示加载提示框
+     */
+    public void showLoadDialog() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (customProgressDialog != null && ! customProgressDialog.isShowing()) {
+                        customProgressDialog.show();
+                    }
+                } catch (Exception ex) {
+                    StringWriter stackTrace = new StringWriter();
+                    ex.printStackTrace(new PrintWriter(stackTrace));
+                    Logger.i("Exception", stackTrace.toString());
+                }
+            }
+        });
+    }
+
+    /**
+     * 网络请求文本结果回调接口
+     */
+    public abstract static class NetRequestCallBack<TT extends BaseBean> {
+
+        public void success(String action, Bitmap bitmap, Map<String, ?> tag) {
+
+        }
+
+        public void success(String action, File file, Map<String, ?> tag) {
+
+        }
+
+        public abstract void success(String action, TT t, Map<String, ?> tag);
+
+        /**
+         * 访问失败回调抽象方法
+         *
+         * @param action 网络访问尾址
+         * @param e      所返回的异常
+         * @param tag    当接口复用时，用于区分请求的表识
+         */
+        public abstract void error(String action, Throwable e, Map<String, ?> tag);
     }
 }

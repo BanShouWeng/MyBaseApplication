@@ -7,8 +7,11 @@ import android.widget.TextView;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
-import com.banshouweng.mybaseapplication.base.fragment.BaseNetFragment;
+import com.banshouweng.mybaseapplication.base.fragment.BaseFragment;
+import com.banshouweng.mybaseapplication.netWork.NetUtils;
 import com.banshouweng.mybaseapplication.utils.Logger;
+
+import java.util.Map;
 
 /**
  * 《一个Android工程的从零开始》
@@ -18,9 +21,11 @@ import com.banshouweng.mybaseapplication.utils.Logger;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MineFragment extends BaseNetFragment {
+public class MineFragment extends BaseFragment {
 
-    private TextView textFragment;
+//    private TextView textFragment;
+
+    private NetUtils netUtils;
 
     public static MineFragment getInstance() {
         return new MineFragment();
@@ -31,6 +36,8 @@ public class MineFragment extends BaseNetFragment {
         super.onViewCreated(view, savedInstanceState);
 //        //设置title文本
         setTitle("MineFragment");
+
+        netUtils = new NetUtils(mContext, netRequestCallBack);
 //        //设置返回拦截
 //        setBaseBack(new View.OnClickListener() {
 //            @Override
@@ -71,12 +78,12 @@ public class MineFragment extends BaseNetFragment {
 
     @Override
     protected void findViews() {
-        textFragment = getView(R.id.text_fragment);
+//        textFragment = getView(R.id.text_fragment);
     }
 
     @Override
     protected void formatViews() {
-        textFragment.setText("找到了，而且赋值成功");
+//        textFragment.setText("找到了，而且赋值成功");
     }
 
     @Override
@@ -90,17 +97,19 @@ public class MineFragment extends BaseNetFragment {
     }
 
     @Override
-    public void success(String action, BaseBean baseBean) {
-        Logger.e("dadadadad", action);
-    }
-
-    @Override
-    public void error(String action, Throwable e) {
-
-    }
-
-    @Override
     public void onClick(View v) {
 
     }
+
+    private NetUtils.NetRequestCallBack netRequestCallBack = new NetUtils.NetRequestCallBack() {
+        @Override
+        public void success(String action, BaseBean t, Map tag) {
+            Logger.e("dadadadad", action);
+        }
+
+        @Override
+        public void error(String action, Throwable e, Map tag) {
+
+        }
+    };
 }

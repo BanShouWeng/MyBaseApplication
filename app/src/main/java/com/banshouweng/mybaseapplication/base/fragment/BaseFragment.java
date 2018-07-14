@@ -49,8 +49,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     /**
      * 用于传递的上下文信息
      */
-    protected Context context;
-    protected Activity activity;
+    protected Context mContext;
+    protected Activity mActivity;
 
     /**
      * 返回按钮
@@ -112,8 +112,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context.getApplicationContext();
-        activity = (Activity) context;
+        this.mContext = context.getApplicationContext();
+        mActivity = (Activity) context;
     }
 
     /**
@@ -170,7 +170,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.finish();
+                    mActivity.finish();
                 }
             });
         }
@@ -190,7 +190,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.finish();
+                    mActivity.finish();
                 }
             });
         }
@@ -225,7 +225,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             baseClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    activity.finish();
+                    mActivity.finish();
                 }
             });
         }
@@ -356,7 +356,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         LinearLayout layout = getView(R.id.base_main_layout);
 
         //获取布局，并在BaseActivity基础上显示
-        final View view = activity.getLayoutInflater().inflate(layoutId, null);
+        final View view = mActivity.getLayoutInflater().inflate(layoutId, null);
         //关闭键盘
         hideKeyBoard();
         //给EditText的父控件设置焦点，防止键盘自动弹出
@@ -371,9 +371,9 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * 隐藏键盘
      */
     protected void hideKeyBoard() {
-        View view = activity.getWindow().peekDecorView();
+        View view = mActivity.getWindow().peekDecorView();
         if (view != null) {
-            InputMethodManager inputmanger = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputmanger = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -384,12 +384,12 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param targetActivity 所跳转的目标Activity类
      */
     protected void jumpTo(Class<?> targetActivity) {
-        Intent intent = new Intent(context, targetActivity);
-        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+        Intent intent = new Intent(mContext, targetActivity);
+        if (mActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -401,15 +401,15 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param bundle         跳转所携带的信息
      */
     protected void jumpTo(Class<?> targetActivity, Bundle bundle) {
-        Intent intent = new Intent(context, targetActivity);
+        Intent intent = new Intent(mContext, targetActivity);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
-        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+        if (mActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -421,12 +421,12 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param requestCode    请求码
      */
     protected void jumpTo(Class<?> targetActivity, int requestCode) {
-        Intent intent = new Intent(context, targetActivity);
-        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+        Intent intent = new Intent(mContext, targetActivity);
+        if (mActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             try {
                 startActivityForResult(intent, requestCode);
             } catch (ActivityNotFoundException e) {
-                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -439,15 +439,15 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param requestCode    请求码
      */
     protected void jumpTo(Class<?> targetActivity, int requestCode, Bundle bundle) {
-        Intent intent = new Intent(context, targetActivity);
+        Intent intent = new Intent(mContext, targetActivity);
         if (bundle != null) {
             intent.putExtra("bundle", bundle);
         }
-        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+        if (mActivity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             try {
                 startActivityForResult(intent, requestCode);
             } catch (ActivityNotFoundException e) {
-                Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -483,13 +483,13 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             if (toast != null) {
                 toast.setText(message);
             } else {
-                toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+                toast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT);
             }
             toast.show();
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT);
             toast.show();
             Looper.loop();
         }
@@ -506,13 +506,13 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             if (toast != null) {
                 toast.setText(messageId);
             } else {
-                toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+                toast = Toast.makeText(mContext, messageId, Toast.LENGTH_SHORT);
             }
             toast.show();
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(mContext, messageId, Toast.LENGTH_SHORT);
             toast.show();
             Looper.loop();
         }

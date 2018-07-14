@@ -29,7 +29,7 @@ public class JumpToUtils {
             try {
                 context.startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Logger.e(context.getClass().getSimpleName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(context.getClass().getSimpleName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -50,7 +50,7 @@ public class JumpToUtils {
             try {
                 context.startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Logger.e(context.getClass().getSimpleName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(context.getClass().getSimpleName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -68,7 +68,7 @@ public class JumpToUtils {
             try {
                 ((Activity) context).startActivityForResult(intent, requestCode);
             } catch (ActivityNotFoundException e) {
-                Logger.e(context.getClass().getSimpleName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(context.getClass().getSimpleName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -90,7 +90,7 @@ public class JumpToUtils {
             try {
                 ((Activity) context).startActivityForResult(intent, requestCode);
             } catch (ActivityNotFoundException e) {
-                Logger.e(context.getClass().getSimpleName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(context.getClass().getSimpleName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }
@@ -112,7 +112,7 @@ public class JumpToUtils {
             try {
                 context.startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Logger.e(context.getClass().getSimpleName(), "activity not found for " + targetActivity.getSimpleName());
+                Logger.e(context.getClass().getSimpleName(), "mActivity not found for " + targetActivity.getSimpleName());
             }
         }
     }

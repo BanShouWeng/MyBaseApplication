@@ -1,4 +1,4 @@
-package com.banshouweng.mybaseapplication.widget.CustomAlertDialog;
+package com.banshouweng.mybaseapplication.widget.BswAlertDialog;
 
 import android.view.View;
 

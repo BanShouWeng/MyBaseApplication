@@ -14,6 +14,6 @@
 
     <string name="all">共%s个</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--Exception-->
+    <string name="data_abnormal">参数异常</string>
 </resources>

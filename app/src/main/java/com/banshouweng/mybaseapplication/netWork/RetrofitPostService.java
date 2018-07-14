@@ -22,5 +22,5 @@ public interface RetrofitPostService {
 
     @FormUrlEncoded
     @POST("{action}")
-    Observable<ResponseBody> postResult(@Path("action") String action, @FieldMap Map<String, String> params);
+    Observable<ResponseBody> postResult(@Path("action") String action, @FieldMap Map<String, Object> params);
 }

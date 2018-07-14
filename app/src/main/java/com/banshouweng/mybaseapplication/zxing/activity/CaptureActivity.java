@@ -60,7 +60,7 @@ public class CaptureActivity extends BaseLayoutActivity implements Callback {
     CameraManager cameraManager;
 
     /**
-     * Called when the activity is first created.
+     * Called when the mActivity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {

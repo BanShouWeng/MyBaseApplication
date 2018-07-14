@@ -16,16 +16,9 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewStub;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.receiver.NetBroadcastReceiver;
 import com.banshouweng.mybaseapplication.ui.activity.MainActivity;
 import com.banshouweng.mybaseapplication.utils.Logger;
@@ -53,8 +46,8 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
     /**
      * 用于传递的上下文信息
      */
-    public Context context;
-    public Activity activity;
+    public Context mContext;
+    public Activity mActivity;
 
     /**
      * 虚拟按键控件
@@ -84,8 +77,8 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
 
         activities.add(this);
         activitiesMap.put(getClass(), this);
-        context = getApplicationContext();
-        activity = this;
+        mContext = getApplicationContext();
+        mActivity = this;
         event = this;
 
         //下面的代码可以写在BaseActivity里面
@@ -189,7 +182,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             startActivity(intent);
         } else {
-            Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
         }
     }
 
@@ -207,7 +200,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             startActivity(intent);
         } else {
-            Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
         }
     }
 
@@ -222,7 +215,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             startActivityForResult(intent, requestCode);
         } else {
-            Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
         }
     }
 
@@ -241,7 +234,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
         if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             startActivityForResult(intent, requestCode);
         } else {
-            Logger.e(getName(), "activity not found for " + targetActivity.getSimpleName());
+            Logger.e(getName(), "mActivity not found for " + targetActivity.getSimpleName());
         }
     }
 
@@ -276,13 +269,13 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
             if (toast != null) {
                 toast.setText(message);
             } else {
-                toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+                toast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT);
             }
             toast.show();
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(mContext, message, Toast.LENGTH_SHORT);
             toast.show();
             Looper.loop();
         }
@@ -300,13 +293,13 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
             if (toast != null) {
                 toast.setText(messageId);
             } else {
-                toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+                toast = Toast.makeText(mContext, messageId, Toast.LENGTH_SHORT);
             }
             toast.show();
         } catch (Exception e) {
             //解决在子线程中调用Toast的异常情况处理
             Looper.prepare();
-            toast = Toast.makeText(context, messageId, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(mContext, messageId, Toast.LENGTH_SHORT);
             toast.show();
             Looper.loop();
         }
@@ -339,7 +332,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
                 }
             }
         else
-            Logger.e(activities.get(size - 1).getClass().getSimpleName(), "activity not open for " + targetActivity.getSimpleName());
+            Logger.e(activities.get(size - 1).getClass().getSimpleName(), "mActivity not open for " + targetActivity.getSimpleName());
     }
 
     @Override
@@ -368,7 +361,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      * @return true 表示网络可用
      */
     public boolean isNetworkAvailable() {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivity = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo info = connectivity.getActiveNetworkInfo();
             if (info != null && info.isConnected()) {
@@ -417,7 +410,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetBroad
      */
     @SuppressWarnings("unchecked")
     public <T extends View> T getView(int layoutId, int viewId) {
-        return (T) LayoutInflater.from(context).inflate(layoutId, null).findViewById(viewId);
+        return (T) LayoutInflater.from(mContext).inflate(layoutId, null).findViewById(viewId);
     }
 
     /**

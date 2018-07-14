@@ -2,7 +2,6 @@ package com.banshouweng.mybaseapplication.base.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
@@ -359,9 +358,9 @@ public abstract class BaseLayoutActivity extends BaseActivity implements NetBroa
      * 隐藏键盘
      */
     public void hideKeyBoard() {
-        View view = activity.getWindow().peekDecorView();
+        View view = mActivity.getWindow().peekDecorView();
         if (view != null) {
-            InputMethodManager inputmanger = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputmanger = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }

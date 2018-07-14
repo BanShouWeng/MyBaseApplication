@@ -1,5 +1,7 @@
 package com.banshouweng.mybaseapplication.base;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 /**
@@ -19,5 +21,9 @@ public class BaseBean implements Serializable {
      */
     protected String getName() {
         return getClass().getSimpleName();
+    }
+
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }

@@ -56,7 +56,7 @@ public class Const {
      * @return 是否存在
      */
     public static  boolean notEmpty(Object o) {
-        return null == o;
+        return null != o;
     }
 
     /**

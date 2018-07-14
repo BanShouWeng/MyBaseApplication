@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.banshouweng.mybaseapplication"
         minSdkVersion 15
-        targetSdkVersion 5
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

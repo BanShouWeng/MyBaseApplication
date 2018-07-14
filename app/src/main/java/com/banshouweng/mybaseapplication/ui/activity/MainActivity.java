@@ -8,7 +8,9 @@ import android.widget.EditText;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
-import com.banshouweng.mybaseapplication.base.activity.BaseNetActivity;
+import com.banshouweng.mybaseapplication.base.activity.BaseLayoutActivity;
+import com.banshouweng.mybaseapplication.bean.DouBanBean;
+import com.banshouweng.mybaseapplication.netWork.NetUtils;
 import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.utils.TxtUtils;
 import com.banshouweng.mybaseapplication.widget.BswRecyclerView.BswRecyclerView;
@@ -17,8 +19,10 @@ import com.banshouweng.mybaseapplication.widget.BswRecyclerView.OnLoadListener;
 import com.banshouweng.mybaseapplication.widget.BswRecyclerView.RecyclerViewHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 《一个Android工程的从零开始》
@@ -28,7 +32,7 @@ import java.util.Locale;
  * @CSDN http://blog.csdn.net/u010513377/article/details/74455960
  * @简书 http://www.jianshu.com/p/1410051701fe
  */
-public class MainActivity extends BaseNetActivity {
+public class MainActivity extends BaseLayoutActivity {
 
     private Button view, mergeBtn2;
     private int count = 0;
@@ -36,22 +40,15 @@ public class MainActivity extends BaseNetActivity {
     private EditText clickEt;
     private BswRecyclerView<BaseBean> bswList;
 
+    private NetUtils netUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.title);
-    }
 
-    @Override
-    protected void success(String action, BaseBean baseBean) {
-        switch (action) {
-
-        }
-    }
-
-    @Override
-    protected void error(String action, Throwable e) {
-
+        netUtils = new NetUtils(mContext, netRequestCallBack);
+        netUtils.get("top250", new HashMap<String, Object>(), DouBanBean.class, null, false);
     }
 
     @Override
@@ -101,7 +98,7 @@ public class MainActivity extends BaseNetActivity {
                         }
                     }
                 }).start();
-                Logger.i(getName(),"加载了");
+                Logger.i(getName(), "加载了");
             }
 
             @Override
@@ -115,8 +112,11 @@ public class MainActivity extends BaseNetActivity {
 
     @Override
     protected void formatData() {
-        mergeBtn2.setText(String.format(Locale.CHINA, TxtUtils.getText(context, R.string.all), "55555"));
-        view.setText(String.format(Locale.CHINA, TxtUtils.getText(context, R.string.all), "12345"));
+        mergeBtn2.setText(String.format(Locale.CHINA, TxtUtils.getText(mContext, R.string.all), "55555"));
+//        view.setText(String.format(Locale.CHINA, TxtUtils.getText(mContext, R.string.all), "12345"));
+        if (getIntent() != null) {
+            view.setText(getIntent().getStringExtra("name"));
+        }
     }
 
     @Override
@@ -144,6 +144,23 @@ public class MainActivity extends BaseNetActivity {
         @Override
         public void convert(RecyclerViewHolder holder, BaseBean baseBean, int position) {
             holder.setText(R.id.item_tv, "第" + (position + 1) + "项");
+        }
+    };
+
+    private NetUtils.NetRequestCallBack netRequestCallBack = new NetUtils.NetRequestCallBack() {
+        @Override
+        public void success(String action, BaseBean baseBean, Map tag) {
+            switch (action) {
+                case "top250":
+                    DouBanBean douBanBean = ((DouBanBean) baseBean);
+                    System.out.println(douBanBean.toString());
+                    break;
+            }
+        }
+
+        @Override
+        public void error(String action, Throwable e, Map tag) {
+
         }
     };
 }
