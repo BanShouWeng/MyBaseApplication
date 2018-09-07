@@ -13,9 +13,16 @@ public interface OnLoadListener {
     void loadData();
 
     /**
-     * 是否可以加载数据，当已经获取全部数据的时候，防止多余网络请求，或者开发中遇到的其他情况暂时不需要加载数据
+     * 上一次未加载完成不加载新数据
      *
      * @return 是否可以加载数据：true，可以；false，不可以
      */
     boolean canLoadMore();
+
+    /**
+     * 当全部加载后不再加载
+     *
+     * @return 是否全部加载 true是；false 否
+     */
+    boolean allLoaded();
 }

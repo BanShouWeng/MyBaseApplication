@@ -1,6 +1,7 @@
 package com.banshouweng.mybaseapplication.utils;
 
 import android.os.CountDownTimer;
+import android.support.annotation.IdRes;
 
 /**
  * 《一个Android工程的从零开始》
@@ -13,10 +14,24 @@ import android.os.CountDownTimer;
 public class TimerUtil extends CountDownTimer {
 
     private OnBaseTimerCallBack onBaseTimerCallBack;
+    private int viewId = 0;
 
     /**
-     * @param millisInFuture    时间间隔是多长时间
-     * @param countDownInterval 回调onTick方法，每隔多久执行一次
+     * @param viewId              需要定时器的ViewId
+     * @param millisInFuture      时间间隔是多长时间
+     * @param countDownInterval   回调onTick方法，每隔多久执行一次
+     * @param onBaseTimerCallBack 回调方法
+     */
+    public TimerUtil(@IdRes int viewId, long millisInFuture, long countDownInterval, OnBaseTimerCallBack onBaseTimerCallBack) {
+        super(millisInFuture, countDownInterval);
+        this.viewId = viewId;
+        this.onBaseTimerCallBack = onBaseTimerCallBack;
+    }
+
+    /**
+     * @param millisInFuture      时间间隔是多长时间
+     * @param countDownInterval   回调onTick方法，每隔多久执行一次
+     * @param onBaseTimerCallBack 回调方法
      */
     public TimerUtil(long millisInFuture, long countDownInterval, OnBaseTimerCallBack onBaseTimerCallBack) {
         super(millisInFuture, countDownInterval);
@@ -26,13 +41,13 @@ public class TimerUtil extends CountDownTimer {
     //间隔时间内执行的操作
     @Override
     public void onTick(long millisUntilFinished) {
-        onBaseTimerCallBack.onTick(millisUntilFinished);
+        onBaseTimerCallBack.onTick(viewId, millisUntilFinished);
     }
 
     //间隔时间结束的时候才会调用
     @Override
     public void onFinish() {
-        onBaseTimerCallBack.onFinish();
+        onBaseTimerCallBack.onFinish(viewId);
     }
 
     /**
@@ -44,11 +59,11 @@ public class TimerUtil extends CountDownTimer {
          *
          * @param millisUntilFinished 距离结束剩余时间
          */
-        void onTick(long millisUntilFinished);
+        void onTick(int viewId, long millisUntilFinished);
 
         /**
          * 间隔时间结束的时候才会调用
          */
-        void onFinish();
+        void onFinish(int viewId);
     }
 }

@@ -14,5 +14,5 @@ public interface ConvertViewCallBack<T> {
      * @param t        当前位置对应的数据bean对象
      * @param position 当前布局Item的位置
      */
-    void convert(RecyclerViewHolder holder, T t, int position);
+    T convert(RecyclerViewHolder holder, T t, int position);
 }

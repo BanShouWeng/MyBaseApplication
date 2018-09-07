@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.activity.BaseActivity;
+import com.banshouweng.mybaseapplication.utils.Const;
 import com.banshouweng.mybaseapplication.utils.Logger;
 
 /**
@@ -65,6 +66,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     private ViewStub viewStub;
     private boolean isUseBase = false;
     private Toast toast;
+    /**
+     * 是否重置Back的点击事件
+     */
+    private boolean isBaseBackReset = false;
 
     /**
      * 隐藏头布局
@@ -165,8 +170,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public void setTitle(String title, boolean showBack) {
         initBaseView();
         ((TextView) getView(R.id.base_title)).setText(title);
-        if (showBack) {
+        if (Const.isEmpty(baseBack)) {
             baseBack = getView(R.id.base_back);
+        }
+        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
+        if (showBack && ! isBaseBackReset) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,8 +193,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public void setTitle(int titleId, boolean showBack) {
         initBaseView();
         ((TextView) getView(R.id.base_title)).setText(titleId);
-        if (showBack) {
+        if (Const.isEmpty(baseBack)) {
             baseBack = getView(R.id.base_back);
+        }
+        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
+        if (showBack && ! isBaseBackReset) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -201,6 +212,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     protected void setBaseBack() {
         initBaseView();
+        isBaseBackReset = true;
+        if (Const.isEmpty(baseBack)) {
+            baseBack = getView(R.id.base_back);
+        }
         baseBack.setOnClickListener(this);
     }
 

@@ -60,18 +60,22 @@ public class BswDecoration extends RecyclerView.ItemDecoration {
                     float topV = view.getTop();
                     float bottomV = view.getBottom();
 
+                    //noinspection UnnecessaryLocalVariable
                     float tTop = topV;
                     float tBottom = view.getTop() + mydevider;
                     c.drawRect(leftV, tTop, rightV, tBottom, dividerPaint);
 
+                    //noinspection UnnecessaryLocalVariable
                     float bTop = bottomV;
                     float bBottom = view.getBottom() + mydevider;
                     c.drawRect(leftV, bTop, rightV, bBottom, dividerPaint);
 
+                    //noinspection UnnecessaryLocalVariable
                     float lLeft = leftV;
                     float lRight = view.getLeft() + mydevider;
                     c.drawRect(lLeft, topV, lRight, bottomV, dividerPaint);
 
+                    //noinspection UnnecessaryLocalVariable
                     float rLeft = rightV;
                     float rRight = view.getRight() + mydevider;
                     c.drawRect(rLeft, topV, rRight, bottomV, dividerPaint);

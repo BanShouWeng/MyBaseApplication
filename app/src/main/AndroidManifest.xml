@@ -14,8 +14,7 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
-    <!--android:allowBackup="false"  adb backup容许任何一个能够打开USB 调试开关的人从Android手机中复制应用数据到外设，一旦应用数据被备份之后，所有应用数据都可被用户读取-->
+    <!-- android:allowBackup="false"  adb backup容许任何一个能够打开USB 调试开关的人从Android手机中复制应用数据到外设，一旦应用数据被备份之后，所有应用数据都可被用户读取 -->
     <application
         android:name=".App"
         android:allowBackup="false"
@@ -25,7 +24,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
         <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,5 +45,7 @@
         <activity
             android:name=".ui.activity.TestActivity"
             android:exported="true" />
+        <activity android:name=".ui.activity.LaunchActivity"/>
     </application>
+
 </manifest>

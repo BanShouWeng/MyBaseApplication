@@ -3,6 +3,7 @@ package com.banshouweng.mybaseapplication.widget.BswRecyclerView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import java.util.List;
  * @author leiming
  * @date 2018/4/22 11:25
  */
-public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
+public class BswRecyclerAdapter<T> extends RecyclerView.Adapter {
 
     private final int FOOTER_TYPE = 0x9999;
 
@@ -39,7 +40,10 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
     /**
      * 布局ID
      */
+    @LayoutRes
     private int layoutId;
+
+    @LayoutRes
     private int[] layoutIds;
 
     private boolean showFooter = false;
@@ -48,8 +52,18 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      */
     private int pageNumber = 1;
 
-    public void setShowFooter() {
+    /**
+     * 最大显示数量，默认-1，表示不限制
+     */
+    private int maxCount = - 1;
+
+    void setShowFooter() {
         showFooter = true;
+        notifyDataSetChanged();
+    }
+
+    void removeFooter() {
+        showFooter = false;
         notifyDataSetChanged();
     }
 
@@ -71,7 +85,7 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      * @param layoutId 布局Id
      * @param callBack 布局设置回调接口
      */
-    public BswRecyclerAdapter(List<T> mData, Context context, int layoutId, ConvertViewCallBack<T> callBack) {
+    private BswRecyclerAdapter(List<T> mData, Context context, @LayoutRes int layoutId, ConvertViewCallBack<T> callBack) {
         this.mData = mData;
         this.context = context;
         this.layoutId = layoutId;
@@ -96,7 +110,7 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      * @param context                  上下文
      * @param multiplexAdapterCallBack 复用布局回调接口
      */
-    public BswRecyclerAdapter(Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
+    BswRecyclerAdapter(Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
         this(null, context, multiplexAdapterCallBack, layoutIds);
     }
 
@@ -107,7 +121,7 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      * @param context                  上下文
      * @param multiplexAdapterCallBack 复用布局设置回调接口
      */
-    public BswRecyclerAdapter(List<T> mData, Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, int... layoutIds) {
+    private BswRecyclerAdapter(List<T> mData, Context context, MultiplexAdapterCallBack<T> multiplexAdapterCallBack, @LayoutRes int... layoutIds) {
         this.mData = mData;
         this.context = context;
         this.layoutIds = layoutIds;
@@ -127,6 +141,11 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
         }
     }
 
+    public void setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
+        notifyDataSetChanged();
+    }
+
     /**
      * 设置数据
      *
@@ -143,12 +162,11 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      * @param mData      所要展示的数据列表
      * @param pageNumber 页码
      */
-    public void setData(List<T> mData, int pageNumber) {
-        this.mData = mData;
+    public void setData(List<T> mData, int pageNumber, int pageSize) {
         if (pageNumber == 1) {
             setData(mData);
         } else if (pageNumber == this.pageNumber) {
-            replaceData(mData);
+            replaceData(mData, pageNumber, pageSize);
         } else {
             addData(mData);
         }
@@ -160,7 +178,7 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      *
      * @param mData 所添加的数据列表,刷新放在Footer进行
      */
-    public void addData(List<T> mData) {
+    void addData(List<T> mData) {
         this.mData.addAll(mData);
         showFooter = false;
         // 网络请求快时，footer无法显示
@@ -188,13 +206,38 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      *
      * @param mData 替换的数据
      */
-    public void replaceData(List<T> mData) {
-        int stringListSize = getItemCount();
-        for (int i = 1; i <= Const.judgeListNull(mData); i++) {
-            this.mData.remove(stringListSize - i);
+    private void replaceData(List<T> mData, int pageNumber, int pageSize) {
+        int dataSize = Const.judgeListNull(mData);
+        if (dataSize < pageNumber) {
+            int allDataSize = Const.judgeListNull(this.mData);
+            for (int i = mData.size(); i < allDataSize - dataSize; i--) {
+                this.mData.remove(i);
+            }
+            this.mData.addAll(mData);
+        } else {
+            int startPosition = pageSize * (pageNumber - 1);
+            for (int i = startPosition; i < startPosition + dataSize; i++) {
+                this.mData.remove(i);
+                this.mData.add(i, mData.get(i - startPosition));
+            }
         }
-        this.mData.addAll(mData);
-        notifyDataSetChanged();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     /**
@@ -202,10 +245,12 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      *
      * @param isNotify 是否刷新布局
      */
-    public void clearData(boolean isNotify) {
-        this.mData.clear();
-        if (isNotify) {
-            notifyDataSetChanged();
+    void clearData(boolean isNotify) {
+        if (Const.notEmpty(mData)) {
+            mData.clear();
+            if (isNotify) {
+                notifyDataSetChanged();
+            }
         }
     }
 
@@ -222,7 +267,7 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
      *
      * @param pos 被移除数据的位置
      */
-    public void removeItem(int pos) {
+    void removeItem(int pos) {
         this.notifyItemRemoved(pos);
     }
 
@@ -249,9 +294,9 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
             return;
         }
         if (multiplexAdapterCallBack == null) {
-            convertViewCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position);
+            mData.set(position, convertViewCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position));
         } else {
-            multiplexAdapterCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position);
+            mData.set(position, multiplexAdapterCallBack.convert((RecyclerViewHolder) holder, mData.get(position), position));
         }
     }
 
@@ -262,6 +307,7 @@ public class BswRecyclerAdapter<T extends Object> extends RecyclerView.Adapter {
         if (showFooter) {
             mDataSize++;
         }
-        return mDataSize;
+        int s = maxCount < 0 ? mDataSize : maxCount < mDataSize ? maxCount : mDataSize;
+        return s;
     }
 }

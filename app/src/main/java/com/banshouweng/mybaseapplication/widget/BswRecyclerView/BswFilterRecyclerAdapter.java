@@ -2,6 +2,7 @@ package com.banshouweng.mybaseapplication.widget.BswRecyclerView;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -27,7 +28,7 @@ import java.util.List;
  * @author leiming
  * @date 2018/4/22 11:25
  */
-public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Adapter implements Filterable {
+class BswFilterRecyclerAdapter<T> extends RecyclerView.Adapter implements Filterable {
 
     private final int FOOTER_TYPE = 0x9999;
     /**
@@ -53,12 +54,12 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
     /**
      * 布局ID
      */
+    @LayoutRes
     private int layoutId;
-    private int[] layoutIds;
     private boolean showFooter = false;
-    private int pageNumber = 1;
+    private int pageNumber;
 
-    public void setShowFooter() {
+    void setShowFooter() {
         showFooter = true;
         notifyDataSetChanged();
     }
@@ -76,7 +77,7 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
      * @param layoutId 布局Id
      * @param callBack 布局设置回调接口
      */
-    public BswFilterRecyclerAdapter(List<T> mData, Context context, int layoutId, EditText filterEt, FilterConvertViewCallBack<T> callBack) {
+    private BswFilterRecyclerAdapter(List<T> mData, Context context, @LayoutRes int layoutId, EditText filterEt, FilterConvertViewCallBack<T> callBack) {
         this.mData = mData;
         showData = mData;
         mFilterEt = filterEt;
@@ -109,7 +110,7 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
      * @param layoutId 布局Id
      * @param callBack 布局设置回调接口
      */
-    public BswFilterRecyclerAdapter(Context context, int layoutId, EditText filterEt, FilterConvertViewCallBack<T> callBack) {
+    BswFilterRecyclerAdapter(Context context, @LayoutRes int layoutId, EditText filterEt, FilterConvertViewCallBack<T> callBack) {
         this(null, context, layoutId, filterEt, callBack);
     }
 
@@ -122,7 +123,7 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
         }
     }
 
-    public T getItem(int position) {
+    T getItem(int position) {
         return showData.get(position);
     }
 
@@ -143,12 +144,12 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
      * @param mData      所要展示的数据列表
      * @param pageNumber 页码
      */
-    public void setData(List<T> mData, int pageNumber) {
+    public void setData(List<T> mData, int pageNumber, int pageSize) {
         this.mData = mData;
         if (pageNumber == 1) {
             setData(mData);
         } else if (pageNumber == this.pageNumber) {
-            replaceData(mData);
+            replaceData(mData, pageNumber, pageSize);
         } else {
             addData(mData);
         }
@@ -160,7 +161,7 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
      *
      * @param mData 所要展示的数据列表
      */
-    public void addData(List<T> mData) {
+    private void addData(List<T> mData) {
         this.mData.addAll(mData);
         showFooter = false;
         new Thread(new Runnable() {
@@ -188,12 +189,30 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
      *
      * @param mData 替换的数据
      */
-    public void replaceData(List<T> mData) {
-        int stringListSize = Const.judgeListNull(this.mData);
-        for (int i = 1; i <= Const.judgeListNull(mData); i++) {
-            this.mData.remove(stringListSize - i);
+    void replaceData(List<T> mData, int pageNumber, int pageSize) {
+        int dataSize = Const.judgeListNull(mData);
+        int startPosition = pageSize * (pageNumber - 1);
+        for (int i = startPosition; i < startPosition + dataSize; i++) {
+            this.mData.remove(i);
+            this.mData.add(i, mData.get(i - startPosition));
         }
-        this.mData.addAll(mData);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        }).start();
         getFilter().filter(TxtUtils.getText(mFilterEt));
     }
 
@@ -202,7 +221,7 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
      *
      * @param isNotify 是否刷新布局
      */
-    public void clearData(boolean isNotify) {
+    void clearData(boolean isNotify) {
         this.mData.clear();
         showData = mData;
         if (isNotify) {
@@ -215,7 +234,7 @@ public class BswFilterRecyclerAdapter<T extends Object> extends RecyclerView.Ada
      *
      * @param pos 被移除数据的位置
      */
-    public void removeItem(int pos) {
+    void removeItem(int pos) {
         this.notifyItemRemoved(pos);
     }
 

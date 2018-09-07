@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.receiver.NetBroadcastReceiver;
+import com.banshouweng.mybaseapplication.utils.Const;
 import com.banshouweng.mybaseapplication.utils.Logger;
 
 
@@ -51,6 +52,10 @@ public abstract class BaseLayoutActivity extends BaseActivity implements NetBroa
     private ViewStub titleStub;
 
     private ImageView baseRightIcon1;
+    /**
+     * 是否重置Back的点击事件
+     */
+    private boolean isBaseBackReset = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,12 +136,15 @@ public abstract class BaseLayoutActivity extends BaseActivity implements NetBroa
     public void setTitle(String title, boolean showBack) {
         initBaseView();
         ((TextView) getView(R.id.base_title)).setText(title);
-        if (showBack) {
+        if (Const.isEmpty(baseBack)) {
             baseBack = getView(R.id.base_back);
+        }
+        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
+        if (showBack && ! isBaseBackReset) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
+                    mActivity.finish();
                 }
             });
         }
@@ -151,12 +159,15 @@ public abstract class BaseLayoutActivity extends BaseActivity implements NetBroa
     public void setTitle(int titleId, boolean showBack) {
         initBaseView();
         ((TextView) getView(R.id.base_title)).setText(titleId);
-        if (showBack) {
+        if (Const.isEmpty(baseBack)) {
             baseBack = getView(R.id.base_back);
+        }
+        baseBack.setVisibility(showBack ? View.VISIBLE : View.GONE);
+        if (showBack) {
             baseBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
+                    mActivity.finish();
                 }
             });
         }
@@ -180,6 +191,7 @@ public abstract class BaseLayoutActivity extends BaseActivity implements NetBroa
      */
     public void setBaseBack(int resId) {
         initBaseView();
+        isBaseBackReset = true;
         baseBack = getView(R.id.base_back);
         baseBack.setImageResource(resId);
         baseBack.setOnClickListener(this);

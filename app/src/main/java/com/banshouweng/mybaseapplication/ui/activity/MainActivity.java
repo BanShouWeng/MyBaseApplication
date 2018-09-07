@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.banshouweng.mybaseapplication.R;
 import com.banshouweng.mybaseapplication.base.BaseBean;
 import com.banshouweng.mybaseapplication.base.activity.BaseLayoutActivity;
 import com.banshouweng.mybaseapplication.bean.DouBanBean;
 import com.banshouweng.mybaseapplication.netWork.NetUtils;
+import com.banshouweng.mybaseapplication.utils.GlideUtils;
 import com.banshouweng.mybaseapplication.utils.Logger;
 import com.banshouweng.mybaseapplication.utils.TxtUtils;
 import com.banshouweng.mybaseapplication.widget.BswRecyclerView.BswRecyclerView;
@@ -105,6 +107,11 @@ public class MainActivity extends BaseLayoutActivity {
             public boolean canLoadMore() {
                 return true;
             }
+
+            @Override
+            public boolean allLoaded() {
+                return false;
+            }
         });
         bswList.setData(getBaseBeans());
         setOnClickListener(R.id.merge_btn, R.id.merge_btn2, R.id.click_et);
@@ -142,8 +149,9 @@ public class MainActivity extends BaseLayoutActivity {
 
     private ConvertViewCallBack<BaseBean> convertViewCallBack = new ConvertViewCallBack<BaseBean>() {
         @Override
-        public void convert(RecyclerViewHolder holder, BaseBean baseBean, int position) {
+        public BaseBean convert(RecyclerViewHolder holder, BaseBean baseBean, int position) {
             holder.setText(R.id.item_tv, "第" + (position + 1) + "项");
+            return baseBean;
         }
     };
 
