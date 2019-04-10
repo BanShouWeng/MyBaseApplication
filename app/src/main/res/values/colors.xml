@@ -9,4 +9,5 @@
     <color name="green">#1AAD19</color>
     <color name="color_ccc">#CCCCCC</color>
     <color name="divider_line_color">#F0F0F0</color>
+    <color name="text_color">#333</color>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.banshouweng.mybaseapplication">
+    package="com.banshouweng.bswBase">
 
     <!-- 允许联网 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,7 +41,6 @@
         </receiver>
 
         <activity android:name=".ui.activity.CropActivity" />
-        <activity android:name=".zxing.activity.CaptureActivity" />
         <activity
             android:name=".ui.activity.TestActivity"
             android:exported="true" />

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.banshouweng.mybaseapplication.base.activity.BaseActivity">
+    tools:context="com.banshouweng.bswBase.base.activity.BaseActivity">
 
     <ViewStub
         android:id="@+id/base_title_layout"

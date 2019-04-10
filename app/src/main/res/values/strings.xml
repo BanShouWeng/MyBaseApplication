@@ -16,4 +16,11 @@
 
     <!--Exception-->
     <string name="data_abnormal">参数异常</string>
+    <string name="scan_failed">扫码失败</string>
+    <string name="you_cannot_access_the_camera">您拒绝了相机权限</string>
+    <string name="to_be_continue">继续</string>
+    <string name="quit">退出</string>
+    <string name="page_has_been_automatically_closed">长时间未操作，已自动为您关闭扫码页面</string>
+    <string name="QR_code">二维码</string>
+    <string name="renovate_qrCode">二维码已失效？请点击刷新</string>
 </resources>

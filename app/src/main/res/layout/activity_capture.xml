@@ -14,7 +14,7 @@
             android:layout_gravity="center"
             android:padding="@dimen/size_20" />
 
-        <com.banshouweng.mybaseapplication.zxing.view.ViewfinderView
+        <com.banshouweng.bswBase.zxing.view.ViewfinderView
             android:id="@+id/viewfinder_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

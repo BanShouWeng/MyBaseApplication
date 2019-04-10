@@ -6,7 +6,7 @@
     android:layout_centerInParent="true"
     android:background="@drawable/corner_white_4_solid"
     android:orientation="vertical"
-    tools:context="com.banshouweng.mybaseapplication.widget.BswAlertDialog.BswAlertDialog"
+    tools:context="com.banshouweng.bswBase.widget.BswAlertDialog.BswAlertDialog"
     tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage,ContentDescription">
 
     <TextView
